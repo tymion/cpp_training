@@ -17,6 +17,8 @@ private:
     FILE * file;
     int height;
     int width;
+    bool littleEndian;
+
     bool isPNG();
     PNGChunkType readChunkHeader(int &length);
     PNGChunkType readChunkHeaderD(int &length);

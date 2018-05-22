@@ -7,6 +7,16 @@
 #define PNG_HEADER_SIZE 8
 char PNG_HEADER[8] = {'\211', 'P', 'N', 'G', '\r', '\n', '\032', '\n'};
 
+uint32_t changeEndianness(uint32_t value)
+{
+    uint32_t result = 0;
+    result |= (value & 0x000000FF) << 24;
+    result |= (value & 0x0000FF00) << 8;
+    result |= (value & 0x00FF0000) >> 8;
+    result |= (value & 0xFF000000) >> 24;
+    return result;
+}
+
 bool Loader::isPNG() {
     if (ftell(file) != 0) {
         fseek (file, 0, SEEK_SET); 
@@ -18,33 +28,34 @@ bool Loader::isPNG() {
         throw std::invalid_argument("Can't read file header.");
     }
     ret = memcmp(header, PNG_HEADER, PNG_HEADER_SIZE*sizeof(char));
-    if (ret == 0) {
-        return true;
+    if (ret != 0) {
+        return false;
     }
-    return false;
-}
-
-PNGChunkType Loader::readChunkHeaderD(int &length) {
-    char chunk_header[8];
-    int ret = fread(chunk_header, sizeof(char), 8, file);
-
+    fseek (file, 0, SEEK_SET);
+    int test[PNG_HEADER_SIZE/sizeof(int)];
+    ret = fread(test, sizeof(int), PNG_HEADER_SIZE/sizeof(int), file);
     if (ret == 0) {
-        throw std::invalid_argument("Can't read file chunk header.");
+        throw std::invalid_argument("Can't read file header for endianness check.");
     }
-    cout << "Chunk data length:" << (int) chunk_header[0] << endl;
-    length = chunk_header[0];
-    return (PNGChunkType) 0;
+    if (test[0] == 1196314761 && test[1] == 169478669) {
+        // little endian
+        littleEndian = true;
+    }
+    return true;
 }
 
 PNGChunkType Loader::readChunkHeader(int &length) {
-    unsigned int chunk_header[2];
-    int ret = fread(chunk_header, sizeof(unsigned int), 2, file);
-
+    uint32_t chunk_header[2];
+    size_t ret = fread(chunk_header, sizeof(uint32_t), 2, file);
     if (ret == 0) {
         throw std::invalid_argument("Can't read file chunk header.");
     }
-    cout << "Chunk data length:" << chunk_header[0] << endl;
+    if (littleEndian) {
+        chunk_header[0] = changeEndianness(chunk_header[0]);
+        chunk_header[1] = changeEndianness(chunk_header[1]);
+    }
     length = chunk_header[0];
+    cout << "Chunk data length:" << length << endl;
     cout << "Chunk Type:" << chunk_header[1] << endl;
     int bit = 0;
     if (((chunk_header[1] > 5) & 1) == 1) {
@@ -94,7 +105,7 @@ Loader::Loader(string filename) {
         throw std::invalid_argument("Invalid parameter. File isn't PNG.");
     }
     int length;
-    readChunkHeaderD(length);
+    readChunkHeader(length);
     char *data = new char(length);
     readChunk(*data, length);
     readCrc();
