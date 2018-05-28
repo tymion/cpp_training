@@ -58,21 +58,29 @@ PNGChunkType Loader::readChunkHeader(int &length) {
     cout << "Chunk data length:" << length << endl;
     cout << "Chunk Type:" << chunk_header[1] << endl;
     int bit = 0;
-    if (((chunk_header[1] > 5) & 1) == 1) {
+    if (chunk_header[1] & (0x1 < 5)) {
         bit |= PNGChunkType::Ancillary;
         cout << "Ancillary:" << 1 << endl;
+    } else {
+        cout << "Ancillary:" << 0 << endl;
     }
-    if (((chunk_header[1] > 13) & 1) == 1) {
+    if (chunk_header[1] & (0x1 < 13)) {
         bit |= PNGChunkType::Private;
         cout << "Private:" << 1 << endl;
+    } else {
+        cout << "Private:" << 0 << endl;
     }
-    if (((chunk_header[1] > 21) & 1) == 1) {
+    if (chunk_header[1] & (0x1 < 21)) {
         bit |= PNGChunkType::Reserved;
         cout << "Reserved:" << 1 << endl;
+    } else {
+        cout << "Reserved:" << 0 << endl;
     }
-    if (((chunk_header[1] > 29) & 1) == 1) {
+    if (chunk_header[1] & (0x1 < 29)) {
         bit |= PNGChunkType::SafeToCopy;
         cout << "Safe-to-copy:" << 1 << endl;
+    } else {
+        cout << "Safe-to-copy:" << 0 << endl;
     }
     return (PNGChunkType) bit;
 }
