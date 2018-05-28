@@ -3,21 +3,13 @@
 #include <stdexcept>
 #include <cstring>
 #include <iostream>
+#include "IImage.hpp"
+#include "png.hpp"
 
 #define PNG_HEADER_SIZE 8
-char PNG_HEADER[8] = {'\211', 'P', 'N', 'G', '\r', '\n', '\032', '\n'};
+char PNG_HEADER[PNG_HEADER_SIZE] = {'\211', 'P', 'N', 'G', '\r', '\n', '\032', '\n'};
 
-uint32_t changeEndianness(uint32_t value)
-{
-    uint32_t result = 0;
-    result |= (value & 0x000000FF) << 24;
-    result |= (value & 0x0000FF00) << 8;
-    result |= (value & 0x00FF0000) >> 8;
-    result |= (value & 0xFF000000) >> 24;
-    return result;
-}
-
-bool Loader::isPNG() {
+bool Loader::isPNG(FILE *file) {
     if (ftell(file) != 0) {
         fseek (file, 0, SEEK_SET); 
     }
@@ -32,74 +24,7 @@ bool Loader::isPNG() {
         return false;
     }
     fseek (file, 0, SEEK_SET);
-    int test[PNG_HEADER_SIZE/sizeof(int)];
-    ret = fread(test, sizeof(int), PNG_HEADER_SIZE/sizeof(int), file);
-    if (ret == 0) {
-        throw std::invalid_argument("Can't read file header for endianness check.");
-    }
-    if (test[0] == 1196314761 && test[1] == 169478669) {
-        // little endian
-        littleEndian = true;
-    }
     return true;
-}
-
-PNGChunkType Loader::readChunkHeader(int &length) {
-    uint32_t chunk_header[2];
-    size_t ret = fread(chunk_header, sizeof(uint32_t), 2, file);
-    if (ret == 0) {
-        throw std::invalid_argument("Can't read file chunk header.");
-    }
-    if (littleEndian) {
-        chunk_header[0] = changeEndianness(chunk_header[0]);
-        chunk_header[1] = changeEndianness(chunk_header[1]);
-    }
-    length = chunk_header[0];
-    cout << "Chunk data length:" << length << endl;
-    cout << "Chunk Type:" << chunk_header[1] << endl;
-    int bit = 0;
-    if (chunk_header[1] & (0x1 < 5)) {
-        bit |= PNGChunkType::Ancillary;
-        cout << "Ancillary:" << 1 << endl;
-    } else {
-        cout << "Ancillary:" << 0 << endl;
-    }
-    if (chunk_header[1] & (0x1 < 13)) {
-        bit |= PNGChunkType::Private;
-        cout << "Private:" << 1 << endl;
-    } else {
-        cout << "Private:" << 0 << endl;
-    }
-    if (chunk_header[1] & (0x1 < 21)) {
-        bit |= PNGChunkType::Reserved;
-        cout << "Reserved:" << 1 << endl;
-    } else {
-        cout << "Reserved:" << 0 << endl;
-    }
-    if (chunk_header[1] & (0x1 < 29)) {
-        bit |= PNGChunkType::SafeToCopy;
-        cout << "Safe-to-copy:" << 1 << endl;
-    } else {
-        cout << "Safe-to-copy:" << 0 << endl;
-    }
-    return (PNGChunkType) bit;
-}
-
-void Loader::readCrc() {
-    int crc;
-    int ret = fread(&crc, sizeof(int), 1, file);
-    if (ret == 0) {
-        throw std::invalid_argument("Can't read crc.");
-    }
-
-    cout << "CRC:" << crc << endl;
-}
-
-void Loader::readChunk(char (&data), const int &length) {
-    int ret = fread(&data, sizeof(char), length, file);
-    if (ret == 0) {
-        throw std::invalid_argument("Can't read data.");
-    }
 }
 
 Loader::Loader(string filename) {
@@ -108,24 +33,17 @@ Loader::Loader(string filename) {
     if (!S_ISREG(stbuf.st_mode)) {
         throw std::invalid_argument("Invalid parameter. Pass picture file name.");
     }
-    file = fopen(filename.c_str(), "rb");
-    if (!isPNG()) {
-        throw std::invalid_argument("Invalid parameter. File isn't PNG.");
+    FILE *file = fopen(filename.c_str(), "rb");
+    if (!file) {
+        throw std::invalid_argument("Can't open file.");
     }
-    int length;
-    readChunkHeader(length);
-    char *data = new char(length);
-    readChunk(*data, length);
-    readCrc();
-    readChunkHeader(length);
-}
-
-void Loader::setRegion(int height, int width) {
-    height = height;
-    width = width;
-}
-
-int Loader::getData(char* data, size_t n) {
-    int ret = fread(data, sizeof(char), n*sizeof(char), file);
-    return ret;
+    IImage *image = NULL;
+    if (!isPNG(file)) {
+        throw std::invalid_argument("Invalid parameter. File isn't PNG.");
+    } else {
+        image = new PNGFile(file);
+        cout << "Width: " << image->getWidth() << endl;
+        cout << "Height: " << image->getHeight() << endl;
+        delete image;
+    }
 }
