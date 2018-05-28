@@ -7,8 +7,7 @@
 using namespace std;
 
 enum PNGChunkType {
-    Invalid = -1,
-    IHDR,
+    IHDR = 0,
     IDAT,
     PLTE,
     tRNS,
@@ -28,6 +27,7 @@ enum PNGChunkType {
 };
 
 enum PNGChunkAttr {
+    None = 0,
     Ancillary = 1,
     Private = 2,
     Reserved = 4,
@@ -35,9 +35,10 @@ enum PNGChunkAttr {
 };
 
 struct PNGChunk_ {
-    enum PNGChunkType type;
-    enum PNGChunkAttr attr;
     uint32_t length;
+    uint32_t typeData;
+    enum PNGChunkType type;
+    uint8_t attr;
 };
 
 class PNGFile: public IImage {
@@ -48,10 +49,10 @@ private:
     bool littleEndian;
 
     bool readHeader();
-    PNGChunkAttr readChunkHeader(uint32_t &length);
+    void readChunkHeader(struct PNGChunk_ *chunk);
     void readChunk(char &data, const int &length);
     void readCrc();
-    void parseIHDR();
+    PNGChunkType parseData(uint32_t dataType, uint8_t *data);
 
 public:
     PNGFile(FILE *newfile);

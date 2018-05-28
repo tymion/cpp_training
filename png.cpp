@@ -5,7 +5,6 @@
 #include <iostream>
 
 #define PNG_HEADER_SIZE 8
-#define IHDR_CHUNK_SIZE 13
 
 uint32_t changeEndianness(uint32_t value)
 {
@@ -31,62 +30,68 @@ bool PNGFile::readHeader() {
     return true;
 }
 
-static uint32_t getIntFromChar(char *data) {
+static uint32_t getIntFromChar(uint8_t *data) {
     cout << " : " << (uint32_t)data[0] << " : " << (uint32_t)data[1] << " : " << (uint32_t)data[2] << " : " << (uint32_t)data[3] << endl;
-    return ((uint32_t) data[0] < 24) || ((uint32_t) data[1] < 16) ||
-        ((uint32_t) data[2] < 8) || (uint32_t) data[3];
+    return (data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3];
 }
 
-void PNGFile::parseIHDR() {
-    char chunk[IHDR_CHUNK_SIZE];
-    int ret = fread(chunk, sizeof(char), IHDR_CHUNK_SIZE, file);
-    if (ret == 0) {
-        throw std::invalid_argument("Can't read read IHDR Chunk data.");
+PNGChunkType PNGFile::parseData(uint32_t dataType, uint8_t *data) {
+    switch (dataType) {
+        case 0x49484452:
+            width = getIntFromChar(data);
+            height = getIntFromChar(&data[4]);
+            return PNGChunkType::IHDR;
+        case 0x49444154:
+            return PNGChunkType::IDAT;
+        default:
+            return PNGChunkType::Custom;
     }
-    width = getIntFromChar(chunk);
-    height = getIntFromChar(&chunk[4]);
-    
+    return PNGChunkType::Custom;
 }
 
-PNGChunkAttr PNGFile::readChunkHeader(uint32_t &length) {
-    uint32_t chunk_header[2];
-    size_t ret = fread(chunk_header, sizeof(uint32_t), 2, file);
+void PNGFile::readChunkHeader(struct PNGChunk_ *chunk) {
+    size_t ret = fread(chunk, sizeof(uint32_t), 2, file);
     if (ret == 0) {
         throw std::invalid_argument("Can't read file chunk header.");
     }
     if (littleEndian) {
-        chunk_header[0] = changeEndianness(chunk_header[0]);
-        chunk_header[1] = changeEndianness(chunk_header[1]);
+        chunk->length = changeEndianness(chunk->length);
+        chunk->typeData = changeEndianness(chunk->typeData);
     }
-    length = chunk_header[0];
-    cout << "Chunk data length:" << length << endl;
-    cout << "Chunk Type:" << chunk_header[1] << endl;
-    int bit = 0;
-    if (chunk_header[1] & (0x1 < 5)) {
-        bit |= PNGChunkAttr::Ancillary;
+    cout << "Chunk data length:" << chunk->length << endl;
+    cout << "Chunk Type:" << chunk->typeData << endl;
+    chunk->attr = PNGChunkAttr::None;
+    if (chunk->typeData & (0x1 << 5)) {
+        chunk->attr |= PNGChunkAttr::Ancillary;
         cout << "Ancillary:" << 1 << endl;
     } else {
         cout << "Ancillary:" << 0 << endl;
     }
-    if (chunk_header[1] & (0x1 < 13)) {
-        bit |= PNGChunkAttr::Private;
+    if (chunk->typeData & (0x1 << 13)) {
+        chunk->attr |= PNGChunkAttr::Private;
         cout << "Private:" << 1 << endl;
     } else {
         cout << "Private:" << 0 << endl;
     }
-    if (chunk_header[1] & (0x1 < 21)) {
-        bit |= PNGChunkAttr::Reserved;
+    if (chunk->typeData & (0x1 << 21)) {
+        chunk->attr |= PNGChunkAttr::Reserved;
         cout << "Reserved:" << 1 << endl;
     } else {
         cout << "Reserved:" << 0 << endl;
     }
-    if (chunk_header[1] & (0x1 < 29)) {
-        bit |= PNGChunkAttr::SafeToCopy;
+    if (chunk->typeData & (0x1 << 29)) {
+        chunk->attr |= PNGChunkAttr::SafeToCopy;
         cout << "Safe-to-copy:" << 1 << endl;
     } else {
         cout << "Safe-to-copy:" << 0 << endl;
     }
-    return (PNGChunkAttr) bit;
+    uint8_t *data = new uint8_t[chunk->length];
+    ret = fread(data, sizeof(uint8_t), chunk->length, file);
+    if (ret == 0) {
+        throw std::invalid_argument("Can't read file chunk data.");
+    }
+    chunk->type = parseData(chunk->typeData, data);
+    delete[] data;
 }
 
 void PNGFile::readCrc() {
@@ -109,15 +114,11 @@ void PNGFile::readChunk(char (&data), const int &length) {
 PNGFile::PNGFile(FILE *newfile) {
     file = newfile;
     readHeader();
-    uint32_t length = 0;
-    readChunkHeader(length);
-    parseIHDR();
+    struct PNGChunk_ ihdrChunk;
+    readChunkHeader(&ihdrChunk);
     readCrc();
-    readChunkHeader(length);
-    char *data = new char[length]();
-    cout << "LEN:" << length << endl;
-    readChunk(*data, length);
-    delete[] data;
+    struct PNGChunk_ chunk;
+    readChunkHeader(&chunk);
 }
 
 PNGFile::~PNGFile() {
