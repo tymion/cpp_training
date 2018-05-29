@@ -2,6 +2,7 @@
 #define _LOAD_HPP_
 #include <string>
 #include <cstdio>
+#include "IImage.hpp"
 
 using namespace std;
 
@@ -10,7 +11,7 @@ private:
     bool isPNG(FILE *file);
 
 public:
-    Loader(string filename);
+    IImage *loadImage(string filename);
 
 };
 #endif /* _LOAD_HPP_ */

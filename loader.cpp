@@ -3,7 +3,6 @@
 #include <stdexcept>
 #include <cstring>
 #include <iostream>
-#include "IImage.hpp"
 #include "png.hpp"
 
 #define PNG_HEADER_SIZE 8
@@ -27,7 +26,7 @@ bool Loader::isPNG(FILE *file) {
     return true;
 }
 
-Loader::Loader(string filename) {
+IImage* Loader::loadImage(string filename) {
     struct stat stbuf;
     lstat(filename.c_str(), &stbuf);
     if (!S_ISREG(stbuf.st_mode)) {
@@ -38,12 +37,10 @@ Loader::Loader(string filename) {
         throw std::invalid_argument("Can't open file.");
     }
     IImage *image = NULL;
-    if (!isPNG(file)) {
-        throw std::invalid_argument("Invalid parameter. File isn't PNG.");
-    } else {
+    if (isPNG(file)) {
         image = new PNGFile(file);
         cout << "Width: " << image->getWidth() << endl;
         cout << "Height: " << image->getHeight() << endl;
-        delete image;
     }
+    return image;
 }

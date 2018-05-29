@@ -23,6 +23,7 @@ enum PNGChunkType {
     hIST,
     sPLT,
     tIME,
+    IEND,
     Custom
 };
 
@@ -71,11 +72,13 @@ private:
     uint32_t height;
     uint32_t width;
     enum PNGImageType type;
+    struct PNGChunk_ ihdr;
+    struct PNGChunk_ *last;
+    uint32_t dataLeft;
     bool littleEndian;
 
     bool readHeader();
-    void readChunkHeader(struct PNGChunk_ *chunk);
-    void readChunk(char &data, const int &length);
+    PNGChunkType readChunkHeader(struct PNGChunk_ *chunk);
     void readCrc();
     PNGChunkType parseData(uint32_t dataType, uint8_t *data);
     PNGImageType parseColor(uint8_t colorType, uint8_t depth);
@@ -85,8 +88,10 @@ public:
     ~PNGFile();
     uint32_t getHeight();
     uint32_t getWidth();
-    uint32_t getDataChunk(uint32_t *data);
+    uint32_t getDataChunk(uint8_t *data, uint32_t dataLen);
     uint32_t getDataChunkLength();
+    uint32_t getData(uint8_t *data, uint32_t length);
+
 };
 
 #endif /* _PNG_HPP_ */

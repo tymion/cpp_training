@@ -80,7 +80,7 @@ PNGChunkType PNGFile::parseData(uint32_t dataType, uint8_t *data) {
     return PNGChunkType::Custom;
 }
 
-void PNGFile::readChunkHeader(struct PNGChunk_ *chunk) {
+PNGChunkType PNGFile::readChunkHeader(struct PNGChunk_ *chunk) {
     size_t ret = fread(chunk, sizeof(uint32_t), 2, file);
     if (ret == 0) {
         throw std::invalid_argument("Can't read file chunk header.");
@@ -123,6 +123,7 @@ void PNGFile::readChunkHeader(struct PNGChunk_ *chunk) {
     }
     chunk->type = parseData(chunk->typeData, data);
     delete[] data;
+    return chunk->type;
 }
 
 void PNGFile::readCrc() {
@@ -135,21 +136,12 @@ void PNGFile::readCrc() {
     cout << "CRC:" << crc << endl;
 }
 
-void PNGFile::readChunk(char (&data), const int &length) {
-    int ret = fread(&data, sizeof(char), length, file);
-    if (ret == 0) {
-        throw std::invalid_argument("Can't read data.");
-    }
-}
-
 PNGFile::PNGFile(FILE *newfile) {
     file = newfile;
     readHeader();
     struct PNGChunk_ ihdrChunk;
     readChunkHeader(&ihdrChunk);
     readCrc();
-    struct PNGChunk_ chunk;
-    readChunkHeader(&chunk);
 }
 
 PNGFile::~PNGFile() {
@@ -165,9 +157,28 @@ uint32_t PNGFile::getHeight() {
 }
 
 uint32_t PNGFile::getDataChunkLength() {
-    return 0;
+    delete last;
+    last = new PNGChunk_();
+    dataLeft = last->length;
+    if (PNGFileType::IHDR != readChunkHeader(last)) {
+        return 0;
+    }
+    return last->length;
 }
 
-uint32_t PNGFile::getDataChunk(uint32_t *data) {
+uint32_t PNGFile::getDataChunk(uint8_t *data, uint32_t dataLen) {
+    if (!last || last->type != PNGFileType::IHDR || dataLeft == 0) {
+        return 0;
+    }
+    uint32_t toRead = dataLen;
+    if (dataLen > dataLeft) {
+        toRead = dataLeft;
+    }
+    uint32_t ret = fread(data, sizeof(uint8_t), toRead, file);
+    dataLeft -= ret;
+    return ret;
+}
+
+uint32_t PNGFile::getData(uint8_t *data, uint32_t length) {
     return 0;
 }

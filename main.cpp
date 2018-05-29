@@ -5,10 +5,19 @@
 
 using namespace std;
 
+static void loadRow(IImage *image, uint8_t *data, uint32_t length) {
+    image->getData(data, length);
+}
+
 int main() {
-    string filename = "left.png";
+    string leftFile = "left.png";
+    string rightFile = "right.png";
     try {
-        Loader *loader = new Loader(filename);
+        Loader *loader = new Loader();
+        IImage *lImage = loader->loadImage(leftFile);
+        IImage *rImage = loader->loadImage(rightFile);
+        delete lImage;
+        delete rImage;
         delete loader;
     } catch (std::exception const &exc)
     {
