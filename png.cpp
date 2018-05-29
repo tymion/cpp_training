@@ -31,8 +31,37 @@ bool PNGFile::readHeader() {
 }
 
 static uint32_t getIntFromChar(uint8_t *data) {
-    cout << " : " << (uint32_t)data[0] << " : " << (uint32_t)data[1] << " : " << (uint32_t)data[2] << " : " << (uint32_t)data[3] << endl;
     return (data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3];
+}
+
+PNGImageType PNGFile::parseColor(uint8_t colorType, uint8_t depth) {
+    switch (colorType << 8 | depth) {
+        case Greyscale:
+        case Greyscale_1:
+        case Greyscale_2:
+        case Greyscale_4:
+        case Greyscale_8:
+        case Greyscale_16:
+        case TrueColor:
+        case TrueColor_8:
+        case TrueColor_16:
+        case IndexedColor:
+        case IndexedColor_1:
+        case IndexedColor_2:
+        case IndexedColor_4:
+        case IndexedColor_8:
+        case GreyscaleAlpha:
+        case GreyscaleAlpha_8:
+        case GreyscaleAlpha_16:
+        case TrueColorAlpha:
+        case TrueColorAlpha_8:
+        case TrueColorAlpha_16:
+            cout << "Image Type:" << (colorType << 8 | depth) << endl;
+            return (PNGImageType) (colorType << 8 | depth);
+        default:
+            cout << "Invalid Image Type! (" << (colorType << 8 | depth) << ")" << endl;
+            return Invalid;
+    }
 }
 
 PNGChunkType PNGFile::parseData(uint32_t dataType, uint8_t *data) {
@@ -40,10 +69,12 @@ PNGChunkType PNGFile::parseData(uint32_t dataType, uint8_t *data) {
         case 0x49484452:
             width = getIntFromChar(data);
             height = getIntFromChar(&data[4]);
+            type = parseColor(data[9], data[8]);
             return PNGChunkType::IHDR;
         case 0x49444154:
             return PNGChunkType::IDAT;
         default:
+            throw std::invalid_argument("Can't read file chunk data.");
             return PNGChunkType::Custom;
     }
     return PNGChunkType::Custom;
@@ -131,4 +162,12 @@ uint32_t PNGFile::getWidth() {
 
 uint32_t PNGFile::getHeight() {
     return height;
+}
+
+uint32_t PNGFile::getDataChunkLength() {
+    return 0;
+}
+
+uint32_t PNGFile::getDataChunk(uint32_t *data) {
+    return 0;
 }
