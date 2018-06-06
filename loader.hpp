@@ -2,6 +2,7 @@
 #define _LOAD_HPP_
 #include <string>
 #include <cstdio>
+#include <cstdbool>
 #include "IImage.hpp"
 
 using namespace std;

@@ -8,7 +8,7 @@ class IImage
     public:
         virtual uint32_t getHeight() = 0;
         virtual uint32_t getWidth() = 0;
-        virtual uint32_t getData(uint8_t *data, uint32_t length);
+        virtual uint32_t getData(uint8_t *data, uint32_t length) = 0;
         virtual ~IImage(){};
 };
 

@@ -2,6 +2,7 @@
 #define _PNG_HPP_
 #include "IImage.hpp"
 #include <cstdio>
+#include <cstdbool>
 #include <cstdint>
 
 using namespace std;
@@ -51,6 +52,12 @@ enum PNGImageType {
     TrueColorAlpha_16 = 0x610
 };
 
+enum PNGFileState {
+    Open,
+    Data,
+    Closed,
+};
+
 enum PNGChunkAttr {
     None = 0,
     Ancillary = 1,
@@ -67,31 +74,32 @@ struct PNGChunk_ {
 };
 
 class PNGFile: public IImage {
-private:
-    FILE *file;
-    uint32_t height;
-    uint32_t width;
-    enum PNGImageType type;
-    struct PNGChunk_ ihdr;
-    struct PNGChunk_ *last;
-    uint32_t dataLeft;
-    bool littleEndian;
+    private:
+        FILE *_file;
+        uint32_t _height;
+        uint32_t _width;
+        enum PNGImageType _type;
+        enum PNGFileState _state;
+        struct PNGChunk_ _ihdr;
+        uint32_t _dataLeft;
+        bool _littleEndian;
 
-    bool readHeader();
-    PNGChunkType readChunkHeader(struct PNGChunk_ *chunk);
-    void readCrc();
-    PNGChunkType parseData(uint32_t dataType, uint8_t *data);
-    PNGImageType parseColor(uint8_t colorType, uint8_t depth);
+        bool readHeader();
+        PNGChunkType readChunkHeader(struct PNGChunk_ *chunk);
+        void readCrc();
+        PNGChunkType parseData(uint32_t dataType, uint8_t *data);
+        PNGImageType parseColor(uint8_t colorType, uint8_t depth);
+        template <class T>
+            size_t readData(T *data, size_t len) {
+                return fread(data, sizeof(T), len, _file);
+            }
 
-public:
-    PNGFile(FILE *newfile);
-    ~PNGFile();
-    uint32_t getHeight();
-    uint32_t getWidth();
-    uint32_t getDataChunk(uint8_t *data, uint32_t dataLen);
-    uint32_t getDataChunkLength();
-    uint32_t getData(uint8_t *data, uint32_t length);
-
+    public:
+        PNGFile(FILE *newfile);
+        ~PNGFile();
+        uint32_t getHeight();
+        uint32_t getWidth();
+        uint32_t getData(uint8_t *data, uint32_t length);
 };
 
 #endif /* _PNG_HPP_ */

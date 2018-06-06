@@ -19,13 +19,13 @@ uint32_t changeEndianness(uint32_t value)
 bool PNGFile::readHeader() {
     uint32_t header[PNG_HEADER_SIZE/sizeof(int)];
     int ret = 0;
-    ret = fread(header, sizeof(uint32_t), PNG_HEADER_SIZE/sizeof(uint32_t), file);
+    ret = fread(header, sizeof(uint32_t), PNG_HEADER_SIZE/sizeof(uint32_t), _file);
     if (ret == 0) {
         throw std::invalid_argument("Can't read file header for endianness check.");
     }
     if (header[0] == 1196314761 && header[1] == 169478669) {
         // little endian
-        littleEndian = true;
+        _littleEndian = true;
     }
     return true;
 }
@@ -67,9 +67,9 @@ PNGImageType PNGFile::parseColor(uint8_t colorType, uint8_t depth) {
 PNGChunkType PNGFile::parseData(uint32_t dataType, uint8_t *data) {
     switch (dataType) {
         case 0x49484452:
-            width = getIntFromChar(data);
-            height = getIntFromChar(&data[4]);
-            type = parseColor(data[9], data[8]);
+            _width = getIntFromChar(data);
+            _height = getIntFromChar(&data[4]);
+            _type = parseColor(data[9], data[8]);
             return PNGChunkType::IHDR;
         case 0x49444154:
             return PNGChunkType::IDAT;
@@ -81,11 +81,11 @@ PNGChunkType PNGFile::parseData(uint32_t dataType, uint8_t *data) {
 }
 
 PNGChunkType PNGFile::readChunkHeader(struct PNGChunk_ *chunk) {
-    size_t ret = fread(chunk, sizeof(uint32_t), 2, file);
+    size_t ret = readData((uint32_t *) chunk, (size_t) 2);
     if (ret == 0) {
         throw std::invalid_argument("Can't read file chunk header.");
     }
-    if (littleEndian) {
+    if (_littleEndian) {
         chunk->length = changeEndianness(chunk->length);
         chunk->typeData = changeEndianness(chunk->typeData);
     }
@@ -117,18 +117,24 @@ PNGChunkType PNGFile::readChunkHeader(struct PNGChunk_ *chunk) {
         cout << "Safe-to-copy:" << 0 << endl;
     }
     uint8_t *data = new uint8_t[chunk->length];
-    ret = fread(data, sizeof(uint8_t), chunk->length, file);
+    ret = readData(data, chunk->length);
     if (ret == 0) {
         throw std::invalid_argument("Can't read file chunk data.");
     }
     chunk->type = parseData(chunk->typeData, data);
+    if (PNGChunkType::IDAT == chunk->type) {
+        _state = PNGFileState::Data;
+        _dataLeft = chunk->length;
+    } else if (PNGChunkType::IEND == chunk->type) {
+        _state = PNGFileState::Closed;
+    }
     delete[] data;
     return chunk->type;
 }
 
 void PNGFile::readCrc() {
-    int crc;
-    int ret = fread(&crc, sizeof(int), 1, file);
+    uint32_t crc;
+    size_t ret = readData(&crc, 1);
     if (ret == 0) {
         throw std::invalid_argument("Can't read crc.");
     }
@@ -136,49 +142,54 @@ void PNGFile::readCrc() {
     cout << "CRC:" << crc << endl;
 }
 
-PNGFile::PNGFile(FILE *newfile) {
-    file = newfile;
+PNGFile::PNGFile(FILE *file) {
+    _file = file;
     readHeader();
-    struct PNGChunk_ ihdrChunk;
-    readChunkHeader(&ihdrChunk);
+    readChunkHeader(&_ihdr);
     readCrc();
+    _state = PNGFileState::Open;
+    struct PNGChunk_ chunk;
+    while (_state == PNGFileState::Open) {
+        readChunkHeader(&chunk);
+    }
 }
 
 PNGFile::~PNGFile() {
-    fclose(file);
+    fclose(_file);
 }
 
 uint32_t PNGFile::getWidth() {
-    return width;
+    return _width;
 }
 
 uint32_t PNGFile::getHeight() {
-    return height;
-}
-
-uint32_t PNGFile::getDataChunkLength() {
-    delete last;
-    last = new PNGChunk_();
-    dataLeft = last->length;
-    if (PNGFileType::IHDR != readChunkHeader(last)) {
-        return 0;
-    }
-    return last->length;
-}
-
-uint32_t PNGFile::getDataChunk(uint8_t *data, uint32_t dataLen) {
-    if (!last || last->type != PNGFileType::IHDR || dataLeft == 0) {
-        return 0;
-    }
-    uint32_t toRead = dataLen;
-    if (dataLen > dataLeft) {
-        toRead = dataLeft;
-    }
-    uint32_t ret = fread(data, sizeof(uint8_t), toRead, file);
-    dataLeft -= ret;
-    return ret;
+    return _height;
 }
 
 uint32_t PNGFile::getData(uint8_t *data, uint32_t length) {
-    return 0;
+    if (_state == PNGFileState::Closed) {
+        return 0;
+    }
+    size_t ret = 0;
+    uint32_t toRead = length;
+    while (_state == PNGFileState::Data && ret != length) {
+        if (_dataLeft == 0) {
+            readCrc();
+            struct PNGChunk_ chunk;
+            readChunkHeader(&chunk);
+            if (_state == PNGFileState::Closed) {
+                break;
+            }
+        }
+        if (toRead > _dataLeft) {
+            toRead = _dataLeft;
+        }
+        ret += readData(data, toRead);
+        if (ret == 0) {
+            break;
+        }
+        toRead = length - ret;
+    }
+    _dataLeft -= ret;
+    return ret;
 }

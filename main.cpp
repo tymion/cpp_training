@@ -5,9 +5,9 @@
 
 using namespace std;
 
-static void loadRow(IImage *image, uint8_t *data, uint32_t length) {
-    image->getData(data, length);
-}
+//static void loadRow(IImage *image, uint8_t *data, uint32_t length) {
+//    image->getData(data, length);
+//}
 
 int main() {
     string leftFile = "left.png";
