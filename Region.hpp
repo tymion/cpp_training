@@ -1,20 +1,22 @@
 #ifndef _REGION_HPP_
 #define _REGION_HPP_
+#include "Mask.hpp"
 
 class Region {
     private:
         uint32_t _height;
         uint32_t _width;
-        uint8_t **data;
+        uint8_t **_data;
+        Mask *_mask;
 
     public:
-        Region(uint32_t height, uint32_t width);
+        Region(uint32_t height, uint32_t width, Mask *mask);
+        ~Region();
 
         uint32_t getHeight();
-        void setHeight(uint32_t height);
 
         uint32_t getWidth();
-        void setWidth(uint32_t width);
 
+        void setData(uint32_t height, uint8_t *data);
 };
 #endif /* _REGION_HPP_ */

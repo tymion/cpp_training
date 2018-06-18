@@ -6,3 +6,6 @@ CXXFLAGS=-std=c++11
 
 all:
 	$(CXX) $(SRC) $(CFLAGS) $(CXXFLAGS) -I./
+
+clean:
+	rm a.out
