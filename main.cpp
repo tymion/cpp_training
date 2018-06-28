@@ -24,10 +24,18 @@ int main() {
         uint8_t maskData[SIZE*SIZE];
         std::memset(maskData, 1, sizeof(maskData));
         Mask *mask = new Mask(size, size, maskData); 
-        Region *region = new Region(size, size, mask);
-        for (uint32_t row = 0; row < height; row++) {
-            for (uint32_t col = 0; col < width; col++) {
-                lbuffer->getData(row, col, region);
+        Region *rregion = new Region(size, size, mask);
+        Region *lregion = new Region(size, size, mask);
+        for (uint32_t row = 0; row < height - size; row++) {
+            for (uint32_t col = 0; col < width - size; col++) {
+                rbuffer->getData(row, col, rregion);
+                uint32_t s_row = row - 3 < 0 ? 0 : row - 3;
+                uint32_t s_row_max = row + size + 3 > height ? row + size : row + size + 3;
+                for (; s_row < s_row_max; s_row++) {
+                    for (uint32_t s_col = col; s_col < width; s_col++) {
+                        lbuffer->getData(s_row, s_col, lregion);
+                    }
+                }
             }
         }
         delete lImage;
