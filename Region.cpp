@@ -31,3 +31,38 @@ void Region::setData(uint32_t height, uint8_t *data)
 {
     _data[height] = data;
 }
+
+bool Region::operator== (const Region& region)
+{
+#ifdef INDEX_JACARDA
+    uint32_t same = 0;
+    uint32_t similar = 0;
+    uint32_t different = 0;
+    uint32_t threshold = 10;
+
+    for (uint32_t i = 0; i < _height; i++) {
+        for (uint32_t j = 0; j < 3 * _width; j++) {
+            if (_mask->getMask(i, j) == 0) {
+                continue;
+            }
+            if (_data[i][j] == region._data[i][j]) {
+                same++;
+            } else if (_data[i][j] == region.) {
+
+            }
+        }
+    }
+#else
+    for (uint32_t i = 0; i < _height; i++) {
+        for (uint32_t j = 0; j < 3 * _width; j++) {
+            if (_mask->getMask(i, j) == 0) {
+                continue;
+            }
+            if (_data[i][j] != region._data[i][j]) {
+                return false;
+            }
+        }
+    }
+#endif
+    return true;
+}

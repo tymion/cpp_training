@@ -26,6 +26,7 @@ int main() {
         Mask *mask = new Mask(size, size, maskData); 
         Region *rregion = new Region(size, size, mask);
         Region *lregion = new Region(size, size, mask);
+        uint32_t cnt = 0;
         for (uint32_t row = 0; row < height - size; row++) {
             for (uint32_t col = 0; col < width - size; col++) {
                 rbuffer->getData(row, col, rregion);
@@ -34,10 +35,14 @@ int main() {
                 for (; s_row < s_row_max; s_row++) {
                     for (uint32_t s_col = col; s_col < width; s_col++) {
                         lbuffer->getData(s_row, s_col, lregion);
+                        if (rregion == lregion) {
+                            cnt++;
+                        }
                     }
                 }
             }
         }
+        std::cout << "Cout:" << cnt << std::endl;
         delete lImage;
         delete rImage;
         delete loader;

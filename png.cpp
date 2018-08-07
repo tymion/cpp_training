@@ -17,7 +17,7 @@ uint32_t changeEndianness(uint32_t value)
 }
 
 bool PNGFile::readHeader() {
-    uint32_t header[PNG_HEADER_SIZE/sizeof(int)];
+    uint32_t header[PNG_HEADER_SIZE/sizeof(uint32_t)];
     int ret = 0;
     ret = fread(header, sizeof(uint32_t), PNG_HEADER_SIZE/sizeof(uint32_t), _file);
     if (ret == 0) {
@@ -56,7 +56,7 @@ PNGImageType PNGFile::parseColor(uint8_t colorType, uint8_t depth) {
         case TrueColorAlpha:
         case TrueColorAlpha_8:
         case TrueColorAlpha_16:
-            cout << "Image Type:" << (colorType << 8 | depth) << endl;
+            cout << "Image Type:" << hex << (colorType << 8 | depth) << dec << endl;
             return (PNGImageType) (colorType << 8 | depth);
         default:
             cout << "Invalid Image Type! (" << (colorType << 8 | depth) << ")" << endl;
@@ -89,6 +89,7 @@ PNGChunkType PNGFile::readChunkHeader(struct PNGChunk_ *chunk) {
         chunk->length = changeEndianness(chunk->length);
         chunk->typeData = changeEndianness(chunk->typeData);
     }
+    cout << "===Reading new chunk===" << endl;
     cout << "Chunk data length:" << chunk->length << endl;
     cout << "Chunk Type:" << chunk->typeData << endl;
     chunk->attr = PNGChunkAttr::None;

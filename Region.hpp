@@ -18,5 +18,7 @@ class Region {
         uint32_t getWidth();
 
         void setData(uint32_t height, uint8_t *data);
+
+        bool operator== (const Region& region);
 };
 #endif /* _REGION_HPP_ */
