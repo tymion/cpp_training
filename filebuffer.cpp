@@ -13,6 +13,10 @@ FileBuffer::~FileBuffer()
 {
 }
 
+Region* FileBuffer::createRegion(uint32_t height, uint32_t width, Mask *mask)
+{
+}
+
 bool FileBuffer::getData(uint32_t row, uint32_t column, Region *region)
 {
     if (!region) {

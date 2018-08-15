@@ -13,6 +13,7 @@ class FileBuffer {
     public:
         FileBuffer(IImage *image);
         ~FileBuffer();
+        Region* createRegion();
         bool getData(uint32_t row, uint32_t column, Region *region);
 };
 
