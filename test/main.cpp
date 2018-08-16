@@ -1,14 +1,14 @@
 #include <iostream>
 #include "pixel.h"
-#include "pixel_24.h"
+#include "pixel_3x8.h"
 
 int main()
 {
-    pixel_24 *pix1 = new pixel_24();
+    pixel_3x8 *pix1 = new pixel_3x8();
     pix1->_red = 3;
     pix1->_green = 30;
     pix1->_blue = 50;
-    pixel_24 *pix2 = new pixel_24();
+    pixel_3x8 *pix2 = new pixel_3x8();
     pix2->_red = 1;
     pix2->_green = 10;
     pix2->_blue = 100;

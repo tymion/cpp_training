@@ -1,9 +1,9 @@
 #include <cmath>
-#include <pixel_24.h>
+#include <pixel_3x8.h>
 
-bool pixel_24::operator== (const pixel& pixel)
+bool pixel_3x8::operator== (const pixel& pixel)
 {
-    const pixel_24 *tmp = dynamic_cast<const pixel_24*>(&pixel);
+    const pixel_3x8 *tmp = dynamic_cast<const pixel_3x8*>(&pixel);
     if (_red != tmp->_red ||
         _green != tmp->_green ||
         _blue != tmp->_blue) {
@@ -12,9 +12,9 @@ bool pixel_24::operator== (const pixel& pixel)
     return true;
 }
 
-bool pixel_24::operator!= (const pixel& pixel)
+bool pixel_3x8::operator!= (const pixel& pixel)
 {
-    const pixel_24 *tmp = dynamic_cast<const pixel_24*>(&pixel);
+    const pixel_3x8 *tmp = dynamic_cast<const pixel_3x8*>(&pixel);
     if (_red != tmp->_red ||
         _green != tmp->_green ||
         _blue != tmp->_blue) {
@@ -23,9 +23,9 @@ bool pixel_24::operator!= (const pixel& pixel)
     return false;
 }
 
-pixel& pixel_24::operator- (const pixel& pix)
+pixel& pixel_3x8::operator- (const pixel& pix)
 {
-    const pixel_24 *tmp_pix = dynamic_cast<const pixel_24*>(&pix);
+    const pixel_3x8 *tmp_pix = dynamic_cast<const pixel_3x8*>(&pix);
     this->_red = std::abs(this->_red - tmp_pix->_red);
     this->_green = std::abs(this->_green - tmp_pix->_green);
     this->_blue = std::abs(this->_blue - tmp_pix->_blue);
@@ -33,7 +33,7 @@ pixel& pixel_24::operator- (const pixel& pix)
 }
 
 //template <typename T>
-bool pixel_24::operator> (const int value)
+bool pixel_3x8::operator> (const int value)
 {
     if (_red > value and
         _green > value and

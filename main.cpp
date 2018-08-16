@@ -24,17 +24,19 @@ int main() {
         uint8_t maskData[SIZE*SIZE];
         std::memset(maskData, 1, sizeof(maskData));
         Mask *mask = new Mask(size, size, maskData); 
-        Region *rregion = rbuffer->createRegion(size, size, mask);
-        Region *lregion = lbuffer->createRegion(size, size, mask);
+        Region *rregion = rbuffer->createRegion(size, size);
+        Region *lregion = lbuffer->createRegion(size, size);
+        rregion->setMask(mask);
+        lregion->setMask(mask);
         uint32_t cnt = 0;
         for (uint32_t row = 0; row < height - size; row++) {
             for (uint32_t col = 0; col < width - size; col++) {
-                rbuffer->getData(row, col, rregion);
+                rbuffer->updateRegion(row, col, rregion);
                 uint32_t s_row = row - 3 < 0 ? 0 : row - 3;
                 uint32_t s_row_max = row + size + 3 > height ? row + size : row + size + 3;
                 for (; s_row < s_row_max; s_row++) {
                     for (uint32_t s_col = col; s_col < width; s_col++) {
-                        lbuffer->getData(s_row, s_col, lregion);
+                        lbuffer->updateRegion(s_row, s_col, lregion);
                         if (rregion == lregion) {
                             cnt++;
                         }

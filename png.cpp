@@ -167,6 +167,14 @@ uint32_t PNGFile::getHeight() {
     return _height;
 }
 
+uint8_t PNGFile::getComponentCnt() {
+    return (_type & 0xf00) >> 8;
+}
+
+uint8_t PNGFile::getComponentSize() {
+    return _type & 0xff;
+}
+
 uint32_t PNGFile::getData(uint8_t *data, uint32_t length) {
     if (_state == PNGFileState::Closed) {
         return 0;

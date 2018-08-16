@@ -12,6 +12,7 @@ class Region {
 
     public:
         Region(uint32_t height, uint32_t width, pixel *data[], Mask *mask);
+        Region(uint32_t height, uint32_t width, pixel *data[]);
         ~Region();
 
         uint32_t getHeight();
@@ -19,6 +20,8 @@ class Region {
         uint32_t getWidth();
 
         void setData(uint32_t height, pixel *data);
+
+        void setMask(Mask *mask);
 
         bool operator== (const Region& region);
 };

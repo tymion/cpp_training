@@ -30,26 +30,26 @@ enum PNGChunkType {
 
 enum PNGImageType {
     Invalid = -1,
-    Greyscale = 0x0,
-    Greyscale_1 = 0x1,
-    Greyscale_2 = 0x2,
-    Greyscale_4 = 0x4,
-    Greyscale_8 = 0x8,
-    Greyscale_16 = 0x10,
-    TrueColor = 0x200,
-    TrueColor_8 = 0x208,
-    TrueColor_16 = 0x210,
-    IndexedColor = 0x300,
-    IndexedColor_1 = 0x301,
-    IndexedColor_2 = 0x302,
-    IndexedColor_4 = 0x304,
-    IndexedColor_8 = 0x308,
-    GreyscaleAlpha = 0x400,
-    GreyscaleAlpha_8 = 0x408,
-    GreyscaleAlpha_16 = 0x410,
-    TrueColorAlpha = 0x600,
-    TrueColorAlpha_8 = 0x608,
-    TrueColorAlpha_16 = 0x610
+    Greyscale = 0x1100,
+    Greyscale_1 = 0x1101,
+    Greyscale_2 = 0x1102,
+    Greyscale_4 = 0x1104,
+    Greyscale_8 = 0x1108,
+    Greyscale_16 = 0x1110,
+    IndexedColor = 0x2100,
+    IndexedColor_1 = 0x2101,
+    IndexedColor_2 = 0x2102,
+    IndexedColor_4 = 0x2104,
+    IndexedColor_8 = 0x2108,
+    GreyscaleAlpha = 0x3200,
+    GreyscaleAlpha_8 = 0x3208,
+    GreyscaleAlpha_16 = 0x3210,
+    TrueColor = 0x4300,
+    TrueColor_8 = 0x4308,
+    TrueColor_16 = 0x4310,
+    TrueColorAlpha = 0x5400,
+    TrueColorAlpha_8 = 0x5408,
+    TrueColorAlpha_16 = 0x5410
 };
 
 enum PNGFileState {
@@ -100,6 +100,8 @@ class PNGFile: public IImage {
         uint32_t getHeight();
         uint32_t getWidth();
         uint32_t getData(uint8_t *data, uint32_t length);
+        uint8_t getComponentSize();
+        uint8_t getComponentCnt();
 };
 
 #endif /* _PNG_HPP_ */
