@@ -1,6 +1,6 @@
-#ifndef _PNG_HPP_
-#define _PNG_HPP_
-#include "IImage.hpp"
+#ifndef _PNG_H_
+#define _PNG_H_
+#include "iimage.h"
 #include <cstdio>
 #include <cstdbool>
 #include <cstdint>
@@ -104,4 +104,4 @@ class PNGFile: public IImage {
         uint8_t getComponentCnt();
 };
 
-#endif /* _PNG_HPP_ */
+#endif /* _PNG_H_ */

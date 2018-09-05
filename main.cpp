@@ -2,8 +2,9 @@
 #include <cstring>
 #include <exception>
 #include <iostream>
-#include "loader.hpp"
-#include "filebuffer.hpp"
+#include "region.h"
+#include "loader.h"
+#include "filebuffer.h"
 
 using namespace std;
 
@@ -24,8 +25,8 @@ int main() {
         uint8_t maskData[SIZE*SIZE];
         std::memset(maskData, 1, sizeof(maskData));
         Mask *mask = new Mask(size, size, maskData); 
-        Region *rregion = rbuffer->createRegion(size, size);
-        Region *lregion = lbuffer->createRegion(size, size);
+        RegionBase *rregion = rbuffer->createRegion(size, size);
+        RegionBase *lregion = lbuffer->createRegion(size, size);
         rregion->setMask(mask);
         lregion->setMask(mask);
         uint32_t cnt = 0;

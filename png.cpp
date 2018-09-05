@@ -1,5 +1,5 @@
 #include <sys/stat.h>
-#include "png.hpp"
+#include "png.h"
 #include <stdexcept>
 #include <cstring>
 #include <iostream>

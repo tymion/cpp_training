@@ -1,5 +1,5 @@
 #include <stdexcept>
-#include "Mask.hpp"
+#include "mask.h"
 
 Mask::Mask(uint32_t height, uint32_t width, uint8_t *mask) {
     if (height == 0 || width == 0 || mask == NULL) {

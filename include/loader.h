@@ -1,9 +1,9 @@
-#ifndef _LOAD_HPP_
-#define _LOAD_HPP_
+#ifndef _LOAD_H_
+#define _LOAD_H_
 #include <string>
 #include <cstdio>
 #include <cstdbool>
-#include "IImage.hpp"
+#include "iimage.h"
 
 using namespace std;
 
@@ -15,4 +15,4 @@ public:
     IImage *loadImage(string filename);
 
 };
-#endif /* _LOAD_HPP_ */
+#endif /* _LOAD_H_ */

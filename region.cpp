@@ -1,9 +1,25 @@
 #include <stdexcept>
-#include "Region.hpp"
+#include "region.h"
 #include "config.h"
 #include "pixel.h"
 
-Region::Region(uint32_t height, uint32_t width, pixel *data[], Mask *mask)
+uint32_t RegionBase::getHeight()
+{
+    return _height;
+}
+
+uint32_t RegionBase::getWidth()
+{
+    return _width;
+}
+
+void RegionBase::setMask(Mask *mask)
+{
+    _mask = mask;
+}
+
+template<typename T>
+Region<T>::Region(uint32_t height, uint32_t width, pixel<T> *data[], Mask *mask)
 {
     if (height == 0 || width == 0) {
         throw std::invalid_argument("Check input");
@@ -14,7 +30,8 @@ Region::Region(uint32_t height, uint32_t width, pixel *data[], Mask *mask)
     _data = data;
 }
 
-Region::Region(uint32_t height, uint32_t width, pixel *data[])
+template<typename T>
+Region<T>::Region(uint32_t height, uint32_t width, pixel<T> *data[])
 {
     if (height == 0 || width == 0) {
         throw std::invalid_argument("Check input");
@@ -25,33 +42,22 @@ Region::Region(uint32_t height, uint32_t width, pixel *data[])
     _data = data;
 }
 
-Region::~Region()
+template<typename T>
+Region<T>::~Region()
 {
     delete [] _data;
 }
 
-uint32_t Region::getHeight()
+template<typename T>
+void Region<T>::setData(uint32_t height, uint8_t *data)
 {
-    return _height;
+    _data[height] = dynamic_cast<const *T>(data);
 }
 
-uint32_t Region::getWidth()
+template<typename T>
+bool Region<T>::operator== (const RegionBase& region)
 {
-    return _width;
-}
-
-void Region::setData(uint32_t height, pixel *data)
-{
-    _data[height] = data;
-}
-
-void Region::setMask(Mask *mask)
-{
-    _mask = mask;
-}
-
-bool Region::operator== (const Region& region)
-{
+    T&  regionT = dynamic_cast<T&>(region);
 #ifdef INDEX_JACARDA
     uint32_t similar = 0;
     uint32_t different = 0;
@@ -61,7 +67,7 @@ bool Region::operator== (const Region& region)
             if (_mask->getMask(i, j) == 0) {
                 continue;
             }
-            if ((_data[i][j] - region._data[i][j]) < similarityThreshold) {
+            if ((_data[i][j] - regionT._data[i][j]) < similarityThreshold) {
                 similar++;
             } else {
                 different++;
@@ -75,7 +81,7 @@ bool Region::operator== (const Region& region)
             if (_mask->getMask(i, j) == 0) {
                 continue;
             }
-            if (_data[i][j] != region._data[i][j]) {
+            if (_data[i][j] != regionT._data[i][j]) {
                 return false;
             }
         }

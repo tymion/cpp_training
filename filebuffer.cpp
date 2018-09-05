@@ -1,5 +1,5 @@
 #include <stdexcept>
-#include "filebuffer.hpp"
+#include "filebuffer.h"
 #include "pixel_3x8.h"
 #include "pixel_4x8.h"
 
@@ -16,7 +16,7 @@ FileBuffer::~FileBuffer()
 {
 }
 
-Region* FileBuffer::createRegion(uint32_t height, uint32_t width)
+RegionBase* FileBuffer::createRegion(uint32_t height, uint32_t width)
 {
     pixel **pixels = NULL;
     if (_component == 3) {
@@ -27,7 +27,7 @@ Region* FileBuffer::createRegion(uint32_t height, uint32_t width)
     return new Region(height, width, pixels);
 }
 
-bool FileBuffer::updateRegion(uint32_t row, uint32_t column, Region *region)
+bool FileBuffer::updateRegion(uint32_t row, uint32_t column, RegionBase *region)
 {
     if (!region) {
         throw std::invalid_argument("region pointer is empty");
