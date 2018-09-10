@@ -18,13 +18,13 @@ FileBuffer::~FileBuffer()
 
 RegionBase* FileBuffer::createRegion(uint32_t height, uint32_t width)
 {
-    pixel **pixels = NULL;
     if (_component == 3) {
-        pixels = (pixel**) new pixel_3x8*[height];
+        return (RegionBase*) new Region<pixel_3x8>(height, width);
     } else if (_component == 4) {
-        pixels = (pixel**) new pixel_4x8*[height];
+        return (RegionBase*) new Region<pixel_4x8>(height, width);
+    } else {
+        return NULL;
     }
-    return new Region(height, width, pixels);
 }
 
 bool FileBuffer::updateRegion(uint32_t row, uint32_t column, RegionBase *region)

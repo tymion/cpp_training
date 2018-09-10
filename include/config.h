@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-extern uint32_t jacardThreshold;
+extern double jacardThreshold;
 extern uint32_t similarityThreshold;
 
 #endif /* _CONFIG_H_ */

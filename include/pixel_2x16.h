@@ -1,9 +1,7 @@
 #ifndef _PIXEL_2x16_H_
 #define _PIXEL_2x16_H_
 
-#include "pixel.h"
-
-struct pixel_2x16 : pixel {
+struct pixel_2x16 {
     uint16_t color;
     uint16_t alpha;
 };

@@ -1,7 +1,7 @@
 #include <cstdlib>
-#include <pixel_3x8.h>
+#include <pixel_4x8.h>
 
-bool pixel_3x8::operator== (const pixel_3x8& pixel)
+bool pixel_4x8::operator== (const pixel_4x8& pixel)
 {
     if (_red != pixel._red ||
         _green != pixel._green ||
@@ -11,7 +11,7 @@ bool pixel_3x8::operator== (const pixel_3x8& pixel)
     return true;
 }
 
-bool pixel_3x8::operator!= (const pixel_3x8& pixel)
+bool pixel_4x8::operator!= (const pixel_4x8& pixel)
 {
     if (_red != pixel._red ||
         _green != pixel._green ||
@@ -21,7 +21,7 @@ bool pixel_3x8::operator!= (const pixel_3x8& pixel)
     return false;
 }
 
-pixel_3x8& pixel_3x8::operator- (const pixel_3x8& pixel)
+pixel_4x8& pixel_4x8::operator- (const pixel_4x8& pixel)
 {
     this->_red = abs(this->_red - pixel._red);
     this->_green = abs(this->_green - pixel._green);
@@ -30,7 +30,7 @@ pixel_3x8& pixel_3x8::operator- (const pixel_3x8& pixel)
 }
 
 //template <typename T>
-bool pixel_3x8::operator> (const int value)
+bool pixel_4x8::operator> (const int value)
 {
     if (_red > value and
         _green > value and

@@ -1,7 +1,5 @@
 #include <iostream>
 #include "gtest/gtest.h"
-#include "pixel.h"
-#include "pixel_3x8.h"
 
 int main(int argc, char **argv)
 {

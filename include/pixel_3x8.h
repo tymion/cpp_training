@@ -2,17 +2,16 @@
 #define _PIXEL_3x8_H_
 
 #include <cstdint>
-#include "pixel.h"
 
-struct pixel_3x8 : pixel {
+struct pixel_3x8 {
     uint8_t _red;
     uint8_t _green;
     uint8_t _blue;
 
-    bool operator== (const pixel& pixel);
-    bool operator!= (const pixel& pixel);
+    bool operator== (const pixel_3x8& pixel);
+    bool operator!= (const pixel_3x8& pixel);
     bool operator> (const int value);
-    pixel& operator- (const pixel& pixel);
+    pixel_3x8& operator- (const pixel_3x8& pixel);
     ~pixel_3x8(){};
 };
 
