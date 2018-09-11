@@ -168,7 +168,20 @@ uint32_t PNGFile::getHeight() {
 }
 
 uint8_t PNGFile::getComponentCnt() {
-    return (_type & 0xf00) >> 8;
+    switch (_type & 0xff00) {
+        case Greyscale:
+            return 1;
+        case IndexedColor:
+            return 3;
+        case GreyscaleAlpha:
+            return 2;
+        case TrueColor:
+            return 3;
+        case TrueColorAlpha:
+            return 4;
+        default:
+            return 1;
+    }
 }
 
 uint8_t PNGFile::getComponentSize() {

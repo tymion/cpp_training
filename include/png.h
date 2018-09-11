@@ -29,27 +29,27 @@ enum PNGChunkType {
 };
 
 enum PNGImageType {
-    Invalid = -1,
-    Greyscale = 0x1100,
-    Greyscale_1 = 0x1101,
-    Greyscale_2 = 0x1102,
-    Greyscale_4 = 0x1104,
-    Greyscale_8 = 0x1108,
-    Greyscale_16 = 0x1110,
-    IndexedColor = 0x2100,
-    IndexedColor_1 = 0x2101,
-    IndexedColor_2 = 0x2102,
-    IndexedColor_4 = 0x2104,
-    IndexedColor_8 = 0x2108,
-    GreyscaleAlpha = 0x3200,
-    GreyscaleAlpha_8 = 0x3208,
-    GreyscaleAlpha_16 = 0x3210,
-    TrueColor = 0x4300,
-    TrueColor_8 = 0x4308,
-    TrueColor_16 = 0x4310,
-    TrueColorAlpha = 0x5400,
-    TrueColorAlpha_8 = 0x5408,
-    TrueColorAlpha_16 = 0x5410
+    Invalid             = -1,
+    Greyscale           = 0x0000,
+    Greyscale_1         = 0x0001,
+    Greyscale_2         = 0x0002,
+    Greyscale_4         = 0x0004,
+    Greyscale_8         = 0x0008,
+    Greyscale_16        = 0x0010,
+    IndexedColor        = 0x0300,
+    IndexedColor_1      = 0x0301,
+    IndexedColor_2      = 0x0302,
+    IndexedColor_4      = 0x0304,
+    IndexedColor_8      = 0x0308,
+    GreyscaleAlpha      = 0x0400,
+    GreyscaleAlpha_8    = 0x0408,
+    GreyscaleAlpha_16   = 0x0410,
+    TrueColor           = 0x0200,
+    TrueColor_8         = 0x0208,
+    TrueColor_16        = 0x0210,
+    TrueColorAlpha      = 0x0600,
+    TrueColorAlpha_8    = 0x0608,
+    TrueColorAlpha_16   = 0x0610
 };
 
 enum PNGFileState {

@@ -1,5 +1,6 @@
 SRC:=$(wildcard *.cpp)
 SRC_TEST:=$(wildcard test/*.cpp)
+SRC_TEST += pixel_3x8.cpp pixel_4x8.cpp mask.cpp
 
 TOP=$(shell pwd)
 

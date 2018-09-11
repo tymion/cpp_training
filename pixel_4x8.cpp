@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <cstdint>
 #include <pixel_4x8.h>
 
 bool pixel_4x8::operator== (const pixel_4x8& pixel)
@@ -32,9 +33,7 @@ pixel_4x8& pixel_4x8::operator- (const pixel_4x8& pixel)
 //template <typename T>
 bool pixel_4x8::operator> (const int value)
 {
-    if (_red > value and
-        _green > value and
-        _blue > value) {
+    if (_red > value and _green > value and _blue > value) {
         return true;
     }
     return false;

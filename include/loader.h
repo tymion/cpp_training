@@ -13,6 +13,5 @@ private:
 
 public:
     IImage *loadImage(string filename);
-
 };
 #endif /* _LOAD_H_ */

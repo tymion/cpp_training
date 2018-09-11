@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#define SIZE 7
+#define size 7
 
 int main() {
     string leftFile = "left.png";
@@ -21,8 +21,7 @@ int main() {
         uint32_t width = lImage->getWidth();
         FileBuffer *lbuffer = new FileBuffer(lImage);
         FileBuffer *rbuffer = new FileBuffer(rImage);
-        uint32_t size = SIZE;
-        uint8_t maskData[SIZE*SIZE];
+        uint8_t maskData[size*size];
         std::memset(maskData, 1, sizeof(maskData));
         Mask *mask = new Mask(size, size, maskData); 
         RegionBase *rregion = rbuffer->createRegion(size, size);
@@ -38,7 +37,7 @@ int main() {
                 for (; s_row < s_row_max; s_row++) {
                     for (uint32_t s_col = col; s_col < width; s_col++) {
                         lbuffer->updateRegion(s_row, s_col, lregion);
-                        if (rregion == lregion) {
+                        if (*rregion == *lregion) {
                             cnt++;
                         }
                     }
@@ -49,6 +48,11 @@ int main() {
         delete lImage;
         delete rImage;
         delete loader;
+        delete lbuffer;
+        delete rbuffer;
+        delete rregion;
+        delete lregion;
+        delete mask;
     } catch (std::exception const &exc)
     {
         std::cerr << "Exception caught: " << exc.what() << std::endl;

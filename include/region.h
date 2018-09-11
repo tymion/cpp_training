@@ -3,35 +3,26 @@
 #include "mask.h"
 
 class RegionBase {
-    protected:
-        uint32_t _height;
-        uint32_t _width;
-        Mask *_mask;
-
     public:
-        uint32_t getHeight()
-        {
-            return _height;
-        }
+        virtual uint32_t getHeight() = 0;
 
-        uint32_t getWidth()
-        {
-            return _width;
-        }
+        virtual uint32_t getWidth() = 0;
 
-        void setMask(Mask *mask)
-        {
-            _mask = mask;
-        }
+        virtual void setMask(Mask *mask) = 0;
 
         virtual void setData(uint32_t height, uint8_t *data) = 0;
 
         virtual bool operator== (const RegionBase& region) = 0;
+
+        virtual ~RegionBase() {};
 };
 
 template<typename T>
 class Region : RegionBase {
     private:
+        uint32_t _height;
+        uint32_t _width;
+        Mask *_mask;
         T **_data;
 
     public:
@@ -57,9 +48,24 @@ class Region : RegionBase {
             _data = new T*[height];
         }
 
-        ~Region()
+        virtual ~Region()
         {
             delete [] _data;
+        }
+
+        uint32_t getHeight()
+        {
+            return _height;
+        }
+
+        uint32_t getWidth()
+        {
+            return _width;
+        }
+
+        void setMask(Mask *mask)
+        {
+            _mask = mask;
         }
 
         void setData(uint32_t height, uint8_t *data)
@@ -69,17 +75,22 @@ class Region : RegionBase {
 
         bool operator== (const RegionBase& region)
         {
-            const Region<T>&  regionT = dynamic_cast<const Region<T>&>(region);
+            const Region<T>& regionT = (const Region<T>&)(region);
+            return (*this) == regionT;
+        }
+
+        bool operator==(const Region<T>&  region)
+        {
 #ifdef INDEX_JACARDA
             uint32_t similar = 0;
             uint32_t different = 0;
 
             for (uint32_t i = 0; i < _height; i++) {
                 for (uint32_t j = 0; j < _width; j++) {
-                    if (_mask->getMask(i, j) == 0) {
+                    if (_mask && _mask->getMask(i, j) == 0) {
                         continue;
                     }
-                    if ((_data[i][j] - regionT._data[i][j]) < similarityThreshold) {
+                    if ((_data[i][j] - region._data[i][j]) < similarityThreshold) {
                         similar++;
                     } else {
                         different++;
@@ -90,10 +101,10 @@ class Region : RegionBase {
 #else
             for (uint32_t i = 0; i < _height; i++) {
                 for (uint32_t j = 0; j < _width; j++) {
-                    if (_mask->getMask(i, j) == 0) {
+                    if (_mask && _mask->getMask(i, j) == 0) {
                         continue;
                     }
-                    if (_data[i][j] != regionT._data[i][j]) {
+                    if (_data[i][j] != region._data[i][j]) {
                         return false;
                     }
                 }
@@ -101,5 +112,6 @@ class Region : RegionBase {
             return true;
 #endif
         }
+
 };
 #endif /* _REGION_H_ */

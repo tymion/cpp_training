@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <cstring>
 #include "mask.h"
 
 Mask::Mask(uint32_t height, uint32_t width, uint8_t *mask) {
@@ -7,13 +8,11 @@ Mask::Mask(uint32_t height, uint32_t width, uint8_t *mask) {
     }
     _width = width;
     _height = height;
-    _mask = new uint8_t(height * width);
+    _mask = new uint8_t[height * width];
     if (_mask == NULL) {
         throw std::invalid_argument("Allocating mem failed");
     }
-    for (uint32_t i = 0; i < height * width; i++) {
-        _mask[i] = mask[i];
-    }
+    std::memcpy(_mask, mask, height * width * sizeof(uint8_t));
 }
 
 Mask::~Mask() {
