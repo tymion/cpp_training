@@ -39,3 +39,9 @@ bool pixel_3x8::operator> (const int value)
     }
     return false;
 }
+
+//std::ostream& pixel_3x8::operator<< (std::ostream& stream)
+std::ostream & operator<< (std::ostream &stream, const pixel_3x8 &s)
+{
+    return (stream << std::hex << (int)s._red << (int)s._green << (int)s._blue << std::endl);
+}

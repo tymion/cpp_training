@@ -11,6 +11,7 @@ FileBuffer::FileBuffer(IImage *image)
     _image = image;
     _component = image->getComponentCnt();
     _data = NULL;
+    _dataLen = 0;
 }
 
 FileBuffer::~FileBuffer()
@@ -44,7 +45,7 @@ bool FileBuffer::updateRegion(uint32_t row, uint32_t column, RegionBase *region)
         _dataLen = neededData;
     }
     for (uint32_t i = 0; i < region->getHeight(); i++) {
-        region->setData(i, &_data[3 * ((row + i) * _image->getWidth() + column)]);
+        region->setData(i, &_data[_component * ((row + i) * _image->getWidth() + column)]);
     }
     return true;
 }

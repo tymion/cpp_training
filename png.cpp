@@ -74,7 +74,7 @@ PNGChunkType PNGFile::parseData(uint32_t dataType, uint8_t *data) {
         case 0x49444154:
             return PNGChunkType::IDAT;
         default:
-            throw std::invalid_argument("Can't read file chunk data.");
+            std::cout << "Unknown chunk type:" << (0xff & dataType) << std::endl;
             return PNGChunkType::Custom;
     }
     return PNGChunkType::Custom;
@@ -91,7 +91,7 @@ PNGChunkType PNGFile::readChunkHeader(struct PNGChunk_ *chunk) {
     }
     cout << "===Reading new chunk===" << endl;
     cout << "Chunk data length:" << chunk->length << endl;
-    cout << "Chunk Type:" << chunk->typeData << endl;
+    cout << "Chunk Type:" << hex << chunk->typeData << dec << endl;
     chunk->attr = PNGChunkAttr::None;
     if (chunk->typeData & (0x1 << 5)) {
         chunk->attr |= PNGChunkAttr::Ancillary;

@@ -15,6 +15,15 @@ class RegionTest : public ::testing::Test
         }
 };
 
+TEST(RegionTest, Region_pixel3x8_allocate_and_delete)
+{
+    Region<pixel_3x8> *reg1 = new Region<pixel_3x8>(5,5);
+    Region<pixel_3x8> *reg2 = new Region<pixel_3x8>(5,5);
+    EXPECT_EQ(*reg1 == *reg2, true);
+    delete reg1;
+    delete reg2;
+}
+
 TEST(RegionTest, Region_pixel3x8_same)
 {
     Region<pixel_3x8> *reg1 = new Region<pixel_3x8>(5,5);
@@ -25,22 +34,34 @@ TEST(RegionTest, Region_pixel3x8_same)
     EXPECT_EQ(reg2->getHeight(), (uint32_t) 5);
     EXPECT_EQ(reg2->getWidth(), (uint32_t) 5);
 
-    reg1->setData(0, (uint8_t*)"543212345432123");
-    reg1->setData(1, (uint8_t*)"123454321234543");
+    uint8_t data1[15] = {
+        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
+        0x0c, 0x0d, 0x0e, 0x0f
+    };
+    uint8_t data2[15] = {
+        0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05,
+        0x04, 0x03, 0x02, 0x01,
+    };
+    uint8_t data_test[15] = {
+        0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05,
+        0x04, 0x03, 0x02, 0x01,
+    };
+    reg1->setData(0, data1);
+    reg1->setData(1, data2);
     reg1->setData(2, (uint8_t*)"543212345432123");
     reg1->setData(3, (uint8_t*)"123454321234543");
     reg1->setData(4, (uint8_t*)"543212345432123");
 
-    reg2->setData(0, (uint8_t*)"543212345432123");
-    reg2->setData(1, (uint8_t*)"123454321234543");
+    reg2->setData(0, data1);
+    reg2->setData(1, data_test);
     reg2->setData(2, (uint8_t*)"543212345432123");
     reg2->setData(3, (uint8_t*)"123454321234543");
     reg2->setData(4, (uint8_t*)"543212345432123");
 
     EXPECT_EQ(*reg1 == *reg2, true);
 
-    free(reg1);
-    free(reg2);
+    delete reg1;
+    delete reg2;
 }
 
 TEST(RegionTest, Region_pixel3x8_different)
@@ -67,8 +88,8 @@ TEST(RegionTest, Region_pixel3x8_different)
 
     EXPECT_EQ(*reg1 == *reg2, false);
 
-    free(reg1);
-    free(reg2);
+    delete reg1;
+    delete reg2;
 }
 
 TEST(RegionBaseTest, Region_pixel3x8_same)
@@ -95,8 +116,8 @@ TEST(RegionBaseTest, Region_pixel3x8_same)
 
     EXPECT_EQ(*reg1 == *reg2, true);
 
-    free(reg1);
-    free(reg2);
+    delete reg1;
+    delete reg2;
 }
 
 TEST(RegionBaseTest, Region_pixel3x8_different)
@@ -123,8 +144,8 @@ TEST(RegionBaseTest, Region_pixel3x8_different)
 
     EXPECT_EQ(*reg1 == *reg2, false);
 
-    free(reg1);
-    free(reg2);
+    delete reg1;
+    delete reg2;
 }
 
 TEST(RegionTest, Region_pixel4x8_same)
@@ -151,8 +172,8 @@ TEST(RegionTest, Region_pixel4x8_same)
 
     EXPECT_EQ(*reg1 == *reg2, true);
 
-    free(reg1);
-    free(reg2);
+    delete reg1;
+    delete reg2;
 }
 
 TEST(RegionTest, Region_pixel4x8_different)
@@ -179,8 +200,8 @@ TEST(RegionTest, Region_pixel4x8_different)
 
     EXPECT_EQ(*reg1 == *reg2, false);
 
-    free(reg1);
-    free(reg2);
+    delete reg1;
+    delete reg2;
 }
 
 TEST(RegionBaseTest, Region_pixel4x8_same)
@@ -206,8 +227,8 @@ TEST(RegionBaseTest, Region_pixel4x8_same)
     reg2->setData(4, (uint8_t*)"54321234543212345432");
 
     EXPECT_EQ(*reg1 == *reg2, true);
-    free(reg1);
-    free(reg2);
+    delete reg1;
+    delete reg2;
 }
 
 TEST(RegionBaseTest, Region_pixel4x8_different)
@@ -233,8 +254,8 @@ TEST(RegionBaseTest, Region_pixel4x8_different)
     reg2->setData(4, (uint8_t*)"54321234543212345432");
 
     EXPECT_EQ(*reg1 == *reg2, false);
-    free(reg1);
-    free(reg2);
+    delete reg1;
+    delete reg2;
 }
 
 /*

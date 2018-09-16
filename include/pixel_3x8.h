@@ -2,7 +2,9 @@
 #define _PIXEL_3x8_H_
 
 #include <cstdint>
+#include <iostream>
 
+#pragma pack(push, 1)
 struct pixel_3x8 {
     uint8_t _red;
     uint8_t _green;
@@ -11,8 +13,11 @@ struct pixel_3x8 {
     bool operator== (const pixel_3x8& pixel);
     bool operator!= (const pixel_3x8& pixel);
     bool operator> (const int value);
+//std::ostream& operator<< (std::ostream& stream);
+    friend std::ostream & operator<< (std::ostream &stream, const pixel_3x8 &s);
     pixel_3x8& operator- (const pixel_3x8& pixel);
     ~pixel_3x8(){};
 };
+#pragma pack(pop)
 
 #endif /* _PIXEL_3x8_H_ */

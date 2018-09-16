@@ -31,7 +31,7 @@ TEST(PixelTest, pixel3x8)
     EXPECT_EQ(pix[3]->_red, '0');
     EXPECT_EQ(pix[3]->_green, 'a');
     EXPECT_EQ(pix[3]->_blue, 'b');
-    free(pix);
+    delete [] pix;
 }
 
 TEST(PixelTest, pixel4x8)
@@ -55,5 +55,5 @@ TEST(PixelTest, pixel4x8)
     EXPECT_EQ(pix[3]->_green, 'd');
     EXPECT_EQ(pix[3]->_blue, 'e');
     EXPECT_EQ(pix[3]->_alpha, 'f');
-    free(pix);
+    delete [] pix;
 }

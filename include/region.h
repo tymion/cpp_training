@@ -1,6 +1,10 @@
 #ifndef _REGION_H_
 #define _REGION_H_
+#include <cstring>
+#include <iostream>
 #include "mask.h"
+
+using namespace std;
 
 class RegionBase {
     public:
@@ -11,6 +15,8 @@ class RegionBase {
         virtual void setMask(Mask *mask) = 0;
 
         virtual void setData(uint32_t height, uint8_t *data) = 0;
+
+        virtual void dataDump() = 0;
 
         virtual bool operator== (const RegionBase& region) = 0;
 
@@ -25,8 +31,15 @@ class Region : RegionBase {
         Mask *_mask;
         T **_data;
 
+        void memNULLSet()
+        {
+            for (uint32_t i = 0; i < _height; i++) {
+                _data[i] = NULL;
+            }
+        }
+
     public:
-        Region(uint32_t height, uint32_t width, Mask *mask)
+        Region(uint32_t height, uint32_t width, Mask *mask=NULL)
         {
             if (height == 0 || width == 0) {
                 throw std::invalid_argument("Check input");
@@ -35,17 +48,7 @@ class Region : RegionBase {
             _width = width;
             _mask = mask;
             _data = new T*[height];
-        }
-
-        Region(uint32_t height, uint32_t width)
-        {
-            if (height == 0 || width == 0) {
-                throw std::invalid_argument("Check input");
-            }
-            _height = height;
-            _width = width;
-            _mask = NULL;
-            _data = new T*[height];
+            memNULLSet();
         }
 
         virtual ~Region()
@@ -73,6 +76,17 @@ class Region : RegionBase {
             _data[height] = (T*) data;
         }
 
+        void dataDump()
+        {
+#ifdef DEBUG
+            for (uint32_t i = 0; i < _height && _data[i] != NULL; i++) {
+                for (uint32_t j = 0; j < _width; j++) {
+                    cout << _data[i][j];
+                }
+            }
+#endif /* DEBUG */
+        }
+
         bool operator== (const RegionBase& region)
         {
             const Region<T>& regionT = (const Region<T>&)(region);
@@ -85,9 +99,9 @@ class Region : RegionBase {
             uint32_t similar = 0;
             uint32_t different = 0;
 
-            for (uint32_t i = 0; i < _height; i++) {
+            for (uint32_t i = 0; i < _height && _data[i] != NULL; i++) {
                 for (uint32_t j = 0; j < _width; j++) {
-                    if (_mask && _mask->getMask(i, j) == 0) {
+                    if ((_mask && _mask->getMask(i, j) == 0)) {
                         continue;
                     }
                     if ((_data[i][j] - region._data[i][j]) < similarityThreshold) {
@@ -99,11 +113,13 @@ class Region : RegionBase {
             }
             return similar / (similar + different) < jacardThreshold;
 #else
-            for (uint32_t i = 0; i < _height; i++) {
+            // TODO IF _data[0] == NULL we return true
+            for (uint32_t i = 0; i < _height && _data[i] != NULL; i++) {
                 for (uint32_t j = 0; j < _width; j++) {
-                    if (_mask && _mask->getMask(i, j) == 0) {
+                    if ((_mask && _mask->getMask(i, j) == 0)) {
                         continue;
                     }
+//                    cout << ":" <<_data[i][j] << ":" << region._data[i][j] << endl;
                     if (_data[i][j] != region._data[i][j]) {
                         return false;
                     }
