@@ -198,6 +198,7 @@ uint32_t PNGFile::getData(uint8_t *data, uint32_t length) {
         return 0;
     }
     size_t ret = 0;
+    size_t tmp = 0;
     uint32_t toRead = length;
     std::cout << "getData|toRead:" << toRead << std::endl;
     while (_state == PNGFileState::Data && ret != length) {
@@ -213,10 +214,11 @@ uint32_t PNGFile::getData(uint8_t *data, uint32_t length) {
         if (toRead > _dataLeft) {
             toRead = _dataLeft;
         }
-        ret += readData(data, toRead);
-        if (ret == 0) {
+        tmp = readData(data, toRead);
+        if (tmp == 0) {
             break;
         }
+        ret += tmp;
         toRead = length - ret;
     }
     _dataLeft -= ret;
