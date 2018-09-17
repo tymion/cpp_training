@@ -13,7 +13,6 @@ struct pixel_3x8 {
     bool operator== (const pixel_3x8& pixel);
     bool operator!= (const pixel_3x8& pixel);
     bool operator> (const int value);
-//std::ostream& operator<< (std::ostream& stream);
     friend std::ostream & operator<< (std::ostream &stream, const pixel_3x8 &s);
     pixel_3x8& operator- (const pixel_3x8& pixel);
     ~pixel_3x8(){};

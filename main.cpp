@@ -12,15 +12,14 @@ using namespace std;
 
 int main() {
     string leftFile = "left.png";
-    string rightFile = "left.png";
-    //string rightFile = "right.png";
+    //string rightFile = "left.png";
+    string rightFile = "right.png";
     try {
         Loader *loader = new Loader();
         IImage *lImage = loader->loadImage(leftFile);
         IImage *rImage = loader->loadImage(rightFile);
         uint32_t height = lImage->getHeight();
         uint32_t width = lImage->getWidth();
-        height = 10;
         FileBuffer *lbuffer = new FileBuffer(lImage);
         FileBuffer *rbuffer = new FileBuffer(rImage);
         uint8_t maskData[size*size];
@@ -35,25 +34,26 @@ int main() {
             for (uint32_t col = 0; col < width - size; col++) {
                 rbuffer->updateRegion(row, col, rregion);
                 uint32_t s_row = (int32_t) row - 3 < 0 ? 0 : (int32_t) row - 3;
-                uint32_t s_row_max = row + size + 3 > height ? height - size : row + size + 3;
-                if (row % 10 == 0 && col % 10 == 0) {
-                    std::cout << "Step:" << row << "|" << col << std::endl;
-                    std::cout << "Step1:" << s_row << "|" << s_row_max << std::endl;
-                }
+                uint32_t s_row_max = row + 3 > height - size ? height - size : row + 3;
                 for (; s_row < s_row_max; s_row++) {
+#ifdef DEBUG
                     if (s_row % 10 == 0) {
-                        std::cout << "SubStep:" << s_row << "|" << std::endl;
+                        std::cout << "SubStep:" << s_row << "||" << s_row_max << std::endl;
                     }
+#endif
                     for (uint32_t s_col = col; s_col < width - size; s_col++) {
-                        if (s_row % 10 == 0 && s_col % 10 == 0) {
-                            std::cout << "SubStep:" << s_row << "|" << s_col << std::endl;
-                        }
+#ifdef DEBUG
+                        std::cout << "SubStep:" << s_row << "||" << s_row_max << "|" << s_col << std::endl;
+#endif
                         lbuffer->updateRegion(s_row, s_col, lregion);
                         if (*rregion == *lregion) {
                             cnt++;
                         }
+                        std::cout << "SubStep2:" << s_row << "||" << s_row_max << "|" << s_col << std::endl;
                     }
+                    std::cout << "SubStep3:" << s_row << "||" << s_row_max << std::endl;
                 }
+                std::cout << "SubStep4:" << s_row << "||" << s_row_max << std::endl;
             }
         }
         std::cout << "Cout:" << cnt << std::endl;

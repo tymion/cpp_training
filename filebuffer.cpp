@@ -38,6 +38,9 @@ bool FileBuffer::updateRegion(uint32_t row, uint32_t column, RegionBase *region)
     uint32_t neededData = _component * ((row + region->getHeight()) * _image->getWidth());
     if (_dataLen < neededData) {
         _data = (uint8_t*) realloc(_data, neededData);
+        if (_data == NULL) {
+            throw std::invalid_argument("Out of memory");
+        }
         uint32_t lenDiff = neededData - _dataLen;
         if (_image->getData(&_data[_dataLen], lenDiff) != lenDiff) {
             throw std::invalid_argument("Can't read needed data");

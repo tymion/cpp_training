@@ -6,7 +6,8 @@
 
 #define PNG_HEADER_SIZE 8
 
-uint32_t changeEndianness(uint32_t value)
+static uint32_t
+changeEndianness(uint32_t value)
 {
     uint32_t result = 0;
     result |= (value & 0x000000FF) << 24;
@@ -30,7 +31,8 @@ bool PNGFile::readHeader() {
     return true;
 }
 
-static uint32_t getIntFromChar(uint8_t *data) {
+static uint32_t
+getIntFromChar(uint8_t *data) {
     return (data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3];
 }
 
@@ -144,6 +146,9 @@ void PNGFile::readCrc() {
 }
 
 PNGFile::PNGFile(FILE *file) {
+    if (file == NULL) {
+        throw std::invalid_argument("Invalid file descriptor.");
+    }
     _file = file;
     readHeader();
     readChunkHeader(&_ihdr);
@@ -194,13 +199,15 @@ uint32_t PNGFile::getData(uint8_t *data, uint32_t length) {
     }
     size_t ret = 0;
     uint32_t toRead = length;
+    std::cout << "getData|toRead:" << toRead << std::endl;
     while (_state == PNGFileState::Data && ret != length) {
+        std::cout << "getData" << std::endl;
         if (_dataLeft == 0) {
             readCrc();
             struct PNGChunk_ chunk;
             readChunkHeader(&chunk);
             if (_state == PNGFileState::Closed) {
-                break;
+                throw std::invalid_argument("getData Closed!!!!");
             }
         }
         if (toRead > _dataLeft) {
