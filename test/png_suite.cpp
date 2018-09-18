@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include "gtest/gtest.h"
-#include "png.h"
+#include "pngfile.h"
 
 class PNGTest : public ::testing::Test
 {

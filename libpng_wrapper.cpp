@@ -1,25 +1,25 @@
 #include <sys/stat.h>
-#include "png.h"
+#include "libpng_wrapper.h"
 #include <stdexcept>
 #include <cstring>
 #include <iostream>
 
 #define PNG_HEADER_SIZE 8
 
-PNGFile::PNGFile(FILE *file) {
+PNGFileWrapper::PNGFileWrapper(FILE *file) {
     if (file == NULL) {
         throw std::invalid_argument("Invalid file descriptor.");
     }
     _file = file;
     _png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     _info = png_create_info_struct(_png);
-    setjmp(png_jmpbuf(png));
+    setjmp(png_jmpbuf(_png));
     png_init_io(_png, file);
     png_read_info(_png, _info);
     _width = png_get_image_width(_png, _info);
     _height = png_get_image_height(_png, _info);
-    color_type = png_get_color_type(_png, _info);
-    bit_depth = png_get_bit_depth(_png, _info);
+    png_byte color_type = png_get_color_type(_png, _info);
+    png_byte bit_depth = png_get_bit_depth(_png, _info);
     if (bit_depth == 16) {
         png_set_strip_16(_png);
     }
@@ -45,68 +45,26 @@ PNGFile::PNGFile(FILE *file) {
     png_read_update_info(_png, _info);
 }
 
-PNGFile::~PNGFile() {
+PNGFileWrapper::~PNGFileWrapper() {
     fclose(_file);
 }
 
-uint32_t PNGFile::getWidth() {
+uint32_t PNGFileWrapper::getWidth() {
     return _width;
 }
 
-uint32_t PNGFile::getHeight() {
+uint32_t PNGFileWrapper::getHeight() {
     return _height;
 }
 
-uint8_t PNGFile::getComponentCnt() {
-    switch (_type & 0xff00) {
-        case Greyscale:
-            return 1;
-        case IndexedColor:
-            return 3;
-        case GreyscaleAlpha:
-            return 2;
-        case TrueColor:
-            return 3;
-        case TrueColorAlpha:
-            return 4;
-        default:
-            return 1;
-    }
+uint8_t PNGFileWrapper::getComponentCnt() {
+    return 1;
 }
 
-uint8_t PNGFile::getComponentSize() {
-    return _type & 0xff;
+uint8_t PNGFileWrapper::getComponentSize() {
+    return 8;
 }
 
-uint32_t PNGFile::getData(uint8_t *data, uint32_t length) {
-    if (_state == PNGFileState::Closed) {
-        return 0;
-    }
-    size_t ret = 0;
-    size_t tmp = 0;
-    uint32_t toRead = length;
-    std::cout << "getData|toRead:" << toRead << std::endl;
-    while (_state == PNGFileState::Data && ret != length) {
-        std::cout << "getData" << std::endl;
-        if (_dataLeft == 0) {
-            readCrc();
-            struct PNGChunk_ chunk;
-            readChunkHeader(&chunk);
-            if (_state == PNGFileState::Closed) {
-                throw std::invalid_argument("getData Closed!!!!");
-            }
-        }
-        if (toRead > _dataLeft) {
-            toRead = _dataLeft;
-        }
-        tmp = readData(data, toRead);
-        if (tmp == 0) {
-            
-            break;
-        }
-        ret += tmp;
-        toRead = length - ret;
-    }
-    _dataLeft -= ret;
-    return ret;
+uint32_t PNGFileWrapper::getData(uint8_t *data, uint32_t length) {
+    return 0;
 }

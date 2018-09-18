@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <iostream>
-#include "png.h"
+#include "pngfile.h"
 
 #define PNG_HEADER_SIZE 8
 char PNG_HEADER[PNG_HEADER_SIZE] = {'\211', 'P', 'N', 'G', '\r', '\n', '\032', '\n'};
