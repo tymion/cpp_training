@@ -1,6 +1,6 @@
 SRC:=$(wildcard *.cpp)
 SRC_TEST:=$(wildcard test/*.cpp)
-SRC_TEST += pixel_3x8.cpp pixel_4x8.cpp mask.cpp filebuffer.cpp pngfile.cpp
+SRC_TEST += pixel_3x8.cpp pixel_4x8.cpp mask.cpp filebuffer.cpp pngfile.cpp libpng_wrapper.cpp
 
 TOP=$(shell pwd)
 
@@ -23,10 +23,10 @@ LD_FLAGS=-Wl,--rpath=$(PNG_LIB_DIR)
 .PHONY: test
 
 all: test
-	$(CXX) $(SRC) -o $(NAME) $(CFLAGS) $(CXXFLAGS) $(INCLUDE_DIR) -L$(PNG_LIB_DIR) $(PNG_LIB) $(LD_FLAGS)
+	$(CXX) $(SRC) -o $(NAME).out $(CFLAGS) $(CXXFLAGS) $(INCLUDE_DIR) -L$(PNG_LIB_DIR) $(PNG_LIB) $(LD_FLAGS)
 
 test:
-	$(CXX) $(SRC_TEST) -o $(NAME_TEST) $(GTEST_LIB) -L$(GTEST_LIB_DIR) $(CFLAGS) $(CXXFLAGS) $(INCLUDE_DIR) -I$(GTEST_INC) -DDEBUG
+	$(CXX) $(SRC_TEST) -o $(NAME_TEST).out $(GTEST_LIB) $(PNG_LIB) -L$(GTEST_LIB_DIR) -L$(PNG_LIB_DIR) $(CFLAGS) $(CXXFLAGS) $(INCLUDE_DIR) -I$(GTEST_INC) -DDEBUG
 
 clean:
 	rm -f $(NAME) $(NAME_TEST)
