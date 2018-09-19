@@ -1,13 +1,13 @@
 #include <iostream>
 #include "gtest/gtest.h"
-#include "filebuffer.h"
+#include "region_factory.h"
 #include "iimage_mock.h"
 #include "iimage.h"
 #include "pixel_3x8.h"
 
 using namespace std;
 
-class FileBufferTest : public ::testing::Test
+class RegionFactoryTest : public ::testing::Test
 {
     protected:
         virtual void SetUp() {
@@ -17,28 +17,28 @@ class FileBufferTest : public ::testing::Test
         }
 };
 
-TEST(FileBufferTest, allocate_and_free)
+TEST(RegionFactoryTest, allocate_and_free)
 {
     IImage *iimage = (IImage*) new IImageMock_3x8();
-    FileBuffer *fb = new FileBuffer(iimage);
+    RegionFactory *fb = new RegionFactory(iimage);
     delete fb;
     delete iimage;
 }
 
-TEST(FileBufferTest, createRegion)
+TEST(RegionFactoryTest, createRegion)
 {
     IImage *iimage = (IImage*) new IImageMock_3x8();
-    FileBuffer *fb = new FileBuffer(iimage);
+    RegionFactory *fb = new RegionFactory(iimage);
     RegionBase * reg = fb->createRegion(2,2);
     delete reg;
     delete fb;
     delete iimage;
 }
 
-TEST(FileBufferTest, updateRegion)
+TEST(RegionFactoryTest, updateRegion)
 {
     IImage *iimage = (IImage*) new IImageMock_3x8();
-    FileBuffer *fb = new FileBuffer(iimage);
+    RegionFactory *fb = new RegionFactory(iimage);
     RegionBase * reg1 = fb->createRegion(2,2);
     RegionBase *reg2 = (RegionBase*)new Region<pixel_3x8>(2, 2);
     uint8_t data_1[12] = {

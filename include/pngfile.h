@@ -99,7 +99,7 @@ class PNGFile: public IImage {
         ~PNGFile();
         uint32_t getHeight();
         uint32_t getWidth();
-        uint32_t getData(uint8_t *data, uint32_t length);
+        bool getData(uint32_t row, uint8_t **data);
         uint8_t getComponentSize();
         uint8_t getComponentCnt();
 };

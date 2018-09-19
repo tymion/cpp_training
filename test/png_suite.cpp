@@ -28,10 +28,8 @@ TEST(PNGTest, getData)
     EXPECT_EQ(file->getWidth(), (uint32_t) 500);
     EXPECT_EQ(file->getHeight(), (uint32_t) 200);
     EXPECT_EQ(file->getComponentCnt(), (uint8_t) 3);
-    uint32_t dataLen = file->getWidth() * file->getHeight() * file->getComponentCnt();
-    uint8_t *data = (uint8_t*) malloc(dataLen);
-    EXPECT_EQ(file->getData(data, dataLen), (uint32_t)dataLen);
-    free(data);
+    uint8_t *data = NULL;
+    EXPECT_EQ(file->getData(0, &data), true);
     delete file;
 }
 

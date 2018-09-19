@@ -16,7 +16,7 @@ class IImageMock_3x8 : IImage
             return 6;
         }
 
-        uint32_t getData(uint8_t *data, uint32_t length) {
+        bool getData(uint32_t row, uint8_t **data) {
             uint8_t _data[DATA_SIZE] = {
                 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
                 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11,
@@ -36,10 +36,11 @@ class IImageMock_3x8 : IImage
                 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f
             };
 
-            uint32_t len = length + readed < DATA_SIZE ? length : DATA_SIZE;
-            memcpy(data, &_data[readed], len);
-            readed += len;
-            return len;
+            if (row >= getHeight()) {
+                return false;
+            }
+            *data = &_data[row * getWidth() * getComponentCnt()];
+            return true;
         }
         uint8_t getComponentSize() {
             return 8;

@@ -4,7 +4,7 @@
 #include <iostream>
 #include "region.h"
 #include "loader.h"
-#include "filebuffer.h"
+#include "region_factory.h"
 
 using namespace std;
 
@@ -20,8 +20,8 @@ int main() {
         IImage *rImage = loader->loadImage(rightFile);
         uint32_t height = lImage->getHeight();
         uint32_t width = lImage->getWidth();
-        FileBuffer *lbuffer = new FileBuffer(lImage);
-        FileBuffer *rbuffer = new FileBuffer(rImage);
+        RegionFactory *lbuffer = new RegionFactory(lImage);
+        RegionFactory *rbuffer = new RegionFactory(rImage);
         uint8_t maskData[size*size];
         std::memset(maskData, 1, sizeof(maskData));
         Mask *mask = new Mask(size, size, maskData); 

@@ -1,32 +1,44 @@
-SRC:=$(wildcard *.cpp)
-SRC_TEST:=$(wildcard test/*.cpp)
-SRC_TEST += pixel_3x8.cpp pixel_4x8.cpp mask.cpp filebuffer.cpp pngfile.cpp libpng_wrapper.cpp
+NAME=algo
+NAME_TEST=$(NAME)_tests
 
 TOP=$(shell pwd)
+
+SRC:=$(wildcard src/*.cpp)
+SRC_TEST:=$(wildcard test/*.cpp) $(SRC)
 
 GTEST=$(TOP)/../googletest/
 GTEST_LIB_DIR=$(GTEST)/build/googlemock/gtest/
 GTEST_INC=$(GTEST)/googletest/include
 GTEST_LIB=-lgtest -lpthread
+
 PNG_LIB=-lpng
 PNG_DIR=$(TOP)/../cpp_training_rootfs/
 PNG_LIB_DIR=$(PNG_DIR)/lib/
 
-NAME=algo
-NAME_TEST=$(NAME)_tests
 CXX:=g++
 CFLAGS=-Wall -pedantic -g
 CXXFLAGS=-std=c++11
-INCLUDE_DIR=-I$(TOP)/include -I$(PNG_DIR)/include
 LD_FLAGS=-Wl,--rpath=$(PNG_LIB_DIR)
+
+FLAGS=$(CFLAGS) $(CXXFLAGS) $(LD_FLAGS)
+FLAGS_TEST=$(FLAGS) -DDEBUG
+
+INC_DIR=-I$(TOP)/include -I$(PNG_DIR)/include
+INC_DIR_TEST=$(INC_DIR) -I$(GTEST_INC)
+
+LIB_DIR=-L$(PNG_LIB_DIR)
+LIB_DIR_TEST=$(LIB_DIR) -L$(GTEST_LIB_DIR)
+
+LIB=$(PNG_LIB)
+LIB_TEST=$(LIB) $(GTEST_LIB)
 
 .PHONY: test
 
 all: test
-	$(CXX) $(SRC) -o $(NAME).out $(CFLAGS) $(CXXFLAGS) $(INCLUDE_DIR) -L$(PNG_LIB_DIR) $(PNG_LIB) $(LD_FLAGS)
+	$(CXX) $(SRC) main.cpp -o $(NAME).out $(FLAGS) $(INC_DIR) $(LIB_DIR) $(LIB)
 
 test:
-	$(CXX) $(SRC_TEST) -o $(NAME_TEST).out $(GTEST_LIB) $(PNG_LIB) -L$(GTEST_LIB_DIR) -L$(PNG_LIB_DIR) $(CFLAGS) $(CXXFLAGS) $(INCLUDE_DIR) -I$(GTEST_INC) -DDEBUG
+	$(CXX) $(SRC_TEST) -o $(NAME_TEST).out $(LIB_TEST) $(LIB_DIR_TEST) $(FLAGS_TEST) $(INC_DIR_TEST)
 
 clean:
 	rm -f $(NAME) $(NAME_TEST)

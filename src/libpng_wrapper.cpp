@@ -4,8 +4,6 @@
 #include <cstring>
 #include <iostream>
 
-#define PNG_HEADER_SIZE 8
-
 PNGFileWrapper::PNGFileWrapper(FILE *file) {
     if (file == NULL) {
         throw std::invalid_argument("Invalid file descriptor.");
@@ -19,15 +17,16 @@ PNGFileWrapper::PNGFileWrapper(FILE *file) {
     _width = png_get_image_width(_png, _info);
     _height = png_get_image_height(_png, _info);
     png_byte color_type = png_get_color_type(_png, _info);
-    png_byte bit_depth = png_get_bit_depth(_png, _info);
-    if (bit_depth == 16) {
+    _bit_depth = png_get_bit_depth(_png, _info);
+
+    if (_bit_depth == 16) {
         png_set_strip_16(_png);
     }
 
     if (color_type == PNG_COLOR_TYPE_PALETTE) {
         png_set_palette_to_rgb(_png);
     }
-    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) {
+    if (color_type == PNG_COLOR_TYPE_GRAY && _bit_depth < 8) {
         png_set_expand_gray_1_2_4_to_8(_png);
     }
     if (png_get_valid(_png, _info, PNG_INFO_tRNS)) {
@@ -43,6 +42,12 @@ PNGFileWrapper::PNGFileWrapper(FILE *file) {
         png_set_gray_to_rgb(_png);
 
     png_read_update_info(_png, _info);
+    _row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * _height);
+    for (uint32_t y = 0; y < _height; y++) {
+        _row_pointers[y] = (png_byte*)malloc(png_get_rowbytes(_png,_info));
+    }
+
+    png_read_image(_png, _row_pointers);
 }
 
 PNGFileWrapper::~PNGFileWrapper() {
@@ -58,13 +63,13 @@ uint32_t PNGFileWrapper::getHeight() {
 }
 
 uint8_t PNGFileWrapper::getComponentCnt() {
-    return 1;
+    return png_get_rowbytes(_png, _info) / _width;
 }
 
 uint8_t PNGFileWrapper::getComponentSize() {
-    return 8;
+    return _bit_depth;
 }
 
-uint32_t PNGFileWrapper::getData(uint8_t *data, uint32_t length) {
+bool PNGFileWrapper::getData(uint32_t row, uint8_t **data) {
     return 0;
 }

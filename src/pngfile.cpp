@@ -193,10 +193,12 @@ uint8_t PNGFile::getComponentSize() {
     return _type & 0xff;
 }
 
-uint32_t PNGFile::getData(uint8_t *data, uint32_t length) {
+bool PNGFile::getData(uint32_t row, uint8_t **data) {
+    // This function need fixing
     if (_state == PNGFileState::Closed) {
         return 0;
     }
+    /*
     size_t ret = 0;
     size_t tmp = 0;
     uint32_t toRead = length;
@@ -222,5 +224,6 @@ uint32_t PNGFile::getData(uint8_t *data, uint32_t length) {
         toRead = length - ret;
     }
     _dataLeft -= ret;
-    return ret;
+*/
+    return true;
 }
