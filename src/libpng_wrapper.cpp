@@ -71,5 +71,10 @@ uint8_t PNGFileWrapper::getComponentSize() {
 }
 
 bool PNGFileWrapper::getData(uint32_t row, uint8_t **data) {
-    return 0;
+    if (row >= _height) {
+        throw std::invalid_argument("Invalid row value.");
+    }
+
+    *data = (uint8_t*)_row_pointers[row];
+    return true;
 }

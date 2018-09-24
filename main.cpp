@@ -8,12 +8,12 @@
 
 using namespace std;
 
-#define size 7
+#define size 3
 
 int main() {
-    string leftFile = "left.png";
-    //string rightFile = "left.png";
-    string rightFile = "right.png";
+    string leftFile = "resources/left.png";
+    //string rightFile = "resources/left.png";
+    string rightFile = "resources/right.png";
     try {
         Loader *loader = new Loader();
         IImage *lImage = loader->loadImage(leftFile);
@@ -49,9 +49,7 @@ int main() {
                         if (*rregion == *lregion) {
                             cnt++;
                         }
-                        std::cout << "SubStep2:" << s_row << "||" << s_row_max << "|" << s_col << std::endl;
                     }
-                    std::cout << "SubStep3:" << s_row << "||" << s_row_max << std::endl;
                 }
                 std::cout << "SubStep4:" << s_row << "||" << s_row_max << std::endl;
             }

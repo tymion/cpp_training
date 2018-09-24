@@ -1,5 +1,7 @@
 #ifndef _PIXEL_4x8_H_
 #define _PIXEL_4x8_H_
+
+#include <cstdint>
 #include <iostream>
 
 struct pixel_4x8 {
@@ -11,7 +13,7 @@ struct pixel_4x8 {
     bool operator== (const pixel_4x8& pixel);
     bool operator!= (const pixel_4x8& pixel);
     bool operator> (const int value);
-    //std::ostream& operator<< (std::ostream& stream);
+    bool operator< (const int value);
     friend std::ostream & operator<< (std::ostream &stream, const pixel_4x8 &s);
     pixel_4x8& operator- (const pixel_4x8& pixel);
     ~pixel_4x8(){};

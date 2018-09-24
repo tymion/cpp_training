@@ -3,6 +3,7 @@
 #include <cstring>
 #include <iostream>
 #include "mask.h"
+#include "config.h"
 
 using namespace std;
 
@@ -83,6 +84,7 @@ class Region : RegionBase {
                 for (uint32_t j = 0; j < _width; j++) {
                     cout << _data[i][j];
                 }
+                cout << std::endl;
             }
 #endif /* DEBUG */
         }
@@ -95,11 +97,21 @@ class Region : RegionBase {
 
         bool operator==(const Region<T>&  region)
         {
+            if (_data[0] == NULL) {
+                if (region._data[0] == NULL) {
+                    // both regions are empty so we can assume they are equal
+                    // we should check size also
+                    // print log because we don't expect this sitution
+                    std::cout << "Both regions are empty" << std::endl;
+                    return true;
+                }
+                return false;
+            }
 #ifdef INDEX_JACARDA
             uint32_t similar = 0;
             uint32_t different = 0;
 
-            for (uint32_t i = 0; i < _height && _data[i] != NULL; i++) {
+            for (uint32_t i = 0; i < _height; i++) {
                 for (uint32_t j = 0; j < _width; j++) {
                     if ((_mask && _mask->getMask(i, j) == 0)) {
                         continue;
@@ -113,8 +125,7 @@ class Region : RegionBase {
             }
             return similar / (similar + different) < jacardThreshold;
 #else
-            // TODO IF _data[0] == NULL we return true
-            for (uint32_t i = 0; i < _height && _data[i] != NULL; i++) {
+            for (uint32_t i = 0; i < _height; i++) {
                 for (uint32_t j = 0; j < _width; j++) {
                     if ((_mask && _mask->getMask(i, j) == 0)) {
                         continue;

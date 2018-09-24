@@ -29,7 +29,6 @@ pixel_3x8& pixel_3x8::operator- (const pixel_3x8& pixel)
     return *this;
 }
 
-//template <typename T>
 bool pixel_3x8::operator> (const int value)
 {
     if (_red > value and
@@ -40,8 +39,18 @@ bool pixel_3x8::operator> (const int value)
     return false;
 }
 
+bool pixel_3x8::operator< (const int value)
+{
+    if (_red < value and
+        _green < value and
+        _blue < value) {
+        return true;
+    }
+    return false;
+}
+
 //std::ostream& pixel_3x8::operator<< (std::ostream& stream)
 std::ostream & operator<< (std::ostream &stream, const pixel_3x8 &s)
 {
-    return (stream << std::hex << (int)s._red << (int)s._green << (int)s._blue << std::endl);
+    return (stream << std::hex << (int)s._red << (int)s._green << (int)s._blue << std::dec);
 }

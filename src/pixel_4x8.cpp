@@ -39,6 +39,14 @@ bool pixel_4x8::operator> (const int value)
     return false;
 }
 
+bool pixel_4x8::operator< (const int value)
+{
+    if (_red < value and _green < value and _blue < value) {
+        return true;
+    }
+    return false;
+}
+
 //std::ostream& pixel_4x8::operator<< (std::ostream& stream)
 std::ostream & operator<< (std::ostream &stream, const pixel_4x8 &s)
 {

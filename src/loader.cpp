@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <iostream>
-#include "pngfile.h"
+#include "libpng_wrapper.h"
 
 #define PNG_HEADER_SIZE 8
 char PNG_HEADER[PNG_HEADER_SIZE] = {'\211', 'P', 'N', 'G', '\r', '\n', '\032', '\n'};
@@ -38,7 +38,7 @@ IImage* Loader::loadImage(string filename) {
     }
     IImage *image = NULL;
     if (isPNG(file)) {
-        image = new PNGFile(file);
+        image = (IImage*) new PNGFileWrapper(file);
         cout << "Width: " << image->getWidth() << endl;
         cout << "Height: " << image->getHeight() << endl;
     }
