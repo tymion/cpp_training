@@ -105,6 +105,7 @@ class Region : RegionBase {
                     std::cout << "Both regions are empty" << std::endl;
                     return true;
                 }
+                std::cout << "One region is empty" << std::endl;
                 return false;
             }
 #ifdef INDEX_JACARDA
@@ -123,7 +124,7 @@ class Region : RegionBase {
                     }
                 }
             }
-            return similar / (similar + different) < jacardThreshold;
+            return similar / (similar + different) > jacardThreshold;
 #else
             for (uint32_t i = 0; i < _height; i++) {
                 for (uint32_t j = 0; j < _width; j++) {

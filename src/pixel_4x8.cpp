@@ -22,12 +22,13 @@ bool pixel_4x8::operator!= (const pixel_4x8& pixel)
     return false;
 }
 
-pixel_4x8& pixel_4x8::operator- (const pixel_4x8& pixel)
+pixel_4x8 pixel_4x8::operator- (const pixel_4x8& pixel)
 {
-    this->_red = abs(this->_red - pixel._red);
-    this->_green = abs(this->_green - pixel._green);
-    this->_blue = abs(this->_blue - pixel._blue);
-    return *this;
+    pixel_4x8 tmp(*this);
+    tmp._red = abs(this->_red - pixel._red);
+    tmp._green = abs(this->_green - pixel._green);
+    tmp._blue = abs(this->_blue - pixel._blue);
+    return tmp;
 }
 
 //template <typename T>

@@ -15,6 +15,45 @@ class RegionTest : public ::testing::Test
         }
 };
 
+uint8_t data1_3x8[15] = {
+    0x01, 0x02, 0x03,
+    0x04, 0x05, 0x06,
+    0x07, 0x08, 0x09,
+    0x0a, 0x0b, 0x0c,
+    0x0d, 0x0e, 0x0f
+};
+
+uint8_t data1_4x8[20] = {
+    0x01, 0x02, 0x03, 0x04,
+    0x05, 0x06, 0x07, 0x08,
+    0x09, 0x0a, 0x0b, 0x0c,
+    0x0d, 0x0e, 0x0f, 0x10,
+    0x11, 0x12, 0x13, 0x14
+};
+
+uint8_t data2_3x8[15] = {
+    0x0f, 0x0e, 0x0d,
+    0x0c, 0x0b, 0x0a,
+    0x09, 0x08, 0x07,
+    0x06, 0x05, 0x04,
+    0x03, 0x02, 0x01,
+};
+
+uint8_t data2_4x8[20] = {
+    0x44, 0x43, 0x42, 0x41,
+    0x40, 0x4f, 0x4e, 0x4d,
+    0x4c, 0x4b, 0x4a, 0x49,
+    0x08, 0x07, 0x06, 0x05,
+    0x04, 0x03, 0x02, 0x01,
+};
+uint8_t data_test[15] = {
+    0x0f, 0x0e, 0x0d,
+    0x0c, 0x0b, 0x0a,
+    0x09, 0x08, 0x07,
+    0x06, 0x05, 0x04,
+    0x03, 0x02, 0x00,
+};
+
 TEST(RegionTest, Region_pixel3x8_allocate_and_delete)
 {
     Region<pixel_3x8> *reg1 = new Region<pixel_3x8>(5,5);
@@ -34,29 +73,17 @@ TEST(RegionTest, Region_pixel3x8_same)
     EXPECT_EQ(reg2->getHeight(), (uint32_t) 5);
     EXPECT_EQ(reg2->getWidth(), (uint32_t) 5);
 
-    uint8_t data1[15] = {
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
-        0x0c, 0x0d, 0x0e, 0x0f
-    };
-    uint8_t data2[15] = {
-        0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05,
-        0x04, 0x03, 0x02, 0x01,
-    };
-    uint8_t data_test[15] = {
-        0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05,
-        0x04, 0x03, 0x02, 0x01,
-    };
-    reg1->setData(0, data1);
-    reg1->setData(1, data2);
-    reg1->setData(2, (uint8_t*)"543212345432123");
-    reg1->setData(3, (uint8_t*)"123454321234543");
-    reg1->setData(4, (uint8_t*)"543212345432123");
+    reg1->setData(0, data1_3x8);
+    reg1->setData(1, data2_3x8);
+    reg1->setData(2, data1_3x8);
+    reg1->setData(3, data2_3x8);
+    reg1->setData(4, data1_3x8);
 
-    reg2->setData(0, data1);
-    reg2->setData(1, data_test);
-    reg2->setData(2, (uint8_t*)"543212345432123");
-    reg2->setData(3, (uint8_t*)"123454321234543");
-    reg2->setData(4, (uint8_t*)"543212345432123");
+    reg2->setData(0, data1_3x8);
+    reg2->setData(1, data2_3x8);
+    reg2->setData(2, data1_3x8);
+    reg2->setData(3, data2_3x8);
+    reg2->setData(4, data1_3x8);
 
     EXPECT_EQ(*reg1 == *reg2, true);
 
@@ -74,17 +101,17 @@ TEST(RegionTest, Region_pixel3x8_different)
     EXPECT_EQ(reg2->getHeight(), (uint32_t) 5);
     EXPECT_EQ(reg2->getWidth(), (uint32_t) 5);
 
-    reg1->setData(0, (uint8_t*)"543212345432123");
-    reg1->setData(1, (uint8_t*)"123454321234543");
-    reg1->setData(2, (uint8_t*)"543212345432123");
-    reg1->setData(3, (uint8_t*)"123454321234543");
-    reg1->setData(4, (uint8_t*)"543212345432123");
+    reg1->setData(0, data2_3x8);
+    reg1->setData(1, data1_3x8);
+    reg1->setData(2, data2_3x8);
+    reg1->setData(3, data1_3x8);
+    reg1->setData(4, data2_3x8);
 
-    reg2->setData(0, (uint8_t*)"=43212345432123");
-    reg2->setData(1, (uint8_t*)"123454321234543");
-    reg2->setData(2, (uint8_t*)"543212345432123");
-    reg2->setData(3, (uint8_t*)"123454321234543");
-    reg2->setData(4, (uint8_t*)"543212345432123");
+    reg2->setData(0, data1_3x8);
+    reg2->setData(1, data2_3x8);
+    reg2->setData(2, data1_3x8);
+    reg2->setData(3, data2_3x8);
+    reg2->setData(4, data1_3x8);
 
     EXPECT_EQ(*reg1 == *reg2, false);
 
@@ -102,17 +129,17 @@ TEST(RegionBaseTest, Region_pixel3x8_same)
     EXPECT_EQ(reg2->getHeight(), (uint32_t) 5);
     EXPECT_EQ(reg2->getWidth(), (uint32_t) 5);
 
-    reg1->setData(0, (uint8_t*)"543212345432123");
-    reg1->setData(1, (uint8_t*)"123454321234543");
-    reg1->setData(2, (uint8_t*)"543212345432123");
-    reg1->setData(3, (uint8_t*)"123454321234543");
-    reg1->setData(4, (uint8_t*)"543212345432123");
+    reg1->setData(0, data1_3x8);
+    reg1->setData(1, data2_3x8);
+    reg1->setData(2, data1_3x8);
+    reg1->setData(3, data2_3x8);
+    reg1->setData(4, data1_3x8);
 
-    reg2->setData(0, (uint8_t*)"543212345432123");
-    reg2->setData(1, (uint8_t*)"123454321234543");
-    reg2->setData(2, (uint8_t*)"543212345432123");
-    reg2->setData(3, (uint8_t*)"123454321234543");
-    reg2->setData(4, (uint8_t*)"543212345432123");
+    reg2->setData(0, data1_3x8);
+    reg2->setData(1, data2_3x8);
+    reg2->setData(2, data1_3x8);
+    reg2->setData(3, data2_3x8);
+    reg2->setData(4, data1_3x8);
 
     EXPECT_EQ(*reg1 == *reg2, true);
 
@@ -130,17 +157,17 @@ TEST(RegionBaseTest, Region_pixel3x8_different)
     EXPECT_EQ(reg2->getHeight(), (uint32_t) 5);
     EXPECT_EQ(reg2->getWidth(), (uint32_t) 5);
 
-    reg1->setData(0, (uint8_t*)"543212345432123");
-    reg1->setData(1, (uint8_t*)"123454321234543");
-    reg1->setData(2, (uint8_t*)"543212345432123");
-    reg1->setData(3, (uint8_t*)"123454321234543");
-    reg1->setData(4, (uint8_t*)"543212345432123");
+    reg1->setData(0, data1_3x8);
+    reg1->setData(1, data2_3x8);
+    reg1->setData(2, data1_3x8);
+    reg1->setData(3, data2_3x8);
+    reg1->setData(4, data1_3x8);
 
-    reg2->setData(0, (uint8_t*)"=43212345432123");
-    reg2->setData(1, (uint8_t*)"123454321234543");
-    reg2->setData(2, (uint8_t*)"543212345432123");
-    reg2->setData(3, (uint8_t*)"123454321234543");
-    reg2->setData(4, (uint8_t*)"543212345432123");
+    reg2->setData(0, data2_3x8);
+    reg2->setData(1, data1_3x8);
+    reg2->setData(2, data2_3x8);
+    reg2->setData(3, data1_3x8);
+    reg2->setData(4, data2_3x8);
 
     EXPECT_EQ(*reg1 == *reg2, false);
 
@@ -158,17 +185,17 @@ TEST(RegionTest, Region_pixel4x8_same)
     EXPECT_EQ(reg2->getHeight(), (uint32_t) 5);
     EXPECT_EQ(reg2->getWidth(), (uint32_t) 5);
 
-    reg1->setData(0, (uint8_t*)"54321234543212345432");
-    reg1->setData(1, (uint8_t*)"12345432123454321234");
-    reg1->setData(2, (uint8_t*)"54321234543212345432");
-    reg1->setData(3, (uint8_t*)"12345432123454321234");
-    reg1->setData(4, (uint8_t*)"54321234543212345432");
+    reg1->setData(0, data1_4x8);
+    reg1->setData(1, data2_4x8);
+    reg1->setData(2, data1_4x8);
+    reg1->setData(3, data2_4x8);
+    reg1->setData(4, data1_4x8);
 
-    reg2->setData(0, (uint8_t*)"54321234543212345432");
-    reg2->setData(1, (uint8_t*)"12345432123454321234");
-    reg2->setData(2, (uint8_t*)"54321234543212345432");
-    reg2->setData(3, (uint8_t*)"12345432123454321234");
-    reg2->setData(4, (uint8_t*)"54321234543212345432");
+    reg2->setData(0, data1_4x8);
+    reg2->setData(1, data2_4x8);
+    reg2->setData(2, data1_4x8);
+    reg2->setData(3, data2_4x8);
+    reg2->setData(4, data1_4x8);
 
     EXPECT_EQ(*reg1 == *reg2, true);
 
@@ -186,17 +213,17 @@ TEST(RegionTest, Region_pixel4x8_different)
     EXPECT_EQ(reg2->getHeight(), (uint32_t) 5);
     EXPECT_EQ(reg2->getWidth(), (uint32_t) 5);
 
-    reg1->setData(0, (uint8_t*)"54321234543212345432");
-    reg1->setData(1, (uint8_t*)"12345432123454321234");
-    reg1->setData(2, (uint8_t*)"54321234543212345432");
-    reg1->setData(3, (uint8_t*)"12345432123454321234");
-    reg1->setData(4, (uint8_t*)"54321234543212345432");
+    reg1->setData(0, data1_4x8);
+    reg1->setData(1, data2_4x8);
+    reg1->setData(2, data1_4x8);
+    reg1->setData(3, data2_4x8);
+    reg1->setData(4, data1_4x8);
 
-    reg2->setData(0, (uint8_t*)"=4321234543212345432");
-    reg2->setData(1, (uint8_t*)"12345432123454321234");
-    reg2->setData(2, (uint8_t*)"54321234543212345432");
-    reg2->setData(3, (uint8_t*)"12345432123454321234");
-    reg2->setData(4, (uint8_t*)"54321234543212345432");
+    reg2->setData(0, data2_4x8);
+    reg2->setData(1, data1_4x8);
+    reg2->setData(2, data2_4x8);
+    reg2->setData(3, data1_4x8);
+    reg2->setData(4, data2_4x8);
 
     EXPECT_EQ(*reg1 == *reg2, false);
 
@@ -214,17 +241,17 @@ TEST(RegionBaseTest, Region_pixel4x8_same)
     EXPECT_EQ(reg2->getHeight(), (uint32_t) 5);
     EXPECT_EQ(reg2->getWidth(), (uint32_t) 5);
 
-    reg1->setData(0, (uint8_t*)"54321234543212345432");
-    reg1->setData(1, (uint8_t*)"12345432123454321234");
-    reg1->setData(2, (uint8_t*)"54321234543212345432");
-    reg1->setData(3, (uint8_t*)"12345432123454321234");
-    reg1->setData(4, (uint8_t*)"54321234543212345432");
+    reg1->setData(0, data1_4x8);
+    reg1->setData(1, data2_4x8);
+    reg1->setData(2, data1_4x8);
+    reg1->setData(3, data2_4x8);
+    reg1->setData(4, data1_4x8);
 
-    reg2->setData(0, (uint8_t*)"54321234543212345432");
-    reg2->setData(1, (uint8_t*)"12345432123454321234");
-    reg2->setData(2, (uint8_t*)"54321234543212345432");
-    reg2->setData(3, (uint8_t*)"12345432123454321234");
-    reg2->setData(4, (uint8_t*)"54321234543212345432");
+    reg2->setData(0, data1_4x8);
+    reg2->setData(1, data2_4x8);
+    reg2->setData(2, data1_4x8);
+    reg2->setData(3, data2_4x8);
+    reg2->setData(4, data1_4x8);
 
     EXPECT_EQ(*reg1 == *reg2, true);
     delete reg1;
@@ -241,17 +268,17 @@ TEST(RegionBaseTest, Region_pixel4x8_different)
     EXPECT_EQ(reg2->getHeight(), (uint32_t) 5);
     EXPECT_EQ(reg2->getWidth(), (uint32_t) 5);
 
-    reg1->setData(0, (uint8_t*)"54321234543212345432");
-    reg1->setData(1, (uint8_t*)"12345432123454321234");
-    reg1->setData(2, (uint8_t*)"54321234543212345432");
-    reg1->setData(3, (uint8_t*)"12345432123454321234");
-    reg1->setData(4, (uint8_t*)"54321234543212345432");
+    reg1->setData(0, data1_4x8);
+    reg1->setData(1, data2_4x8);
+    reg1->setData(2, data1_4x8);
+    reg1->setData(3, data2_4x8);
+    reg1->setData(4, data1_4x8);
 
-    reg2->setData(0, (uint8_t*)"=4321234543212345432");
-    reg2->setData(1, (uint8_t*)"12345432123454321234");
-    reg2->setData(2, (uint8_t*)"54321234543212345432");
-    reg2->setData(3, (uint8_t*)"12345432123454321234");
-    reg2->setData(4, (uint8_t*)"54321234543212345432");
+    reg2->setData(0, data2_4x8);
+    reg2->setData(1, data1_4x8);
+    reg2->setData(2, data2_4x8);
+    reg2->setData(3, data1_4x8);
+    reg2->setData(4, data2_4x8);
 
     EXPECT_EQ(*reg1 == *reg2, false);
     delete reg1;
