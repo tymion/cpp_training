@@ -1,7 +1,21 @@
 #include "config.h"
 
-// Index Jacard threshold
-double jacardThreshold = 0.8;
+void Configuration::setJacardThreshold(double new_threshold)
+{
+    _jacardThreshold = new_threshold;
+}
 
-// similarity threshold
-uint32_t similarityThreshold = 10;
+double Configuration::getJacardThreshold()
+{
+    return _jacardThreshold;
+}
+
+void Configuration::setSimilarityThreshold(uint32_t new_threshold)
+{
+    _similarityThreshold = new_threshold;
+}
+
+uint32_t Configuration::getSimilarityThreshold()
+{
+    return _similarityThreshold;
+}

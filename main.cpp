@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#define size 3
+#define size 7
 
 int main() {
     string leftFile = "resources/left.png";

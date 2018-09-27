@@ -4,6 +4,7 @@
 #include <iostream>
 #include "mask.h"
 #include "config.h"
+#include "algorithms.h"
 
 using namespace std;
 
@@ -109,22 +110,11 @@ class Region : RegionBase {
                 return false;
             }
 #ifdef INDEX_JACARDA
-            uint32_t similar = 0;
-            uint32_t different = 0;
-
-            for (uint32_t i = 0; i < _height; i++) {
-                for (uint32_t j = 0; j < _width; j++) {
-                    if ((_mask && _mask->getMask(i, j) == 0)) {
-                        continue;
-                    }
-                    if ((_data[i][j] - region._data[i][j]) < similarityThreshold) {
-                        similar++;
-                    } else {
-                        different++;
-                    }
-                }
+            if (_mask) {
+                return index_jacarda(_data, region._data, _height, _width, _mask);
+            } else {
+                return index_jacarda(_data, region._data, _height, _width);
             }
-            return similar / (similar + different) > jacardThreshold;
 #else
             for (uint32_t i = 0; i < _height; i++) {
                 for (uint32_t j = 0; j < _width; j++) {
