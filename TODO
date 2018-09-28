@@ -1,0 +1,4 @@
+1. Add "override" in derived classes.
+2. Move object creation to SetUp function and destruction to TearDown.
+3. Use proper assertions like EXPECT_TRUE.
+4. Add exception tests.

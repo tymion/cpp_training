@@ -6,17 +6,13 @@
 class Configuration
 {
     private:
-        static double _jacardThreshold;
-        static uint32_t _similarityThreshold;
+        double _jacardThreshold;
+        uint32_t _similarityThreshold;
 
         Configuration() {}
 
     public:
-        static Configration& getInstance()
-        {
-            static Configuration instance;
-            return instance;
-        }
+        static Configuration& getInstance();
         static double getJacardThreshold();
         static void setJacardThreshold(double new_threshold);
 

@@ -68,14 +68,15 @@ uint8_t data4_3x8_30[ROW*COL*3] = {
 
 TEST(AlgorithmsTest, index_jacarda_pixel3x8_same)
 {
+    Configuration::setSimilarityThreshold(10);
+    Configuration::setJacardThreshold(0.9);
     pixel_3x8 **pixel1 = (pixel_3x8 **) malloc(ROW * sizeof(pixel_3x8 *));
     pixel_3x8 **pixel2 = (pixel_3x8 **) malloc(ROW * sizeof(pixel_3x8 *));
     for (int i = 0 ; i < ROW; i++) {
         pixel1[i] = (pixel_3x8 *) &data2_3x8_30[i*3*COL];
         pixel2[i] = (pixel_3x8 *) &data3_3x8_30[i*3*COL];
     }
-    double ret = count_index_jacarda(pixel1, pixel2, ROW, COL);
-    EXPECT_EQ(ret, 1.0);
+    EXPECT_EQ(count_index_jacarda(pixel1, pixel2, ROW, COL), 1);
 }
 
 TEST(AlgorithmsTest, index_jacarda_pixel3x8_similar)
@@ -88,6 +89,5 @@ TEST(AlgorithmsTest, index_jacarda_pixel3x8_similar)
         pixel1[i] = (pixel_3x8 *) &data2_3x8_30[i*3*COL];
         pixel2[i] = (pixel_3x8 *) &data4_3x8_30[i*3*COL];
     }
-    double ret = count_index_jacarda(pixel1, pixel2, ROW, COL);
-    EXPECT_EQ(ret, 1.0);
+    EXPECT_EQ(count_index_jacarda(pixel1, pixel2, ROW, COL), 0.9);
 }

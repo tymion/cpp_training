@@ -19,7 +19,8 @@ double count_index_jacarda(T **left, T **right, uint32_t height, uint32_t width)
             }
         }
     }
-    return similar / (similar + different);
+    std::cout << similar << "   " << different << "==============" << (double) similar / (similar + different) << std::endl;
+    return (double) similar / (similar + different);
 }
 
 template<typename T>
@@ -41,7 +42,7 @@ double count_index_jacarda(T **left, T **right, uint32_t height, uint32_t width,
             }
         }
     }
-    return similar / (similar + different);
+    return (double) similar / (similar + different);
 }
 
 template<typename T>

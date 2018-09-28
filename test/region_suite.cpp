@@ -9,6 +9,8 @@ class RegionTest : public ::testing::Test
 {
     protected:
         virtual void SetUp() {
+            Configuration::setSimilarityThreshold(10);
+            Configuration::setJacardThreshold(0.9);
         }
 
         virtual void TearDown() {
@@ -65,6 +67,8 @@ TEST(RegionTest, Region_pixel3x8_allocate_and_delete)
 
 TEST(RegionTest, Region_pixel3x8_same)
 {
+    Configuration::setSimilarityThreshold(10);
+    Configuration::setJacardThreshold(0.9);
     Region<pixel_3x8> *reg1 = new Region<pixel_3x8>(5,5);
     EXPECT_EQ(reg1->getHeight(), (uint32_t) 5);
     EXPECT_EQ(reg1->getWidth(), (uint32_t) 5);
