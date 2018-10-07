@@ -7,11 +7,17 @@
 
 using namespace std;
 
-class Loader {
-private:
-    bool isPNG(FILE *file);
+class Loader
+{
+    private:
+        static bool isPNG(FILE *file);
 
-public:
-    IImage *loadImage(string filename);
+        Loader() {}
+
+    public:
+        static IImage *loadImage(string filename);
+
+        Loader(Loader const&) = delete;
+        void operator=(Loader const&) = delete;
 };
 #endif /* _LOAD_H_ */

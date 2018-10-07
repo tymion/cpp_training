@@ -2,6 +2,7 @@
 #define _CONFIG_H_
 
 #include <cstdint>
+#include <string>
 
 class Configuration
 {
@@ -13,11 +14,14 @@ class Configuration
 
     public:
         static Configuration& getInstance();
+
         static double getJacardThreshold();
         static void setJacardThreshold(double new_threshold);
 
         static uint32_t getSimilarityThreshold();
         static void setSimilarityThreshold(uint32_t new_threshold);
+
+        static std::string toString();
 
         Configuration(Configuration const&) = delete;
         void operator=(Configuration const&) = delete;

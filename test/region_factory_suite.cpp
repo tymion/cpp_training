@@ -8,47 +8,62 @@
 
 using namespace std;
 
-class RegionFactoryTest : public ::testing::Test
+struct IImageObject
+{
+    const type_info &type;
+};
+
+class RegionFactoryTest: public testing::Test
 {
     protected:
-        virtual void SetUp() {
-        }
+        unique_ptr<RegionFactory> fb;
 
-        virtual void TearDown() {
+        FILE* openTestFile();
+
+        void SetUp() override {
+            shared_ptr<IImage> iimage = shared_ptr<IImage>((IImage*) new IImageMock_3x8());
+            fb = unique_ptr<RegionFactory>(new RegionFactory(iimage));
+        }
+        void TearDown() override {
         }
 };
 
-static FILE* openTestFile()
+class RegionFactoryParamTest: public testing::TestWithParam<IImageObject>
 {
-    FILE *file = fopen("test/test.png", "rb");
+    protected:
+        unique_ptr<RegionFactory> fb;
+
+        FILE* openTestFile();
+
+        void SetUp() override {
+            shared_ptr<IImage> iimage;
+            if (GetParam().type == typeid(IImageMock_3x8)) {
+                iimage = shared_ptr<IImage>((IImage*) new IImageMock_3x8());
+            } else if (GetParam().type == typeid(PNGFileWrapper)) {
+                iimage = shared_ptr<IImage>((IImage*) new PNGFileWrapper(RegionFactoryParamTest::openTestFile()));
+            }
+            fb = unique_ptr<RegionFactory>(new RegionFactory(iimage));
+        }
+        void TearDown() override {
+        }
+};
+
+FILE* RegionFactoryParamTest::openTestFile()
+{
+    FILE *file = fopen("test/test1.png", "rb");
     if (file == NULL) {
-        std::cout << "Can't open test.png file" << std::endl;
+        cout << "Can't open test.png file" << endl;
     }
     return file;
 }
 
-TEST(RegionFactoryTest, allocate_and_free_iimage_mock)
-{
-    IImage *iimage = (IImage*) new IImageMock_3x8();
-    RegionFactory *fb = new RegionFactory(iimage);
-    delete fb;
-    delete iimage;
-}
+INSTANTIATE_TEST_CASE_P(Default, RegionFactoryParamTest, ::testing::Values(
+            IImageObject{typeid(IImageMock_3x8)},
+            IImageObject{typeid(PNGFileWrapper)}
+            ));
 
-TEST(RegionFactoryTest, createRegion_iimage_mock)
+TEST_F(RegionFactoryTest, updateRegion_iimage_mock)
 {
-    IImage *iimage = (IImage*) new IImageMock_3x8();
-    RegionFactory *fb = new RegionFactory(iimage);
-    RegionBase * reg = fb->createRegion(2,2);
-    delete reg;
-    delete fb;
-    delete iimage;
-}
-
-TEST(RegionFactoryTest, updateRegion_iimage_mock)
-{
-    IImage *iimage = (IImage*) new IImageMock_3x8();
-    RegionFactory *fb = new RegionFactory(iimage);
     RegionBase * reg1 = fb->createRegion(2,2);
     RegionBase *reg2 = (RegionBase*)new Region<pixel_3x8>(2, 2);
     uint8_t data_1[12] = {
@@ -69,26 +84,14 @@ TEST(RegionFactoryTest, updateRegion_iimage_mock)
     EXPECT_EQ(*reg1 == *reg2, true);
     delete reg1;
     delete reg2;
-    delete fb;
-    delete iimage;
 }
 
-TEST(RegionFactoryTest, allocate_and_free_libpng)
+TEST_P(RegionFactoryParamTest, createRegion)
 {
-    IImage *iimage = (IImage*) new PNGFileWrapper(openTestFile());
-    RegionFactory *fb = new RegionFactory(iimage);
-    delete fb;
-    delete iimage;
-}
-
-TEST(RegionFactoryTest, createRegion_libpng)
-{
-    IImage *iimage = (IImage*) new PNGFileWrapper(openTestFile());
-    RegionFactory *fb = new RegionFactory(iimage);
     RegionBase * reg = fb->createRegion(2,2);
+    EXPECT_EQ(reg->getWidth(), (uint32_t) 2);
+    EXPECT_EQ(reg->getHeight(), (uint32_t) 2);
     delete reg;
-    delete fb;
-    delete iimage;
 }
 /*
 TEST(RegionFactoryTest, updateRegion_libpng)

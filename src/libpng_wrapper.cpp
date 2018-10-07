@@ -51,6 +51,11 @@ PNGFileWrapper::PNGFileWrapper(FILE *file) {
 }
 
 PNGFileWrapper::~PNGFileWrapper() {
+    for (uint32_t i = 0; i < _height; i++) {
+        free(_row_pointers[i]);
+    }
+    free(_row_pointers);
+    png_destroy_read_struct(&_png, &_info, NULL);
     fclose(_file);
 }
 

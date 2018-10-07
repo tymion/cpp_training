@@ -1,10 +1,12 @@
 NAME=algo
 NAME_TEST=$(NAME)_tests
+NAME_TOOLS=tool
 
 TOP=$(shell pwd)
 
 SRC:=$(wildcard src/*.cpp)
 SRC_TEST:=$(wildcard test/*.cpp) $(SRC)
+SRC_TOOLS:=$(wildcard tools/*.cpp)
 
 GTEST=$(TOP)/../googletest/
 GTEST_LIB_DIR=$(GTEST)/build/googlemock/gtest/
@@ -33,13 +35,16 @@ LIB_DIR_TEST=$(LIB_DIR) -L$(GTEST_LIB_DIR)
 LIB=$(PNG_LIB)
 LIB_TEST=$(LIB) $(GTEST_LIB)
 
-.PHONY: test
+.PHONY: test tools
 
-all: test
+all: test tools
 	$(CXX) $(SRC) main.cpp -o $(NAME).out $(FLAGS) $(INC_DIR) $(LIB_DIR) $(LIB)
 
 test:
 	$(CXX) $(SRC_TEST) -o $(NAME_TEST).out $(LIB_TEST) $(LIB_DIR_TEST) $(FLAGS_TEST) $(INC_DIR_TEST)
+
+tools:
+	$(CXX) $(SRC_TOOLS) -o $(NAME_TOOLS).out $(FLAGS_TEST)
 
 clean:
 	rm -f $(NAME) $(NAME_TEST)

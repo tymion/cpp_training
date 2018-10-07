@@ -91,3 +91,25 @@ TEST(AlgorithmsTest, index_jacarda_pixel3x8_similar)
     }
     EXPECT_EQ(count_index_jacarda(pixel1, pixel2, ROW, COL), 0.9);
 }
+
+TEST(AlgorithmsTest, classic_compare_same)
+{
+    pixel_3x8 **pixel1 = (pixel_3x8 **) malloc(ROW * sizeof(pixel_3x8 *));
+    pixel_3x8 **pixel2 = (pixel_3x8 **) malloc(ROW * sizeof(pixel_3x8 *));
+    for (int i = 0 ; i < ROW; i++) {
+        pixel1[i] = (pixel_3x8 *) &data2_3x8_30[i*3*COL];
+        pixel2[i] = (pixel_3x8 *) &data3_3x8_30[i*3*COL];
+    }
+    EXPECT_TRUE(classic_compare(pixel1, pixel2, ROW, COL));
+}
+
+TEST(AlgorithmsTest, classic_compare_different)
+{
+    pixel_3x8 **pixel1 = (pixel_3x8 **) malloc(ROW * sizeof(pixel_3x8 *));
+    pixel_3x8 **pixel2 = (pixel_3x8 **) malloc(ROW * sizeof(pixel_3x8 *));
+    for (int i = 0 ; i < ROW; i++) {
+        pixel1[i] = (pixel_3x8 *) &data2_3x8_30[i*3*COL];
+        pixel2[i] = (pixel_3x8 *) &data4_3x8_30[i*3*COL];
+    }
+    EXPECT_FALSE(classic_compare(pixel1, pixel2, ROW, COL));
+}

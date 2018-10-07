@@ -1,4 +1,5 @@
 #include "config.h"
+#include <iostream>
 
 Configuration& Configuration::getInstance()
 {
@@ -24,4 +25,9 @@ void Configuration::setSimilarityThreshold(uint32_t new_threshold)
 uint32_t Configuration::getSimilarityThreshold()
 {
     return Configuration::getInstance()._similarityThreshold;
+}
+
+std::string Configuration::toString()
+{
+    return "JacardThreshold:" + std::to_string(Configuration::getInstance()._jacardThreshold) + ", similarityThreshold:" + std::to_string(Configuration::getInstance()._similarityThreshold);
 }

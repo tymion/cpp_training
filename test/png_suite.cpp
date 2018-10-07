@@ -15,7 +15,7 @@ class PNGTest : public ::testing::Test
 static
 FILE* openTestFile()
 {
-    FILE *file = fopen("test/test.png", "rb");
+    FILE *file = fopen("test/test1.png", "rb");
     if (file == NULL) {
         std::cout << "Can't open test.png file" << std::endl;
     }

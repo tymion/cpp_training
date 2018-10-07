@@ -3,17 +3,13 @@
 #include "pixel_3x8.h"
 #include "pixel_4x8.h"
 
-RegionFactory::RegionFactory(IImage *image)
+RegionFactory::RegionFactory(std::shared_ptr<IImage> &image)
 {
     if (!image) {
         throw std::invalid_argument("image pointer is empty");
     }
     _image = image;
     _component = image->getComponentCnt();
-}
-
-RegionFactory::~RegionFactory()
-{
 }
 
 RegionBase* RegionFactory::createRegion(uint32_t height, uint32_t width)

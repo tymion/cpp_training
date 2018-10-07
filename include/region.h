@@ -2,6 +2,7 @@
 #define _REGION_H_
 #include <cstring>
 #include <iostream>
+#include <memory>
 #include "mask.h"
 #include "config.h"
 #include "algorithms.h"
@@ -14,11 +15,15 @@ class RegionBase {
 
         virtual uint32_t getWidth() = 0;
 
-        virtual void setMask(Mask *mask) = 0;
-
         virtual void setData(uint32_t height, uint8_t *data) = 0;
 
         virtual void dataDump() = 0;
+
+        virtual bool compare(RegionBase& region, std::shared_ptr<Mask> const &mask, double &similarity) = 0;
+
+        virtual bool compare(RegionBase& region, double &similarity) = 0;
+
+        virtual void setMask(std::shared_ptr<Mask> const &mask) = 0;
 
         virtual bool operator== (const RegionBase& region) = 0;
 
@@ -30,7 +35,7 @@ class Region : RegionBase {
     private:
         uint32_t _height;
         uint32_t _width;
-        Mask *_mask;
+        std::shared_ptr<Mask> _mask;
         T **_data;
 
         void memNULLSet()
@@ -41,7 +46,7 @@ class Region : RegionBase {
         }
 
     public:
-        Region(uint32_t height, uint32_t width, Mask *mask=NULL)
+        Region(uint32_t height, uint32_t width, std::shared_ptr<Mask> const &mask=nullptr)
         {
             if (height == 0 || width == 0) {
                 throw std::invalid_argument("Check input");
@@ -68,7 +73,7 @@ class Region : RegionBase {
             return _width;
         }
 
-        void setMask(Mask *mask)
+        void setMask(std::shared_ptr<Mask> const &mask)
         {
             _mask = mask;
         }
@@ -88,6 +93,20 @@ class Region : RegionBase {
                 cout << std::endl;
             }
 #endif /* DEBUG */
+        }
+
+        bool compare(RegionBase& region, std::shared_ptr<Mask> const &mask, double &similarity)
+        {
+            const Region<T>& regionT = (const Region<T>&)(region);
+            similarity = count_index_jacarda(_data, regionT._data, _height, _width, mask);
+            return similarity >= Configuration::getJacardThreshold();
+        }
+
+        bool compare(RegionBase& region, double &similarity)
+        {
+            const Region<T>& regionT = (const Region<T>&)(region);
+            similarity = count_index_jacarda(_data, regionT._data, _height, _width);
+            return similarity >= Configuration::getJacardThreshold();
         }
 
         bool operator== (const RegionBase& region)
@@ -116,18 +135,11 @@ class Region : RegionBase {
                 return index_jacarda(_data, region._data, _height, _width);
             }
 #else
-            for (uint32_t i = 0; i < _height; i++) {
-                for (uint32_t j = 0; j < _width; j++) {
-                    if ((_mask && _mask->getMask(i, j) == 0)) {
-                        continue;
-                    }
-//                    cout << ":" <<_data[i][j] << ":" << region._data[i][j] << endl;
-                    if (_data[i][j] != region._data[i][j]) {
-                        return false;
-                    }
-                }
+            if (_mask) {
+                return classic_compare(_data, region._data, _height, _width, _mask);
+            } else {
+                return classic_compare(_data, region._data, _height, _width);
             }
-            return true;
 #endif
         }
 
