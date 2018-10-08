@@ -7,8 +7,10 @@ struct region_coordinates_ {
     uint32_t row;
     uint32_t col;
 };
+
 #define RegionCoordinatesSize sizeof(region_coordinates_)
-typedef struct region_coordinates_ * RegionCoordinates;
+
+typedef struct region_coordinates_ RegionCoordinates;
 
 struct region_matched_ {
     struct region_coordinates_ coordinates;
@@ -18,6 +20,6 @@ typedef struct region_matched_ RegionMatched;
 
 typedef std::list<RegionMatched*> RegionMatchedList;
 
-typedef std::map<const RegionCoordinates, RegionMatchedList*> RegionMap;
+typedef std::map<const RegionCoordinates*, RegionMatchedList*> RegionMap;
 
 #endif /*__REGION_COORDINATES__*/

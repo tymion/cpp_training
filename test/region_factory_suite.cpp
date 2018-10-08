@@ -21,7 +21,7 @@ class RegionFactoryTest: public testing::Test
         FILE* openTestFile();
 
         void SetUp() override {
-            shared_ptr<IImage> iimage = shared_ptr<IImage>((IImage*) new IImageMock_3x8());
+            shared_ptr<IImage> iimage((IImage*) new IImageMock_3x8());
             fb = unique_ptr<RegionFactory>(new RegionFactory(iimage));
         }
         void TearDown() override {
@@ -64,8 +64,8 @@ INSTANTIATE_TEST_CASE_P(Default, RegionFactoryParamTest, ::testing::Values(
 
 TEST_F(RegionFactoryTest, updateRegion_iimage_mock)
 {
-    RegionBase * reg1 = fb->createRegion(2,2);
-    RegionBase *reg2 = (RegionBase*)new Region<pixel_3x8>(2, 2);
+    unique_ptr<RegionBase> reg1(fb->createRegion(2,2));
+    unique_ptr<RegionBase> reg2((RegionBase*)new Region<pixel_3x8>(2, 2));
     uint8_t data_1[12] = {
         0x00, 0x01, 0x02, 0x03, 0x04, 0x05,
         0x12, 0x13, 0x14, 0x15, 0x16, 0x17
@@ -82,16 +82,13 @@ TEST_F(RegionFactoryTest, updateRegion_iimage_mock)
     reg2->setData(1, &data_2[6]);
     EXPECT_EQ(fb->updateRegion(2, 1, reg1), true);
     EXPECT_EQ(*reg1 == *reg2, true);
-    delete reg1;
-    delete reg2;
 }
 
 TEST_P(RegionFactoryParamTest, createRegion)
 {
-    RegionBase * reg = fb->createRegion(2,2);
+    unique_ptr<RegionBase> reg(fb->createRegion(2,2));
     EXPECT_EQ(reg->getWidth(), (uint32_t) 2);
     EXPECT_EQ(reg->getHeight(), (uint32_t) 2);
-    delete reg;
 }
 /*
 TEST(RegionFactoryTest, updateRegion_libpng)
