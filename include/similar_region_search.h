@@ -1,5 +1,11 @@
 #ifndef __SIMILAR_REGION_SEARCH__
 #define __SIMILAR_REGION_SEARCH__
+#include <memory>
+#include "region_coordinates.h"
+#include "region_factory.h"
+#include "region.h"
+#include "iimage.h"
+#include "mask.h"
 
 using namespace std;
 
@@ -12,6 +18,7 @@ class SimilarRegionSearch
         uint32_t _width;
 
     public:
+        SimilarRegionSearch(shared_ptr<IImage>& lImage, shared_ptr<IImage>& rImage);
         SimilarRegionSearch(string lname, string rname);
 
         void search(uint8_t rsize, uint32_t similarity, double jacardThreshold,

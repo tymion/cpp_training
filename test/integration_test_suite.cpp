@@ -4,6 +4,7 @@
 #include "libpng_wrapper.h"
 #include "region.h"
 #include "region_factory.h"
+#include "loader.h"
 
 using namespace std;
 
@@ -17,28 +18,10 @@ class IntegrationTest : public ::testing::Test
         }
 };
 
-static FILE* openTestFile()
-{
-    FILE *file = fopen("test/test1.png", "rb");
-    if (file == NULL) {
-        cout << "Can't open test.png file" << endl;
-    }
-    return file;
-}
-
-static FILE* openTestFile2()
-{
-    FILE *file = fopen("test/test2.png", "rb");
-    if (file == NULL) {
-        cout << "Can't open test.png file" << endl;
-    }
-    return file;
-}
-
 TEST(IntegrationTest, getData)
 {
-    shared_ptr<IImage> lImage((IImage *) new PNGFileWrapper(openTestFile()));
-    shared_ptr<IImage> rImage((IImage *) new PNGFileWrapper(openTestFile2()));
+    shared_ptr<IImage> lImage(Loader::loadImage("test/test1.png"));
+    shared_ptr<IImage> rImage(Loader::loadImage("test/test2.png"));
     uint32_t size = 7;
     uint32_t height = lImage->getHeight();
     uint32_t width = lImage->getWidth();
@@ -47,11 +30,19 @@ TEST(IntegrationTest, getData)
     unique_ptr<RegionBase> rregion(rbuffer->createRegion(size, size));
     unique_ptr<RegionBase> lregion(lbuffer->createRegion(size, size));
     uint32_t cnt = 0;
+    uint32_t cnt1 = 0;
     uint32_t cnt2 = 0;
+    double similar = 0;
+    Configuration::setSimilarityThreshold(25);
+    Configuration::setJacardThreshold(0.5);
     for (uint32_t row = 0; row < height - size; row++) {
         for (uint32_t col = 0; col < width - size; col++) {
             rbuffer->updateRegion(row, col, rregion);
             lbuffer->updateRegion(row, col, lregion);
+            if (rregion->compare(*lregion, similar)) {
+                cout << "SubStep3:" << similar << endl;
+                cnt1++;
+            }
             if (*rregion == *lregion) {
                 cnt++;
             }
@@ -59,6 +50,6 @@ TEST(IntegrationTest, getData)
         }
     }
 
-    cout << "Cnt:" << cnt << " Cnt2:" << cnt2 << endl;
+    cout << "Cnt:" << cnt << " Cnt1:" <<  cnt1 << " Cnt2:" << cnt2 << endl;
     EXPECT_EQ(cnt, cnt2);
 }

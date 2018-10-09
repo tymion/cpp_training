@@ -1,15 +1,23 @@
 #include <string>
 #include <cstring>
 #include <iostream>
-#include <memory>
 #include <ctime>
-#include "region.h"
 #include "loader.h"
-#include "region_factory.h"
 #include "region_coordinates.h"
 #include "similar_region_search.h"
 
 using namespace std;
+
+SimilarRegionSearch::SimilarRegionSearch(shared_ptr<IImage>& lImage, shared_ptr<IImage>& rImage)
+{
+    if (lImage->getHeight() != rImage->getHeight() || lImage->getWidth() != rImage->getWidth()) {
+        throw std::invalid_argument("Images should have same sizes.");
+    }
+    _height = lImage->getHeight();
+    _width = lImage->getWidth();
+    _lbuffer = shared_ptr<RegionFactory>(new RegionFactory(lImage));
+    _rbuffer = shared_ptr<RegionFactory>(new RegionFactory(rImage));
+}
 
 SimilarRegionSearch::SimilarRegionSearch(string lname, string rname)
 {
@@ -31,6 +39,7 @@ void SimilarRegionSearch::search_common(uint32_t rsize, unique_ptr<RegionBase>& 
     RegionCoordinates *coordinates = NULL;
     RegionMatchedList *list = NULL;
     RegionMatched *matched = NULL;
+    bool test = false;
     for (uint32_t row = 0; row < _height - rsize; row++) {
         for (uint32_t col = 0; col < _width - rsize; col++) {
             _rbuffer->updateRegion(row, col, rregion);
@@ -39,7 +48,10 @@ void SimilarRegionSearch::search_common(uint32_t rsize, unique_ptr<RegionBase>& 
             for (; s_row < s_row_max; s_row++) {
                 for (uint32_t s_col = col; s_col < _width - rsize; s_col++) {
                     _lbuffer->updateRegion(s_row, s_col, lregion);
-                    if (rregion->compare(*lregion, similar)) {
+                    test = rregion->compare(*lregion, similar);
+                    cout << "SubStep3:" << similar << endl;
+                    if (test) {
+                        cout << "SubStep3:" << similar << endl;
                         if (!coordinates) {
                             coordinates = (RegionCoordinates*) malloc(RegionCoordinatesSize);
                             coordinates->row = row;
@@ -59,6 +71,7 @@ void SimilarRegionSearch::search_common(uint32_t rsize, unique_ptr<RegionBase>& 
         }
         cout << "SubStep4:" << row << endl;
     }
+    cout << "SubStep4=====:" << map.size() << endl;
 }
 
 void SimilarRegionSearch::search(uint8_t rsize, uint32_t similarity,

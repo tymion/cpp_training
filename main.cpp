@@ -4,11 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <ctime>
-#include "region.h"
-#include "loader.h"
-#include "region_factory.h"
-#include "region_coordinates.h"
-#include "similar_region_search.h"
+#include "srs_test.h"
 
 using namespace std;
 
@@ -18,22 +14,26 @@ int main() {
     clock_t start;
     double duration;
     string leftFile = "resources/left.png";
-    //string rightFile = "resources/left.png";
-    string rightFile = "resources/right.png";
+    string rightFile = "resources/left.png";
+    //string rightFile = "resources/right.png";
     try {
-        unique_ptr<SimilarRegionSearch> srs(new SimilarRegionSearch(leftFile, rightFile));
+        SrsTest test(leftFile, rightFile);
         /*
         uint8_t maskData[rsize*rsize];
         memset(maskData, 1, sizeof(maskData));
         shared_ptr<Mask> mask(new Mask(rsize, rsize, maskData));
         */
-        uint32_t similarity = 1;
-        double jacard = 0.5;
+        test.setRSizeParameter(3, 9, 1);
+        test.setSimilarityParameter(10, 25, 1);
+        test.setJacardParameter(0.5, 0.9, 0.1);
         start = clock();
-        RegionMap map;
-        srs->search(rsize, similarity, jacard, mask, map);
+        SrsTestMap map;
+        test.runOptimization(map);
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         cout << "Time: "<< duration << endl;
+        for (SrsTestMap::iterator it = map.begin(); it != map.end(); ++it) {
+            cout << "rsize:" << it->first << ", simili:" << it->second.first << ", jacard:" << it->second.second << endl;
+        }
         cout << "Coordinates:" << map.size() << endl;
     } catch (exception const &exc)
     {

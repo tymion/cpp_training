@@ -8,26 +8,24 @@ template<typename T>
 double count_index_jacarda(T **left, T **right, uint32_t height, uint32_t width)
 {
     uint32_t similar = 0;
-    uint32_t different = 0;
 
     uint32_t similarityThreshold = Configuration::getSimilarityThreshold();
     for (uint32_t i = 0; i < height; i++) {
         for (uint32_t j = 0; j < width; j++) {
             if ((left[i][j] - right[i][j]) < similarityThreshold) {
                 similar++;
-            } else {
-                different++;
             }
         }
     }
-    return (double) similar / (similar + different);
+    std::cout << "SubStep3:" << ((double) similar / (double) (height * width)) << std::endl;
+    std::cout << "SubStep2:" << similar << std::endl;
+    return (double) similar / (double) (height * width);
 }
 
 template<typename T>
 double count_index_jacarda(T **left, T **right, uint32_t height, uint32_t width, std::shared_ptr<Mask> const &mask)
 {
     uint32_t similar = 0;
-    uint32_t different = 0;
 
     uint32_t similarityThreshold = Configuration::getSimilarityThreshold();
     for (uint32_t i = 0; i < height; i++) {
@@ -37,12 +35,10 @@ double count_index_jacarda(T **left, T **right, uint32_t height, uint32_t width,
             }
             if ((left[i][j] - right[i][j]) < similarityThreshold) {
                 similar++;
-            } else {
-                different++;
             }
         }
     }
-    return (double) similar / (similar + different);
+    return (double) similar / (height * width);
 }
 
 template<typename T>
