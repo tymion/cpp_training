@@ -6,8 +6,6 @@
 #include "region_factory.h"
 #include "loader.h"
 
-using namespace std;
-
 class IntegrationTest : public ::testing::Test
 {
     protected:
@@ -20,15 +18,15 @@ class IntegrationTest : public ::testing::Test
 
 TEST(IntegrationTest, getData)
 {
-    shared_ptr<IImage> lImage(Loader::loadImage("test/test1.png"));
-    shared_ptr<IImage> rImage(Loader::loadImage("test/test2.png"));
+    std::shared_ptr<IImage> lImage(Loader::loadImage("test/test1.png"));
+    std::shared_ptr<IImage> rImage(Loader::loadImage("test/test2.png"));
     uint32_t size = 7;
     uint32_t height = lImage->getHeight();
     uint32_t width = lImage->getWidth();
-    unique_ptr<RegionFactory> lbuffer(new RegionFactory(lImage));
-    unique_ptr<RegionFactory> rbuffer(new RegionFactory(rImage));
-    unique_ptr<RegionBase> rregion(rbuffer->createRegion(size, size));
-    unique_ptr<RegionBase> lregion(lbuffer->createRegion(size, size));
+    std::unique_ptr<RegionFactory> lbuffer(new RegionFactory(lImage));
+    std::unique_ptr<RegionFactory> rbuffer(new RegionFactory(rImage));
+    std::unique_ptr<RegionBase> rregion(rbuffer->createRegion(size, size));
+    std::unique_ptr<RegionBase> lregion(lbuffer->createRegion(size, size));
     uint32_t cnt = 0;
     uint32_t cnt1 = 0;
     uint32_t cnt2 = 0;
@@ -40,7 +38,7 @@ TEST(IntegrationTest, getData)
             rbuffer->updateRegion(row, col, rregion);
             lbuffer->updateRegion(row, col, lregion);
             if (rregion->compare(*lregion, similar)) {
-                cout << "SubStep3:" << similar << endl;
+                std::cout << "SubStep3:" << similar << std::endl;
                 cnt1++;
             }
             if (*rregion == *lregion) {
@@ -50,6 +48,6 @@ TEST(IntegrationTest, getData)
         }
     }
 
-    cout << "Cnt:" << cnt << " Cnt1:" <<  cnt1 << " Cnt2:" << cnt2 << endl;
+    std::cout << "Cnt:" << cnt << " Cnt1:" <<  cnt1 << " Cnt2:" << cnt2 << std::endl;
     EXPECT_EQ(cnt, cnt2);
 }

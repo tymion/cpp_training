@@ -7,29 +7,27 @@
 #include "iimage.h"
 #include "mask.h"
 
-using namespace std;
-
 class SimilarRegionSearch
 {
     protected:
-        shared_ptr<RegionFactory> _rbuffer;
-        shared_ptr<RegionFactory> _lbuffer;
+        std::shared_ptr<RegionFactory> _rbuffer;
+        std::shared_ptr<RegionFactory> _lbuffer;
         uint32_t _height;
         uint32_t _width;
 
     public:
-        SimilarRegionSearch(shared_ptr<IImage>& lImage, shared_ptr<IImage>& rImage);
-        SimilarRegionSearch(string lname, string rname);
+        SimilarRegionSearch(std::shared_ptr<IImage>& lImage, std::shared_ptr<IImage>& rImage);
+        SimilarRegionSearch(std::string lname, std::string rname);
 
         void search(uint8_t rsize, uint32_t similarity, double jacardThreshold,
-                    shared_ptr<Mask> const& mask, RegionMap& map);
+                    std::shared_ptr<Mask> const& mask, RegionMap& map);
 
         void search(uint8_t rsize, uint32_t similarity, double jacardThreshold,
                     RegionMap& map);
 
     private:
-        void search_common(uint32_t rsize, unique_ptr<RegionBase>& lregion,
-                            unique_ptr<RegionBase>& rregion, RegionMap& map);
+        void search_common(uint32_t rsize, std::unique_ptr<RegionBase>& lregion,
+                            std::unique_ptr<RegionBase>& rregion, RegionMap& map);
 
 };
 

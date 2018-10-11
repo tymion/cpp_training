@@ -5,8 +5,6 @@
 #include <cstdbool>
 #include "iimage.h"
 
-using namespace std;
-
 class Loader
 {
     private:
@@ -15,7 +13,7 @@ class Loader
         Loader() {}
 
     public:
-        static IImage *loadImage(string filename);
+        static IImage *loadImage(std::string filename);
 
         Loader(Loader const&) = delete;
         void operator=(Loader const&) = delete;

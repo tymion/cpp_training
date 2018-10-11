@@ -6,16 +6,14 @@
 #include <ctime>
 #include "srs_test.h"
 
-using namespace std;
-
 #define rsize 7
 
 int main() {
     clock_t start;
     double duration;
-    string leftFile = "resources/left.png";
-    string rightFile = "resources/left.png";
-    //string rightFile = "resources/right.png";
+    std::string leftFile = "resources/left.png";
+    std::string rightFile = "resources/left.png";
+    //std::string rightFile = "resources/right.png";
     try {
         SrsTest test(leftFile, rightFile);
         /*
@@ -30,14 +28,14 @@ int main() {
         SrsTestMap map;
         test.runOptimization(map);
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
-        cout << "Time: "<< duration << endl;
+        std::cout << "Time: "<< duration << std::endl;
         for (SrsTestMap::iterator it = map.begin(); it != map.end(); ++it) {
-            cout << "rsize:" << it->first << ", simili:" << it->second.first << ", jacard:" << it->second.second << endl;
+            std::cout << "rsize:" << it->first << ", simili:" << it->second.first << ", jacard:" << it->second.second << std::endl;
         }
-        cout << "Coordinates:" << map.size() << endl;
-    } catch (exception const &exc)
+        std::cout << "Coordinates:" << map.size() << std::endl;
+    } catch (std::exception const &exc)
     {
-        cerr << "Exception caught: " << exc.what() << endl;
+        std::cerr << "Exception caught: " << exc.what() << std::endl;
         return -1;
     }
     return 0;

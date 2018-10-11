@@ -1,14 +1,14 @@
 #include "region_coordinates.h"
 #include "srs_test.h"
 
-SrsTest::SrsTest(shared_ptr<IImage>& lImage, shared_ptr<IImage>& rImage)
+SrsTest::SrsTest(std::shared_ptr<IImage>& lImage, std::shared_ptr<IImage>& rImage)
 {
-    _srs = unique_ptr<SimilarRegionSearch>(new SimilarRegionSearch(lImage, rImage));
+    _srs = std::unique_ptr<SimilarRegionSearch>(new SimilarRegionSearch(lImage, rImage));
 }
         
-SrsTest::SrsTest(string leftFile, string rightFile)
+SrsTest::SrsTest(std::string leftFile, std::string rightFile)
 {
-    _srs = unique_ptr<SimilarRegionSearch>(new SimilarRegionSearch(leftFile, rightFile));
+    _srs = std::unique_ptr<SimilarRegionSearch>(new SimilarRegionSearch(leftFile, rightFile));
 }
         
 void SrsTest::setRSizeParameter(uint32_t rsize_min, uint32_t rsize_max, uint32_t rsize_step)
@@ -46,11 +46,11 @@ void SrsTest::runOptimization(SrsTestMap& map)
                 found = false;
                 _srs->search(r, j, i, rmap);
                 if (rmap.size() == 0) {
-                    cout << "map size is zero???!!!r:" << r << ", j:" << j << ", i:" << i << endl;
+                    std::cout << "map size is zero???!!!r:" << r << ", j:" << j << ", i:" << i << std::endl;
                 }
                 for (RegionMap::iterator it = rmap.begin(); it != rmap.end(); ++it) {
                     if (it->second->size() == 0) {
-                        throw invalid_argument("Zero size list in map???!!!");
+                        throw std::invalid_argument("Zero size list in map???!!!");
                     } else if (it->second->size() != 1) {
                         found = true;
                         break;
@@ -70,7 +70,7 @@ void SrsTest::runOptimization(SrsTestMap& map)
                 rmap.erase(it);
             }
         } else {
-            throw invalid_argument("No 1 to 1 found???!!!");
+            throw std::invalid_argument("No 1 to 1 found???!!!");
         }
     }
 }

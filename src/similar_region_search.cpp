@@ -6,34 +6,32 @@
 #include "region_coordinates.h"
 #include "similar_region_search.h"
 
-using namespace std;
-
-SimilarRegionSearch::SimilarRegionSearch(shared_ptr<IImage>& lImage, shared_ptr<IImage>& rImage)
+SimilarRegionSearch::SimilarRegionSearch(std::shared_ptr<IImage>& lImage, std::shared_ptr<IImage>& rImage)
 {
     if (lImage->getHeight() != rImage->getHeight() || lImage->getWidth() != rImage->getWidth()) {
         throw std::invalid_argument("Images should have same sizes.");
     }
     _height = lImage->getHeight();
     _width = lImage->getWidth();
-    _lbuffer = shared_ptr<RegionFactory>(new RegionFactory(lImage));
-    _rbuffer = shared_ptr<RegionFactory>(new RegionFactory(rImage));
+    _lbuffer = std::shared_ptr<RegionFactory>(new RegionFactory(lImage));
+    _rbuffer = std::shared_ptr<RegionFactory>(new RegionFactory(rImage));
 }
 
-SimilarRegionSearch::SimilarRegionSearch(string lname, string rname)
+SimilarRegionSearch::SimilarRegionSearch(std::string lname, std::string rname)
 {
-    shared_ptr<IImage> lImage(Loader::loadImage(lname));
-    shared_ptr<IImage> rImage(Loader::loadImage(rname));
+    std::shared_ptr<IImage> lImage(Loader::loadImage(lname));
+    std::shared_ptr<IImage> rImage(Loader::loadImage(rname));
     if (lImage->getHeight() != rImage->getHeight() || lImage->getWidth() != rImage->getWidth()) {
         throw std::invalid_argument("Images should have same sizes.");
     }
     _height = lImage->getHeight();
     _width = lImage->getWidth();
-    _lbuffer = shared_ptr<RegionFactory>(new RegionFactory(lImage));
-    _rbuffer = shared_ptr<RegionFactory>(new RegionFactory(rImage));
+    _lbuffer = std::shared_ptr<RegionFactory>(new RegionFactory(lImage));
+    _rbuffer = std::shared_ptr<RegionFactory>(new RegionFactory(rImage));
 }
 
-void SimilarRegionSearch::search_common(uint32_t rsize, unique_ptr<RegionBase>& lregion,
-                                        unique_ptr<RegionBase>& rregion, RegionMap& map)
+void SimilarRegionSearch::search_common(uint32_t rsize, std::unique_ptr<RegionBase>& lregion,
+                                        std::unique_ptr<RegionBase>& rregion, RegionMap& map)
 {
     double similar = 0;
     RegionCoordinates *coordinates = NULL;
@@ -49,9 +47,9 @@ void SimilarRegionSearch::search_common(uint32_t rsize, unique_ptr<RegionBase>& 
                 for (uint32_t s_col = col; s_col < _width - rsize; s_col++) {
                     _lbuffer->updateRegion(s_row, s_col, lregion);
                     test = rregion->compare(*lregion, similar);
-                    cout << "SubStep3:" << similar << endl;
+                    std::cout << "SubStep3:" << similar << std::endl;
                     if (test) {
-                        cout << "SubStep3:" << similar << endl;
+                        std::cout << "SubStep3:" << similar << std::endl;
                         if (!coordinates) {
                             coordinates = (RegionCoordinates*) malloc(RegionCoordinatesSize);
                             coordinates->row = row;
@@ -69,9 +67,9 @@ void SimilarRegionSearch::search_common(uint32_t rsize, unique_ptr<RegionBase>& 
             }
             coordinates = NULL;
         }
-        cout << "SubStep4:" << row << endl;
+        std::cout << "SubStep4:" << row << std::endl;
     }
-    cout << "SubStep4=====:" << map.size() << endl;
+    std::cout << "SubStep4=====:" << map.size() << std::endl;
 }
 
 void SimilarRegionSearch::search(uint8_t rsize, uint32_t similarity,
@@ -79,19 +77,19 @@ void SimilarRegionSearch::search(uint8_t rsize, uint32_t similarity,
 {
     Configuration::setSimilarityThreshold(similarity);
     Configuration::setJacardThreshold(jacardThreshold);
-    unique_ptr<RegionBase> rregion(_rbuffer->createRegion(rsize, rsize));
-    unique_ptr<RegionBase> lregion(_lbuffer->createRegion(rsize, rsize));
+    std::unique_ptr<RegionBase> rregion(_rbuffer->createRegion(rsize, rsize));
+    std::unique_ptr<RegionBase> lregion(_lbuffer->createRegion(rsize, rsize));
     SimilarRegionSearch::search_common(rsize, lregion, rregion, map);
 }
 
 void SimilarRegionSearch::search(uint8_t rsize, uint32_t similarity,
-                                    double jacardThreshold, shared_ptr<Mask> const& mask,
+                                    double jacardThreshold, std::shared_ptr<Mask> const& mask,
                                     RegionMap& map)
 {
     Configuration::setSimilarityThreshold(similarity);
     Configuration::setJacardThreshold(jacardThreshold);
-    unique_ptr<RegionBase> rregion(_rbuffer->createRegion(rsize, rsize));
-    unique_ptr<RegionBase> lregion(_lbuffer->createRegion(rsize, rsize));
+    std::unique_ptr<RegionBase> rregion(_rbuffer->createRegion(rsize, rsize));
+    std::unique_ptr<RegionBase> lregion(_lbuffer->createRegion(rsize, rsize));
     rregion->setMask(mask);
     lregion->setMask(mask);
     SimilarRegionSearch::search_common(rsize, lregion, rregion, map);

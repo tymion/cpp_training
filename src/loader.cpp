@@ -26,7 +26,7 @@ bool Loader::isPNG(FILE *file) {
     return true;
 }
 
-IImage* Loader::loadImage(string filename) {
+IImage* Loader::loadImage(std::string filename) {
     struct stat stbuf;
     lstat(filename.c_str(), &stbuf);
     if (!S_ISREG(stbuf.st_mode)) {
@@ -39,8 +39,8 @@ IImage* Loader::loadImage(string filename) {
     IImage *image = NULL;
     if (isPNG(file)) {
         image = (IImage*) new PNGFileWrapper(file);
-        cout << "Width: " << image->getWidth() << endl;
-        cout << "Height: " << image->getHeight() << endl;
+        std::cout << "Width: " << image->getWidth() << std::endl;
+        std::cout << "Height: " << image->getHeight() << std::endl;
     }
     return image;
 }

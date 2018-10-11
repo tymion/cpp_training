@@ -5,9 +5,7 @@
 #include "iimage.h"
 #include "similar_region_search.h"
 
-using namespace std;
-
-typedef pair<uint32_t, double> SrsTestPair;
+typedef std::pair<uint32_t, double> SrsTestPair;
 typedef std::map<uint32_t, SrsTestPair> SrsTestMap;
 
 class SrsTest
@@ -22,11 +20,11 @@ class SrsTest
         double _jacardThreshold_min;
         double _jacardThreshold_max;
         double _jacardThreshold_step;
-        unique_ptr<SimilarRegionSearch> _srs;
+        std::unique_ptr<SimilarRegionSearch> _srs;
 
     public:
-        SrsTest(shared_ptr<IImage>& lImage, shared_ptr<IImage>& rImage);
-        SrsTest(string leftFile, string rightFile);
+        SrsTest(std::shared_ptr<IImage>& lImage, std::shared_ptr<IImage>& rImage);
+        SrsTest(std::string leftFile, std::string rightFile);
 
         void setRSizeParameter(uint32_t rsize_min, uint32_t rsize_max, uint32_t rsize_step);
         void setSimilarityParameter(uint32_t similarity_min, uint32_t similarity_max,

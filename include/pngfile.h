@@ -5,8 +5,6 @@
 #include <cstdbool>
 #include <cstdint>
 
-using namespace std;
-
 enum PNGChunkType {
     IHDR = 0,
     IDAT,

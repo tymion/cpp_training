@@ -58,10 +58,10 @@ PNGImageType PNGFile::parseColor(uint8_t colorType, uint8_t depth) {
         case TrueColorAlpha:
         case TrueColorAlpha_8:
         case TrueColorAlpha_16:
-            cout << "Image Type:" << hex << (colorType << 8 | depth) << dec << endl;
+            std::cout << "Image Type:" << std::hex << (colorType << 8 | depth) << std::dec << std::endl;
             return (PNGImageType) (colorType << 8 | depth);
         default:
-            cout << "Invalid Image Type! (" << (colorType << 8 | depth) << ")" << endl;
+            std::cout << "std::invalid Image Type! (" << (colorType << 8 | depth) << ")" << std::endl;
             return Invalid;
     }
 }
@@ -91,33 +91,33 @@ PNGChunkType PNGFile::readChunkHeader(struct PNGChunk_ *chunk) {
         chunk->length = changeEndianness(chunk->length);
         chunk->typeData = changeEndianness(chunk->typeData);
     }
-    cout << "===Reading new chunk===" << endl;
-    cout << "Chunk data length:" << chunk->length << endl;
-    cout << "Chunk Type:" << hex << chunk->typeData << dec << endl;
+    std::cout << "===Reading new chunk===" << std::endl;
+    std::cout << "Chunk data length:" << chunk->length << std::endl;
+    std::cout << "Chunk Type:" << std::hex << chunk->typeData << std::dec << std::endl;
     chunk->attr = PNGChunkAttr::None;
     if (chunk->typeData & (0x1 << 5)) {
         chunk->attr |= PNGChunkAttr::Ancillary;
-        cout << "Ancillary:" << 1 << endl;
+        std::cout << "Ancillary:" << 1 << std::endl;
     } else {
-        cout << "Ancillary:" << 0 << endl;
+        std::cout << "Ancillary:" << 0 << std::endl;
     }
     if (chunk->typeData & (0x1 << 13)) {
         chunk->attr |= PNGChunkAttr::Private;
-        cout << "Private:" << 1 << endl;
+        std::cout << "Private:" << 1 << std::endl;
     } else {
-        cout << "Private:" << 0 << endl;
+        std::cout << "Private:" << 0 << std::endl;
     }
     if (chunk->typeData & (0x1 << 21)) {
         chunk->attr |= PNGChunkAttr::Reserved;
-        cout << "Reserved:" << 1 << endl;
+        std::cout << "Reserved:" << 1 << std::endl;
     } else {
-        cout << "Reserved:" << 0 << endl;
+        std::cout << "Reserved:" << 0 << std::endl;
     }
     if (chunk->typeData & (0x1 << 29)) {
         chunk->attr |= PNGChunkAttr::SafeToCopy;
-        cout << "Safe-to-copy:" << 1 << endl;
+        std::cout << "Safe-to-copy:" << 1 << std::endl;
     } else {
-        cout << "Safe-to-copy:" << 0 << endl;
+        std::cout << "Safe-to-copy:" << 0 << std::endl;
     }
     uint8_t *data = new uint8_t[chunk->length];
     ret = readData(data, chunk->length);
@@ -142,12 +142,12 @@ void PNGFile::readCrc() {
         throw std::invalid_argument("Can't read crc.");
     }
 
-    cout << "CRC:" << crc << endl;
+    std::cout << "CRC:" << crc << std::endl;
 }
 
 PNGFile::PNGFile(FILE *file) {
     if (file == NULL) {
-        throw std::invalid_argument("Invalid file descriptor.");
+        throw std::invalid_argument("std::invalid file descriptor.");
     }
     _file = file;
     readHeader();
@@ -202,9 +202,9 @@ bool PNGFile::getData(uint32_t row, uint8_t **data) {
     size_t ret = 0;
     size_t tmp = 0;
     uint32_t toRead = length;
-    std::cout << "getData|toRead:" << toRead << std::endl;
+    std::cout << "getData|toRead:" << toRead << std::std::endl;
     while (_state == PNGFileState::Data && ret != length) {
-        std::cout << "getData" << std::endl;
+        std::cout << "getData" << std::std::endl;
         if (_dataLeft == 0) {
             readCrc();
             struct PNGChunk_ chunk;

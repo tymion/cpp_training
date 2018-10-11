@@ -6,8 +6,6 @@
 #include <png.h>
 #include "iimage.h"
 
-using namespace std;
-
 class PNGFileWrapper: public IImage {
     private:
         FILE *_file;

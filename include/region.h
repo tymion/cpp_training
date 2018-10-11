@@ -7,8 +7,6 @@
 #include "config.h"
 #include "algorithms.h"
 
-using namespace std;
-
 class RegionBase {
     public:
         virtual uint32_t getHeight() = 0;
@@ -88,9 +86,9 @@ class Region : RegionBase {
 #ifdef DEBUG
             for (uint32_t i = 0; i < _height && _data[i] != NULL; i++) {
                 for (uint32_t j = 0; j < _width; j++) {
-                    cout << _data[i][j];
+                    std::cout << _data[i][j];
                 }
-                cout << std::endl;
+                std::cout << std::endl;
             }
 #endif /* DEBUG */
         }
@@ -106,7 +104,7 @@ class Region : RegionBase {
         {
             const Region<T>& regionT = (const Region<T>&)(region);
             similarity = count_index_jacarda(_data, regionT._data, _height, _width);
-            cout << "SubStep33:" << similarity << endl;
+            std::cout << "SubStep33:" << similarity << std::endl;
             return similarity >= Configuration::getJacardThreshold();
         }
 

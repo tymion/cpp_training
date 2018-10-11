@@ -6,23 +6,21 @@
 #include "pixel_3x8.h"
 #include "libpng_wrapper.h"
 
-using namespace std;
-
 struct IImageObject
 {
-    const type_info &type;
+    const std::type_info &type;
 };
 
 class RegionFactoryTest: public testing::Test
 {
     protected:
-        unique_ptr<RegionFactory> fb;
+        std::unique_ptr<RegionFactory> fb;
 
         FILE* openTestFile();
 
         void SetUp() override {
-            shared_ptr<IImage> iimage((IImage*) new IImageMock_3x8());
-            fb = unique_ptr<RegionFactory>(new RegionFactory(iimage));
+            std::shared_ptr<IImage> iimage((IImage*) new IImageMock_3x8());
+            fb = std::unique_ptr<RegionFactory>(new RegionFactory(iimage));
         }
         void TearDown() override {
         }
@@ -31,18 +29,18 @@ class RegionFactoryTest: public testing::Test
 class RegionFactoryParamTest: public testing::TestWithParam<IImageObject>
 {
     protected:
-        unique_ptr<RegionFactory> fb;
+        std::unique_ptr<RegionFactory> fb;
 
         FILE* openTestFile();
 
         void SetUp() override {
-            shared_ptr<IImage> iimage;
+            std::shared_ptr<IImage> iimage;
             if (GetParam().type == typeid(IImageMock_3x8)) {
-                iimage = shared_ptr<IImage>((IImage*) new IImageMock_3x8());
+                iimage = std::shared_ptr<IImage>((IImage*) new IImageMock_3x8());
             } else if (GetParam().type == typeid(PNGFileWrapper)) {
-                iimage = shared_ptr<IImage>((IImage*) new PNGFileWrapper(RegionFactoryParamTest::openTestFile()));
+                iimage = std::shared_ptr<IImage>((IImage*) new PNGFileWrapper(RegionFactoryParamTest::openTestFile()));
             }
-            fb = unique_ptr<RegionFactory>(new RegionFactory(iimage));
+            fb = std::unique_ptr<RegionFactory>(new RegionFactory(iimage));
         }
         void TearDown() override {
         }
@@ -52,7 +50,7 @@ FILE* RegionFactoryParamTest::openTestFile()
 {
     FILE *file = fopen("test/test1.png", "rb");
     if (file == NULL) {
-        cout << "Can't open test.png file" << endl;
+        std::cout << "Can't open test.png file" << std::endl;
     }
     return file;
 }
@@ -64,8 +62,8 @@ INSTANTIATE_TEST_CASE_P(Default, RegionFactoryParamTest, ::testing::Values(
 
 TEST_F(RegionFactoryTest, updateRegion_iimage_mock)
 {
-    unique_ptr<RegionBase> reg1(fb->createRegion(2,2));
-    unique_ptr<RegionBase> reg2((RegionBase*)new Region<pixel_3x8>(2, 2));
+    std::unique_ptr<RegionBase> reg1(fb->createRegion(2,2));
+    std::unique_ptr<RegionBase> reg2((RegionBase*)new Region<pixel_3x8>(2, 2));
     uint8_t data_1[12] = {
         0x00, 0x01, 0x02, 0x03, 0x04, 0x05,
         0x12, 0x13, 0x14, 0x15, 0x16, 0x17
@@ -86,7 +84,7 @@ TEST_F(RegionFactoryTest, updateRegion_iimage_mock)
 
 TEST_P(RegionFactoryParamTest, createRegion)
 {
-    unique_ptr<RegionBase> reg(fb->createRegion(2,2));
+    std::unique_ptr<RegionBase> reg(fb->createRegion(2,2));
     EXPECT_EQ(reg->getWidth(), (uint32_t) 2);
     EXPECT_EQ(reg->getHeight(), (uint32_t) 2);
 }
