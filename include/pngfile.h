@@ -1,5 +1,4 @@
-#ifndef _PNG_H_
-#define _PNG_H_
+#pragma once
 #include "iimage.h"
 #include <cstdio>
 #include <cstdbool>
@@ -101,5 +100,3 @@ class PNGFile: public IImage {
         uint8_t getComponentSize();
         uint8_t getComponentCnt();
 };
-
-#endif /* _PNG_H_ */

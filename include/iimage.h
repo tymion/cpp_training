@@ -1,5 +1,4 @@
-#ifndef _IMAGE_HPP_
-#define _IMAGE_HPP_
+#pragma once
 #include <cstdint>
 #include <iostream>
 
@@ -13,5 +12,3 @@ class IImage
         virtual uint8_t getComponentCnt() = 0;
         virtual ~IImage(){};
 };
-
-#endif /* _IMAGE_HPP_ */

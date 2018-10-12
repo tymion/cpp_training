@@ -1,5 +1,4 @@
-#ifndef __LOGGER_H__
-#define __LOGGER_H__
+#pragma once
 
 #define BOOST_LOG(arg) \
 if (rec) \
@@ -9,5 +8,3 @@ if (rec) \
     strm.flush(); \
     lg.push_record(boost::move(rec)); \
 }
-
-#endif /* __LOGGER_H_ */

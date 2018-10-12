@@ -1,5 +1,4 @@
-#ifndef __SIMILAR_REGION_SEARCH__
-#define __SIMILAR_REGION_SEARCH__
+#pragma once
 #include <memory>
 #include "region_coordinates.h"
 #include "region_factory.h"
@@ -30,5 +29,3 @@ class SimilarRegionSearch
                             std::unique_ptr<RegionBase>& rregion, RegionMap& map);
 
 };
-
-#endif /* __SIMILAR_REGION_SEARCH__ */

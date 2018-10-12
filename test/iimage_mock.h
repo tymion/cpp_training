@@ -1,5 +1,4 @@
-#ifndef _IMAGE_MOCK_HPP_
-#define _IMAGE_MOCK_HPP_
+#pragma once
 #include <cstdint>
 #include "iimage.h"
 
@@ -49,5 +48,3 @@ class IImageMock_3x8 : IImage
             return 3;
         }
 };
-
-#endif /* _IMAGE_MOCK_HPP_ */

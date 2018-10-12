@@ -1,5 +1,4 @@
-#ifndef _PIXEL_4x16_H_
-#define _PIXEL_4x16_H_
+#pragma once
 
 struct pixel_4x16 {
     uint16_t red;
@@ -7,4 +6,3 @@ struct pixel_4x16 {
     uint16_t blue;
     uint16_t alpha;
 };
-#endif /* _PIXEL_4x16_H_ */

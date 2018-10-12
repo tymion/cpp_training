@@ -1,5 +1,4 @@
-#ifndef _REGION_H_
-#define _REGION_H_
+#pragma once
 #include <cstring>
 #include <iostream>
 #include <memory>
@@ -143,4 +142,3 @@ class Region : RegionBase {
         }
 
 };
-#endif /* _REGION_H_ */

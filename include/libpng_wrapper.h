@@ -1,5 +1,4 @@
-#ifndef _LIBPNG_WRAPPER_H_
-#define _LIBPNG_WRAPPER_H_
+#pragma once
 #include <cstdio>
 #include <cstdbool>
 #include <cstdint>
@@ -25,5 +24,3 @@ class PNGFileWrapper: public IImage {
         uint8_t getComponentSize();
         uint8_t getComponentCnt();
 };
-
-#endif /* _LIBPNG_WRAPPER_H_ */

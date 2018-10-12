@@ -1,5 +1,4 @@
-#ifndef _MASK_HPP_
-#define _MASK_HPP_
+#pragma once
 #include <cstdint>
 
 class Mask {
@@ -14,5 +13,3 @@ class Mask {
 
         uint8_t getMask(uint32_t height, uint32_t width);
 };
-
-#endif /* _MASK_HPP_ */

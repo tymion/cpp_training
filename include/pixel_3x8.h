@@ -1,5 +1,4 @@
-#ifndef _PIXEL_3x8_H_
-#define _PIXEL_3x8_H_
+#pragma once
 
 #include <cstdint>
 #include <iostream>
@@ -17,5 +16,3 @@ struct pixel_3x8 {
     pixel_3x8 operator- (const pixel_3x8& pixel);
     ~pixel_3x8(){};
 };
-
-#endif /* _PIXEL_3x8_H_ */

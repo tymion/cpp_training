@@ -1,6 +1,4 @@
-#ifndef _CONFIG_H_
-#define _CONFIG_H_
-
+#pragma once
 #include <cstdint>
 #include <string>
 
@@ -27,5 +25,3 @@ class Configuration
         void operator=(Configuration const&) = delete;
 
 };
-
-#endif /* _CONFIG_H_ */

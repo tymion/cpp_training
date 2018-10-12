@@ -1,5 +1,4 @@
-#ifndef _ALGORITHMS_H_
-#define _ALGORITHMS_H_
+#pragma once
 #include <memory>
 #include "mask.h"
 #include "config.h"
@@ -81,4 +80,3 @@ bool classic_compare(T **left, T **right, uint32_t height, uint32_t width)
     }
     return true;
 }
-#endif /* _ALGORITHMS_H_ */

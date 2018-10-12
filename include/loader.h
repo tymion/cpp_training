@@ -1,5 +1,4 @@
-#ifndef _LOAD_H_
-#define _LOAD_H_
+#pragma once
 #include <string>
 #include <cstdio>
 #include <cstdbool>
@@ -18,4 +17,3 @@ class Loader
         Loader(Loader const&) = delete;
         void operator=(Loader const&) = delete;
 };
-#endif /* _LOAD_H_ */

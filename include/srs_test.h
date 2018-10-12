@@ -1,5 +1,4 @@
-#ifndef __SRS_TESTS_H__
-#define __SRS_TESTS_H__
+#pragma once
 #include <memory>
 #include <map>
 #include "iimage.h"
@@ -33,5 +32,3 @@ class SrsTest
                                 double jacardThreshold_step);
         void runOptimization(SrsTestMap& map);
 };
-
-#endif /*__SRS_TESTS_H__*/

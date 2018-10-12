@@ -1,5 +1,4 @@
-#ifndef __REGION_COORDINATES__
-#define __REGION_COORDINATES__
+#pragma once
 #include <list>
 #include <map>
 
@@ -21,5 +20,3 @@ typedef struct region_matched_ RegionMatched;
 typedef std::list<RegionMatched*> RegionMatchedList;
 
 typedef std::map<const RegionCoordinates*, RegionMatchedList*> RegionMap;
-
-#endif /*__REGION_COORDINATES__*/

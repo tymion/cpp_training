@@ -1,5 +1,4 @@
-#ifndef _PIXEL_3x16_H_
-#define _PIXEL_3x16_H_
+#pragma once
 
 #include <cstdint>
 
@@ -14,5 +13,3 @@ struct pixel_3x16 {
     pixel_3x16& operator- (const pixel_3x16& pixel);
     ~pixel_3x16(){};
 };
-
-#endif /* _PIXEL_3x16_H_ */
