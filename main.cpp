@@ -21,9 +21,9 @@ int main() {
         memset(maskData, 1, sizeof(maskData));
         shared_ptr<Mask> mask(new Mask(rsize, rsize, maskData));
         */
-        test.setRSizeParameter(3, 9, 1);
-        test.setSimilarityParameter(10, 25, 1);
-        test.setJacardParameter(0.5, 0.9, 0.1);
+        test.setRSizeParameter(9, 9, 1);
+        test.setSimilarityParameter(1, 10, 1);
+        test.setJacardParameter(0.7, 1.0, 0.1);
         start = clock();
         SrsTestMap map;
         test.runOptimization(map);

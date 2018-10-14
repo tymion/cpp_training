@@ -103,7 +103,6 @@ class Region : RegionBase {
         {
             const Region<T>& regionT = (const Region<T>&)(region);
             similarity = count_index_jacarda(_data, regionT._data, _height, _width);
-            std::cout << "SubStep33:" << similarity << std::endl;
             return similarity >= Configuration::getJacardThreshold();
         }
 

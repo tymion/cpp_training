@@ -16,8 +16,6 @@ double count_index_jacarda(T **left, T **right, uint32_t height, uint32_t width)
             }
         }
     }
-    std::cout << "SubStep3:" << ((double) similar / (double) (height * width)) << std::endl;
-    std::cout << "SubStep2:" << similar << std::endl;
     return (double) similar / (double) (height * width);
 }
 

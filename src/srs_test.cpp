@@ -43,8 +43,9 @@ void SrsTest::runOptimization(SrsTestMap& map)
         bool found = false;
         for (i = _similarity_max; i >= _similarity_min; i -= _similarity_step) {
             for (j = _jacardThreshold_min; j <= _jacardThreshold_max; j += _jacardThreshold_step) {
+                std::cout << "==" << r << "==" << i << "==" << j << "\n";
                 found = false;
-                _srs->search(r, j, i, rmap);
+                _srs->search(r, i, j, rmap);
                 if (rmap.size() == 0) {
                     std::cout << "map size is zero???!!!r:" << r << ", j:" << j << ", i:" << i << std::endl;
                 }
@@ -66,9 +67,11 @@ void SrsTest::runOptimization(SrsTestMap& map)
         }
         if (!found) {
             map[r] = SrsTestPair(i, j);
+            std::cout << "==Erase map" << rmap.size() << "\n";
             for (RegionMap::iterator it = rmap.begin(); it != rmap.end(); ++it) {
                 rmap.erase(it);
             }
+            std::cout << "==After Erase map" << rmap.size() << "\n";
         } else {
             throw std::invalid_argument("No 1 to 1 found???!!!");
         }

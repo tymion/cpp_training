@@ -30,6 +30,41 @@ SimilarRegionSearch::SimilarRegionSearch(std::string lname, std::string rname)
     _rbuffer = std::shared_ptr<RegionFactory>(new RegionFactory(rImage));
 }
 
+void SimilarRegionSearch::search_common2(uint32_t rsize, std::unique_ptr<RegionBase>& lregion,
+                                        std::unique_ptr<RegionBase>& rregion, RegionMap& map)
+{
+    double similar = 0;
+    RegionCoordinates *coordinates = NULL;
+    RegionMatchedList *list = NULL;
+    RegionMatched *matched = NULL;
+    rsize = 7;
+    for (uint32_t row = 0; row < _height - rsize; row++) {
+        for (uint32_t col = 0; col < _width - rsize; col++) {
+            _rbuffer->updateRegion(row, col, rregion);
+            for (uint32_t s_col = col; s_col < _width - rsize; s_col++) {
+                _lbuffer->updateRegion(row, s_col, lregion);
+                if (rregion->compare(*lregion, similar)) {
+                    if (!coordinates) {
+                        coordinates = (RegionCoordinates*) malloc(RegionCoordinatesSize);
+                        coordinates->row = row;
+                        coordinates->col = col;
+                        list = new RegionMatchedList();
+                        map[coordinates] = list;
+                    }
+                    matched = new RegionMatched();
+                    matched->coordinates.row = row;
+                    matched->coordinates.col = s_col;
+                    matched->similarity_degree = similar;
+                    list->push_back(matched);
+                }
+            }
+            coordinates = NULL;
+        }
+        std::cout << "SubStep4:" << row << std::endl;
+    }
+    std::cout << "SubStep4=====:" << map.size() << std::endl;
+}
+
 void SimilarRegionSearch::search_common(uint32_t rsize, std::unique_ptr<RegionBase>& lregion,
                                         std::unique_ptr<RegionBase>& rregion, RegionMap& map)
 {
@@ -37,7 +72,6 @@ void SimilarRegionSearch::search_common(uint32_t rsize, std::unique_ptr<RegionBa
     RegionCoordinates *coordinates = NULL;
     RegionMatchedList *list = NULL;
     RegionMatched *matched = NULL;
-    bool test = false;
     for (uint32_t row = 0; row < _height - rsize; row++) {
         for (uint32_t col = 0; col < _width - rsize; col++) {
             _rbuffer->updateRegion(row, col, rregion);
@@ -46,10 +80,7 @@ void SimilarRegionSearch::search_common(uint32_t rsize, std::unique_ptr<RegionBa
             for (; s_row < s_row_max; s_row++) {
                 for (uint32_t s_col = col; s_col < _width - rsize; s_col++) {
                     _lbuffer->updateRegion(s_row, s_col, lregion);
-                    test = rregion->compare(*lregion, similar);
-                    std::cout << "SubStep3:" << similar << std::endl;
-                    if (test) {
-                        std::cout << "SubStep3:" << similar << std::endl;
+                    if (rregion->compare(*lregion, similar)) {
                         if (!coordinates) {
                             coordinates = (RegionCoordinates*) malloc(RegionCoordinatesSize);
                             coordinates->row = row;
@@ -67,9 +98,9 @@ void SimilarRegionSearch::search_common(uint32_t rsize, std::unique_ptr<RegionBa
             }
             coordinates = NULL;
         }
-        std::cout << "SubStep4:" << row << std::endl;
+        std::cout << "SubStep4:" << row << "\n";
     }
-    std::cout << "SubStep4=====:" << map.size() << std::endl;
+    std::cout << "SubStep4=====:" << map.size() << "\n";
 }
 
 void SimilarRegionSearch::search(uint8_t rsize, uint32_t similarity,

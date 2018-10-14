@@ -36,18 +36,20 @@ TEST(IntegrationTest, getData)
     for (uint32_t row = 0; row < height - size; row++) {
         for (uint32_t col = 0; col < width - size; col++) {
             rbuffer->updateRegion(row, col, rregion);
-            lbuffer->updateRegion(row, col, lregion);
-            if (rregion->compare(*lregion, similar)) {
-                std::cout << "SubStep3:" << similar << std::endl;
-                cnt1++;
+            for (uint32_t s_col = col; s_col < width - size; s_col++) {
+                lbuffer->updateRegion(row, s_col, lregion);
+                if (rregion->compare(*lregion, similar)) {
+                    cnt1++;
+                }
+                if (*rregion == *lregion) {
+                    cnt++;
+                }
+                cnt2++;
             }
-            if (*rregion == *lregion) {
-                cnt++;
-            }
-            cnt2++;
         }
+        std::cout << "Row:" << row <<  "\n";
     }
 
-    std::cout << "Cnt:" << cnt << " Cnt1:" <<  cnt1 << " Cnt2:" << cnt2 << std::endl;
+    std::cout << "Cnt:" << cnt << " Cnt1:" <<  cnt1 << " Cnt2:" << cnt2 << "\n";
     EXPECT_EQ(cnt, cnt2);
 }

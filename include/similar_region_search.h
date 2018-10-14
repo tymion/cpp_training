@@ -28,4 +28,6 @@ class SimilarRegionSearch
         void search_common(uint32_t rsize, std::unique_ptr<RegionBase>& lregion,
                             std::unique_ptr<RegionBase>& rregion, RegionMap& map);
 
+        void search_common2(uint32_t rsize, std::unique_ptr<RegionBase>& lregion,
+                            std::unique_ptr<RegionBase>& rregion, RegionMap& map);
 };

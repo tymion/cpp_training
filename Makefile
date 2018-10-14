@@ -19,7 +19,7 @@ PNG_LIB_DIR=$(PNG_DIR)/lib/
 
 CXX:=g++
 CFLAGS=-Wall -pedantic -g
-CXXFLAGS=-std=c++11
+CXXFLAGS=-std=c++17
 LD_FLAGS=-Wl,--rpath=$(PNG_LIB_DIR)
 
 EXTRA_FLAGS=-DINDEX_JACARDA
