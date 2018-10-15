@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "region_coordinates.h"
+#include "srs_out_data.h"
 #include "region_factory.h"
 #include "region.h"
 #include "iimage.h"
@@ -19,15 +19,15 @@ class SimilarRegionSearch
         SimilarRegionSearch(std::string lname, std::string rname);
 
         void search(uint8_t rsize, uint32_t similarity, double jacardThreshold,
-                    std::shared_ptr<Mask> const& mask, RegionMap& map);
+                    std::shared_ptr<Mask> const& mask, SrsOutData& data);
 
         void search(uint8_t rsize, uint32_t similarity, double jacardThreshold,
-                    RegionMap& map);
+                    SrsOutData& data);
 
     private:
         void search_common(uint32_t rsize, std::unique_ptr<RegionBase>& lregion,
-                            std::unique_ptr<RegionBase>& rregion, RegionMap& map);
+                            std::unique_ptr<RegionBase>& rregion, SrsOutData& data);
 
         void search_common2(uint32_t rsize, std::unique_ptr<RegionBase>& lregion,
-                            std::unique_ptr<RegionBase>& rregion, RegionMap& map);
+                            std::unique_ptr<RegionBase>& rregion, SrsOutData& data);
 };

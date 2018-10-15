@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ctime>
 #include "loader.h"
-#include "region_coordinates.h"
+#include "srs_out_data.h"
 #include "similar_region_search.h"
 
 SimilarRegionSearch::SimilarRegionSearch(std::shared_ptr<IImage>& lImage, std::shared_ptr<IImage>& rImage)
@@ -31,12 +31,10 @@ SimilarRegionSearch::SimilarRegionSearch(std::string lname, std::string rname)
 }
 
 void SimilarRegionSearch::search_common2(uint32_t rsize, std::unique_ptr<RegionBase>& lregion,
-                                        std::unique_ptr<RegionBase>& rregion, RegionMap& map)
+                                        std::unique_ptr<RegionBase>& rregion, SrsOutData& data)
 {
     double similar = 0;
     RegionCoordinates *coordinates = NULL;
-    RegionMatchedList *list = NULL;
-    RegionMatched *matched = NULL;
     rsize = 7;
     for (uint32_t row = 0; row < _height - rsize; row++) {
         for (uint32_t col = 0; col < _width - rsize; col++) {
@@ -45,33 +43,22 @@ void SimilarRegionSearch::search_common2(uint32_t rsize, std::unique_ptr<RegionB
                 _lbuffer->updateRegion(row, s_col, lregion);
                 if (rregion->compare(*lregion, similar)) {
                     if (!coordinates) {
-                        coordinates = (RegionCoordinates*) malloc(RegionCoordinatesSize);
-                        coordinates->row = row;
-                        coordinates->col = col;
-                        list = new RegionMatchedList();
-                        map[coordinates] = list;
+                        coordinates = data.createResult(row, col);
                     }
-                    matched = new RegionMatched();
-                    matched->coordinates.row = row;
-                    matched->coordinates.col = s_col;
-                    matched->similarity_degree = similar;
-                    list->push_back(matched);
+                    data.addMatchedRegion(coordinates, row, s_col, similar);
                 }
             }
             coordinates = NULL;
         }
         std::cout << "SubStep4:" << row << std::endl;
     }
-    std::cout << "SubStep4=====:" << map.size() << std::endl;
 }
 
 void SimilarRegionSearch::search_common(uint32_t rsize, std::unique_ptr<RegionBase>& lregion,
-                                        std::unique_ptr<RegionBase>& rregion, RegionMap& map)
+                                        std::unique_ptr<RegionBase>& rregion, SrsOutData& data)
 {
     double similar = 0;
     RegionCoordinates *coordinates = NULL;
-    RegionMatchedList *list = NULL;
-    RegionMatched *matched = NULL;
     for (uint32_t row = 0; row < _height - rsize; row++) {
         for (uint32_t col = 0; col < _width - rsize; col++) {
             _rbuffer->updateRegion(row, col, rregion);
@@ -82,17 +69,9 @@ void SimilarRegionSearch::search_common(uint32_t rsize, std::unique_ptr<RegionBa
                     _lbuffer->updateRegion(s_row, s_col, lregion);
                     if (rregion->compare(*lregion, similar)) {
                         if (!coordinates) {
-                            coordinates = (RegionCoordinates*) malloc(RegionCoordinatesSize);
-                            coordinates->row = row;
-                            coordinates->col = col;
-                            list = new RegionMatchedList();
-                            map[coordinates] = list;
+                            coordinates = data.createResult(row, col);
                         }
-                        matched = new RegionMatched();
-                        matched->coordinates.row = s_row;
-                        matched->coordinates.col = s_col;
-                        matched->similarity_degree = similar;
-                        list->push_back(matched);
+                        data.addMatchedRegion(coordinates, s_row, s_col, similar);
                     }
                 }
             }
@@ -100,22 +79,21 @@ void SimilarRegionSearch::search_common(uint32_t rsize, std::unique_ptr<RegionBa
         }
         std::cout << "SubStep4:" << row << "\n";
     }
-    std::cout << "SubStep4=====:" << map.size() << "\n";
 }
 
 void SimilarRegionSearch::search(uint8_t rsize, uint32_t similarity,
-                                    double jacardThreshold, RegionMap& map)
+                                    double jacardThreshold, SrsOutData& data)
 {
     Configuration::setSimilarityThreshold(similarity);
     Configuration::setJacardThreshold(jacardThreshold);
     std::unique_ptr<RegionBase> rregion(_rbuffer->createRegion(rsize, rsize));
     std::unique_ptr<RegionBase> lregion(_lbuffer->createRegion(rsize, rsize));
-    SimilarRegionSearch::search_common(rsize, lregion, rregion, map);
+    SimilarRegionSearch::search_common(rsize, lregion, rregion, data);
 }
 
 void SimilarRegionSearch::search(uint8_t rsize, uint32_t similarity,
                                     double jacardThreshold, std::shared_ptr<Mask> const& mask,
-                                    RegionMap& map)
+                                    SrsOutData& data)
 {
     Configuration::setSimilarityThreshold(similarity);
     Configuration::setJacardThreshold(jacardThreshold);
@@ -123,5 +101,5 @@ void SimilarRegionSearch::search(uint8_t rsize, uint32_t similarity,
     std::unique_ptr<RegionBase> lregion(_lbuffer->createRegion(rsize, rsize));
     rregion->setMask(mask);
     lregion->setMask(mask);
-    SimilarRegionSearch::search_common(rsize, lregion, rregion, map);
+    SimilarRegionSearch::search_common(rsize, lregion, rregion, data);
 }

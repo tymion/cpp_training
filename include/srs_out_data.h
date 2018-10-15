@@ -7,7 +7,6 @@ struct region_coordinates_ {
     uint32_t row;
     uint32_t col;
 };
-
 typedef struct region_coordinates_ RegionCoordinates;
 
 struct region_matched_ {
@@ -26,9 +25,10 @@ class SrsOutData
         RegionMap _map;
     public:
         SrsOutData();
-        RegionCoordinates& createResult(uint32_t row, uint32_t col);
-        void addMatchedRegion(RegionCoordinates& region, uint32_t row,
+        RegionCoordinates* createResult(uint32_t row, uint32_t col);
+        void addMatchedRegion(RegionCoordinates* region, uint32_t row,
                                 uint32_t col, double similarity);
+        bool isOptimized();
 };
 
 /*

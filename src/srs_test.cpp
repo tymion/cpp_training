@@ -1,4 +1,4 @@
-#include "region_coordinates.h"
+#include "srs_out_data.h"
 #include "srs_test.h"
 
 SrsTest::SrsTest(std::shared_ptr<IImage>& lImage, std::shared_ptr<IImage>& rImage)
@@ -36,7 +36,7 @@ void SrsTest::setJacardParameter(double jacardThreshold_min, double jacardThresh
 
 void SrsTest::runOptimization(SrsTestMap& map)
 {
-    RegionMap rmap;
+    SrsOutData data;
     uint32_t i = 0;
     double j = 0.0;
     for (uint32_t r = _rsize_min; r <= _rsize_max; r +=_rsize_step) {
@@ -45,33 +45,18 @@ void SrsTest::runOptimization(SrsTestMap& map)
             for (j = _jacardThreshold_min; j <= _jacardThreshold_max; j += _jacardThreshold_step) {
                 std::cout << "==" << r << "==" << i << "==" << j << "\n";
                 found = false;
-                _srs->search(r, i, j, rmap);
-                if (rmap.size() == 0) {
-                    std::cout << "map size is zero???!!!r:" << r << ", j:" << j << ", i:" << i << std::endl;
-                }
-                for (RegionMap::iterator it = rmap.begin(); it != rmap.end(); ++it) {
-                    if (it->second->size() == 0) {
-                        throw std::invalid_argument("Zero size list in map???!!!");
-                    } else if (it->second->size() != 1) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
+                _srs->search(r, i, j, data);
+                found = data.isOptimized();
+                if (found) {
                     break;
                 }
             }
-            if (!found) {
+            if (found) {
                 break;
             }
         }
-        if (!found) {
+        if (found) {
             map[r] = SrsTestPair(i, j);
-            std::cout << "==Erase map" << rmap.size() << "\n";
-            for (RegionMap::iterator it = rmap.begin(); it != rmap.end(); ++it) {
-                rmap.erase(it);
-            }
-            std::cout << "==After Erase map" << rmap.size() << "\n";
         } else {
             throw std::invalid_argument("No 1 to 1 found???!!!");
         }
