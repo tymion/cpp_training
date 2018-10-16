@@ -21,11 +21,23 @@ int main() {
         memset(maskData, 1, sizeof(maskData));
         shared_ptr<Mask> mask(new Mask(rsize, rsize, maskData));
         */
+        test.setSimilarityParameter(0, 255, 1);
+        test.setJacardParameter(0, 1.0, 0.1);
+        test.setPrecision(1, 0.1);
+        uint32_t similarity = 0;
+        double jacard = 0.0;
+        start = clock();
+        test.calcSrsStartPoint(similarity, jacard, 9);
+        duration = (clock() - start) / (double) CLOCKS_PER_SEC;
+        std::cout << "Similarity: "<< similarity << " Jacard:" << jacard << std::endl;
+        std::cout << "Time: "<< duration << std::endl;
+
+        return 0;
         test.setRSizeParameter(9, 9, 1);
         test.setSimilarityParameter(1, 10, 1);
         test.setJacardParameter(0.7, 1.0, 0.1);
-        start = clock();
         SrsTestMap map;
+        start = clock();
         test.runOptimization(map);
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << "Time: "<< duration << std::endl;

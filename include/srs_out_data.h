@@ -25,11 +25,12 @@ class SrsOutData
         RegionMap _map;
     public:
         SrsOutData();
+        void clear();
         RegionCoordinates* createResult(uint32_t row, uint32_t col);
         void addMatchedRegion(RegionCoordinates* region, uint32_t row,
                                 uint32_t col, double similarity);
         bool isOptimized();
-        bool isUnderLimit(uint32_t limit)
+        bool isUnderLimit(uint32_t limit);
 };
 
 /*

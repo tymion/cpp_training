@@ -6,7 +6,8 @@
 #include "srs_out_data.h"
 #include "similar_region_search.h"
 
-SimilarRegionSearch::SimilarRegionSearch(std::shared_ptr<IImage>& lImage, std::shared_ptr<IImage>& rImage)
+SimilarRegionSearch::SimilarRegionSearch(std::shared_ptr<IImage>& lImage,
+                                            std::shared_ptr<IImage>& rImage)
 {
     if (lImage->getHeight() != rImage->getHeight() || lImage->getWidth() != rImage->getWidth()) {
         throw std::invalid_argument("Images should have same sizes.");
@@ -45,7 +46,6 @@ void SimilarRegionSearch::search_common2(uint32_t rsize, std::unique_ptr<RegionB
 {
     double similar = 0;
     RegionCoordinates *coordinates = NULL;
-    rsize = 7;
     for (uint32_t row = 0; row < _height - rsize; row++) {
         for (uint32_t col = 0; col < _width - rsize; col++) {
             _rbuffer->updateRegion(row, col, rregion);
@@ -98,7 +98,7 @@ void SimilarRegionSearch::search(uint8_t rsize, uint32_t similarity,
     Configuration::setJacardThreshold(jacardThreshold);
     std::unique_ptr<RegionBase> rregion(_rbuffer->createRegion(rsize, rsize));
     std::unique_ptr<RegionBase> lregion(_lbuffer->createRegion(rsize, rsize));
-    SimilarRegionSearch::search_common(rsize, lregion, rregion, data);
+    SimilarRegionSearch::search_common2(rsize, lregion, rregion, data);
 }
 
 void SimilarRegionSearch::search(uint8_t rsize, uint32_t similarity,
@@ -111,5 +111,5 @@ void SimilarRegionSearch::search(uint8_t rsize, uint32_t similarity,
     std::unique_ptr<RegionBase> lregion(_lbuffer->createRegion(rsize, rsize));
     rregion->setMask(mask);
     lregion->setMask(mask);
-    SimilarRegionSearch::search_common(rsize, lregion, rregion, data);
+    SimilarRegionSearch::search_common2(rsize, lregion, rregion, data);
 }

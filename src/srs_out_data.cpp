@@ -26,12 +26,18 @@ void SrsOutData::addMatchedRegion(RegionCoordinates* region, uint32_t row,
     _map[region]->push_back(matched);
 }
 
+void SrsOutData::clear()
+{
+    _map.clear();
+}
+
 bool SrsOutData::isOptimized()
 {
+    if (_map.size() == 0) {
+        throw std::invalid_argument("Map has zero elements???!!!");
+    }
     for (RegionMap::iterator it = _map.begin(); it != _map.end(); ++it) {
-        if (it->second->size() == 0) {
-            throw std::invalid_argument("Zero size list in map???!!!");
-        } else if (it->second->size() != 1) {
+        if (it->second->size() != 1) {
             return false;
         }
     }
@@ -40,10 +46,11 @@ bool SrsOutData::isOptimized()
 
 bool SrsOutData::isUnderLimit(uint32_t limit)
 {
+    if (_map.size() == 0) {
+        throw std::invalid_argument("Map has zero elements???!!!");
+    }
     for (RegionMap::iterator it = _map.begin(); it != _map.end(); ++it) {
-        if (it->second->size() == 0) {
-            throw std::invalid_argument("Zero size list in map???!!!");
-        } else if (it->second->size() < limit) {
+        if (it->second->size() >= limit) {
             return true;
         }
     }

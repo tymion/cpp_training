@@ -23,7 +23,8 @@ RegionBase* RegionFactory::createRegion(uint32_t height, uint32_t width)
     }
 }
 
-bool RegionFactory::updateRegion(uint32_t row, uint32_t column, std::unique_ptr<RegionBase> const& region)
+bool RegionFactory::updateRegion(uint32_t row, uint32_t column,
+                                    std::unique_ptr<RegionBase> const& region)
 {
     if (!region) {
         throw std::invalid_argument("region pointer is empty");
