@@ -29,6 +29,7 @@ class SrsOutData
         void addMatchedRegion(RegionCoordinates* region, uint32_t row,
                                 uint32_t col, double similarity);
         bool isOptimized();
+        bool isUnderLimit(uint32_t limit)
 };
 
 /*

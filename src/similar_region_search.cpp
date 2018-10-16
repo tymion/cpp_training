@@ -30,6 +30,16 @@ SimilarRegionSearch::SimilarRegionSearch(std::string lname, std::string rname)
     _rbuffer = std::shared_ptr<RegionFactory>(new RegionFactory(rImage));
 }
 
+uint32_t SimilarRegionSearch::getHeight()
+{
+    return _height;
+}
+
+uint32_t SimilarRegionSearch::getWidth()
+{
+    return _width;
+}
+
 void SimilarRegionSearch::search_common2(uint32_t rsize, std::unique_ptr<RegionBase>& lregion,
                                         std::unique_ptr<RegionBase>& rregion, SrsOutData& data)
 {

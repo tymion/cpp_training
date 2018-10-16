@@ -18,6 +18,9 @@ class SimilarRegionSearch
         SimilarRegionSearch(std::shared_ptr<IImage>& lImage, std::shared_ptr<IImage>& rImage);
         SimilarRegionSearch(std::string lname, std::string rname);
 
+        uint32_t getHeight();
+        uint32_t getWidth();
+
         void search(uint8_t rsize, uint32_t similarity, double jacardThreshold,
                     std::shared_ptr<Mask> const& mask, SrsOutData& data);
 
