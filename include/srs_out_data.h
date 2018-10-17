@@ -2,6 +2,8 @@
 #include <list>
 #include <map>
 #include <ctime>
+#include <string>
+#include <fstream>
 
 struct region_coordinates_ {
     uint32_t row;
@@ -23,23 +25,23 @@ class SrsOutData
 {
     protected:
         RegionMap _map;
+
+        uint32_t _rsize;
+        uint32_t _similarity;
+        double _jacard;
+
     public:
-        SrsOutData();
+        SrsOutData(uint32_t rsize, uint32_t similarity, double jacard);
+        ~SrsOutData();
+
         void clear();
+        void printDataToFile(std::string filename);
+        void printDataToFile(std::ofstream& file);
+
         RegionCoordinates* createResult(uint32_t row, uint32_t col);
         void addMatchedRegion(RegionCoordinates* region, uint32_t row,
                                 uint32_t col, double similarity);
+
         bool isOptimized();
         bool isUnderLimit(uint32_t limit);
 };
-
-/*
-void FileDump(RegionMap& map)
-{
-    static struct tm *time = NULL;
-    if (!time) {
-        time_t time_val = time(0);
-        time = gmtime(&time_val);
-    }
-}
-*/

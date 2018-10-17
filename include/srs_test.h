@@ -28,6 +28,8 @@ class SrsTest
         double _jacardPrecision;
         uint32_t _similarityPrecision;
 
+        uint32_t _startPointLimit;
+
         std::unique_ptr<SimilarRegionSearch> _srs;
 
     public:
@@ -44,6 +46,10 @@ class SrsTest
                                 double jacardThreshold_step);
 
         void setPrecision(uint32_t similarity, double jacard);
+
+        void setStartPointLimit(uint32_t limit);
+
+        void generatesOutData(std::string filename);
 
         SrsParam quickSearch(uint32_t rsize, uint32_t similarity_min, uint32_t similarity_max,
                             double jacard_min, double jacard_max);
