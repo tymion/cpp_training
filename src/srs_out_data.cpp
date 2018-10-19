@@ -64,7 +64,7 @@ bool SrsOutData::isUnderLimit(uint32_t limit)
         throw std::invalid_argument("Map has zero elements???!!!");
     }
     for (RegionMap::iterator it = _map.begin(); it != _map.end(); ++it) {
-        if (it->second->size() >= limit) {
+        if (it->second->size() > limit) {
             return true;
         }
     }
@@ -77,7 +77,14 @@ void SrsOutData::printDataToFile(std::ofstream& file)
 
     for (RegionMap::iterator it = _map.begin(); it != _map.end(); ++it) {
         file << "row:" << it->first->row << ",col:" << it->first->col;
-        file << ",matched_cnt:" << it->second->size() << std::endl;
+        file << ",matched_cnt:" << it->second->size();
+        struct region_matched_ *tmp = NULL;
+        if (it->second->begin() != it->second->end()) {
+            tmp = *(it->second->begin());
+            file << ",row::" << tmp->coordinates.row;
+            file << ",col::" << tmp->coordinates.col;
+        }
+        file << std::endl;
     }
 }
 

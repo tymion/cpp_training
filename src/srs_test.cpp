@@ -53,7 +53,7 @@ SrsParam SrsTest::quickSearch(uint32_t rsize, uint32_t similarity_min, uint32_t 
     uint32_t similarityDiv = (similarity_max - similarity_min) / 2;
 
     if (similarityDiv < _similarityPrecision || jacardDiv < _jacardPrecision) {
-        return { similarity_min + similarityDiv, jacard_min + jacardDiv };
+        return { similarity_min + similarityDiv * 2, jacard_min + jacardDiv * 2 };
     }
 
     std::cout << "Run simi:" << similarity_min + similarityDiv << " jaca:" << jacard_min + jacardDiv << "\n";
