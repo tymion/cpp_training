@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
     int32_t limit = 0;
-    uint32_t rsize = 0;
+    int32_t rsize = 0;
     for (int i = 1; i < argc - 1; i++) {
         if (0 == strncmp(argv[i], "-l", 2)) {
             limit = atoi(argv[++i]);

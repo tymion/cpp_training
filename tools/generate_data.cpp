@@ -26,9 +26,9 @@ int main(int argc, char *argv[]) {
         printHelp();
         return -1;
     }
-    uint32_t similarity = 0;
+    int32_t similarity = 0;
     double jacard = 0.0;
-    uint32_t rsize = 0;
+    int32_t rsize = 0;
     for (int i = 1; i < argc - 1; i++) {
         if (0 == strncmp(argv[i], "-s", 2)) {
             similarity = atoi(argv[++i]);

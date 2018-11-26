@@ -54,7 +54,7 @@ bool SrsOutData::isUnderLimit(uint32_t limit)
         throw std::invalid_argument("Map has zero elements???!!!");
     }
     for (RegionMapIterator it = _map.begin(); it != _map.end(); ++it) {
-        if (it->second.size() >= limit) {
+        if (it->second.size() > limit) {
             return true;
         }
     }
