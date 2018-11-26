@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     clock_t start;
     double duration;
     std::string leftFile = "resources/left.png";
-    std::string rightFile = "resources/left.png";
+    std::string rightFile = "resources/right.png";
     if (argc != 7) {
         printHelp();
         return -1;
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
     uint32_t similarity = 0;
     double jacard = 0.0;
     uint32_t rsize = 0;
-    for (int i = 1; i < 6; i++) {
+    for (int i = 1; i < argc - 1; i++) {
         if (0 == strncmp(argv[i], "-s", 2)) {
             similarity = atoi(argv[++i]);
             if (similarity <= 0) {

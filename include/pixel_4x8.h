@@ -15,5 +15,6 @@ struct pixel_4x8 {
     bool operator< (const int value);
     friend std::ostream & operator<< (std::ostream &stream, const pixel_4x8 &s);
     pixel_4x8 operator- (const pixel_4x8& pixel);
+    uint32_t gray();
     ~pixel_4x8(){};
 };

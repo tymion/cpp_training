@@ -6,8 +6,6 @@
 #include <ctime>
 #include "srs_test.h"
 
-#define rsize 9
-
 void printHelp()
 {
     std::cout << "\tstart_point - calculates starting point\n";
@@ -15,6 +13,7 @@ void printHelp()
     std::cout << "\t-h --help  - print this help\n";
     std::cout << "\t-l [limit] - maximum value of region found for one origin region,\n";
     std::cout << "\t\t\tlimit should be positive value\n";
+    std::cout << "\t-r [region_size](int) - TODO\n";
     std::cout << "\tE.g. ./start_point.out -l 520\n";
 }
 
@@ -22,17 +21,33 @@ int main(int argc, char *argv[]) {
     clock_t start;
     double duration;
     std::string leftFile = "resources/left.png";
-    std::string rightFile = "resources/left.png";
-    if (argc != 3) {
+    std::string rightFile = "resources/right.png";
+    if (argc != 5) {
         printHelp();
         return -1;
     }
-    int32_t limit = atoi(argv[2]);
-    if (strncmp(argv[1], "-l", 2) || limit <= 0) {
-        printHelp();
-        return -1;
+    int32_t limit = 0;
+    uint32_t rsize = 0;
+    for (int i = 1; i < argc - 1; i++) {
+        if (0 == strncmp(argv[i], "-l", 2)) {
+            limit = atoi(argv[++i]);
+            if (limit <= 0) {
+                printHelp();
+                return -1;
+            }
+        } else if (0 == strncmp(argv[i], "-r", 2)) {
+            rsize = atoi(argv[++i]);
+            if (rsize <= 0) {
+                printHelp();
+                return -1;
+            }
+        } else {
+            printHelp();
+            return -1;
+        }
     }
     try {
+        std::cout << "Running with limit:" << limit << ", rsize:" << rsize << std::endl;
         SrsTest test(leftFile, rightFile);
         /*
         uint8_t maskData[rsize*rsize];

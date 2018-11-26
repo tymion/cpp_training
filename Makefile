@@ -47,6 +47,7 @@ test: libsrs.so
 libsrs.so:
 	$(CXX) $(SRC) -shared -fPIC -o $(LIB_NAME) $(FLAGS) $(INC_DIR) $(PNG_INC_DIR) $(LIB_DIR) $(PNG_LIB)
 	cp $(LIB_NAME) $(ROOTFS_LIB_DIR)
+	rm $(LIB_NAME)
 
 tools: libsrs.so
 	$(CXX) tools/cnt_max.cpp -o cnt_max.out $(FLAGS_TEST) $(INC_DIR) $(LIB_DIR) $(LIB)

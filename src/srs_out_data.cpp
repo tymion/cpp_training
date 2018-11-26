@@ -8,13 +8,15 @@ SrsOutData::SrsOutData(uint32_t rsize, uint32_t similarity, double jacard)
     _jacard = jacard;
 }
 
-RegionCoordinates* SrsOutData::createResult(uint32_t row, uint32_t col)
+std::shared_ptr<RegionMapIterator> SrsOutData::createResult(uint32_t row, uint32_t col)
 {
-    RegionCoordinates* reg = new RegionCoordinates();
-    reg->row = row;
-    reg->col = col;
-    _map[reg] = new RegionMatchedList();
-    return reg;
+    auto pair =_map.emplace(std::piecewise_construct, std::forward_as_tuple(row, col),
+                            std::forward_as_tuple());
+
+    if (pair.second == false) {
+        throw std::invalid_argument("Creating result has failed");
+    }
+    return std::make_shared<RegionMapIterator>(pair.first);
 }
 
 SrsOutData::~SrsOutData()
@@ -22,26 +24,14 @@ SrsOutData::~SrsOutData()
     clear();
 }
 
-void SrsOutData::addMatchedRegion(RegionCoordinates* region, uint32_t row,
+void SrsOutData::addMatchedRegion(std::shared_ptr<RegionMapIterator> region, uint32_t row,
                                     uint32_t col, double similarity)
 {
-    if (!_map[region]) {
-        throw std::invalid_argument("Invalid region");
-    }
-    RegionMatched* matched = new RegionMatched();
-    matched->coordinates.row = row;
-    matched->coordinates.col = col;
-    matched->similarity_degree = similarity;
-    _map[region]->push_back(matched);
-    delete matched;
+    (*region)->second.emplace_back(row, col, similarity);
 }
 
 void SrsOutData::clear()
 {
-    for (RegionMap::iterator it = _map.begin(); it != _map.end(); ++it) {
-        delete it->second;
-        delete it->first;
-    }
     _map.clear();
 }
 
@@ -50,8 +40,8 @@ bool SrsOutData::isOptimized()
     if (_map.size() == 0) {
         throw std::invalid_argument("Map has zero elements???!!!");
     }
-    for (RegionMap::iterator it = _map.begin(); it != _map.end(); ++it) {
-        if (it->second->size() != 1) {
+    for (RegionMapIterator it = _map.begin(); it != _map.end(); ++it) {
+        if (it->second.size() != 1) {
             return false;
         }
     }
@@ -63,8 +53,8 @@ bool SrsOutData::isUnderLimit(uint32_t limit)
     if (_map.size() == 0) {
         throw std::invalid_argument("Map has zero elements???!!!");
     }
-    for (RegionMap::iterator it = _map.begin(); it != _map.end(); ++it) {
-        if (it->second->size() >= limit) {
+    for (RegionMapIterator it = _map.begin(); it != _map.end(); ++it) {
+        if (it->second.size() >= limit) {
             return true;
         }
     }
@@ -73,11 +63,17 @@ bool SrsOutData::isUnderLimit(uint32_t limit)
 
 void SrsOutData::printDataToFile(std::ofstream& file)
 {
-    file << "rsize:" << _rsize << ",similarity:" << _similarity << ",jacard:" << _jacard << ",map_size:" << _map.size() << std::endl;
+    file << "rsize:" << _rsize << ",similarity:" << _similarity << ",jacard:" << _jacard;
+    file << ",map_size:" << _map.size() << std::endl;
 
-    for (RegionMap::iterator it = _map.begin(); it != _map.end(); ++it) {
-        file << "row:" << it->first->row << ",col:" << it->first->col;
-        file << ",matched_cnt:" << it->second->size() << std::endl;
+    for (RegionMapIterator it = _map.begin(); it != _map.end(); it++) {
+        file << "row:" << it->first.row << ",col:" << it->first.col;
+        file << ",matched_cnt:" << it->second.size();
+        for (auto itt = it->second.begin(); itt != it->second.end(); itt++) {
+            file << ",row:" << (*itt).coordinates.row;
+            file << ",col:" << (*itt).coordinates.col;
+        }
+        file << std::endl;
     }
 }
 

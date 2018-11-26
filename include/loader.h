@@ -13,6 +13,7 @@ class Loader
 
     public:
         static IImage *loadImage(std::string filename);
+//        static IImage *loadImage(std::string filename);
 
         Loader(Loader const&) = delete;
         void operator=(Loader const&) = delete;

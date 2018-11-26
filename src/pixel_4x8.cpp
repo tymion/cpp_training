@@ -54,3 +54,15 @@ std::ostream & operator<< (std::ostream &stream, const pixel_4x8 &s)
     stream << std::hex << (int)s._red << (int)s._green << (int)s._blue << (int)s._alpha << std::dec << std::endl;
     return stream;
 }
+
+uint32_t pixel_4x8::gray()
+{
+#ifdef GRAYSCALE_CONVERSION_AVERAGE
+    return ((uint32_t) this._reg + this._green + this._blue) / 3 ;
+#elif GRAYSCALE_CONVERSION_BT_709
+    return ((float) this._reg * 0.2126 + (float) this._green * 0.7152 + (float) this._blue * 0.0722);
+#elif GRAYSCALE_CONVERSION_BT_601
+    return ((float) this._reg * 0.299 + (float) this._green * 0.587 + (float) this._blue * 0.114);
+#endif
+    return 0;
+}

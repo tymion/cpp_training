@@ -45,20 +45,21 @@ void SimilarRegionSearch::search_common2(uint32_t rsize, std::unique_ptr<RegionB
                                         std::unique_ptr<RegionBase>& rregion, SrsOutData& data)
 {
     double similar = 0;
-    RegionCoordinates *coordinates = NULL;
+    std::shared_ptr<RegionMapIterator> it = nullptr;
+
     for (uint32_t row = 0; row < _height - rsize; row++) {
         for (uint32_t col = 0; col < _width - rsize; col++) {
             _rbuffer->updateRegion(row, col, rregion);
             for (uint32_t s_col = col; s_col < _width - rsize; s_col++) {
                 _lbuffer->updateRegion(row, s_col, lregion);
                 if (rregion->compare(*lregion, similar)) {
-                    if (!coordinates) {
-                        coordinates = data.createResult(row, col);
+                    if (!it) {
+                        it = data.createResult(row, col);
                     }
-                    data.addMatchedRegion(coordinates, row, s_col, similar);
+                    data.addMatchedRegion(it, row, s_col, similar);
                 }
             }
-            coordinates = NULL;
+            it = nullptr;
         }
         std::cout << "SubStep4:" << row << std::endl;
     }
@@ -68,7 +69,7 @@ void SimilarRegionSearch::search_common(uint32_t rsize, std::unique_ptr<RegionBa
                                         std::unique_ptr<RegionBase>& rregion, SrsOutData& data)
 {
     double similar = 0;
-    RegionCoordinates *coordinates = NULL;
+    std::shared_ptr<RegionMapIterator> it = nullptr;
     for (uint32_t row = 0; row < _height - rsize; row++) {
         for (uint32_t col = 0; col < _width - rsize; col++) {
             _rbuffer->updateRegion(row, col, rregion);
@@ -78,14 +79,14 @@ void SimilarRegionSearch::search_common(uint32_t rsize, std::unique_ptr<RegionBa
                 for (uint32_t s_col = col; s_col < _width - rsize; s_col++) {
                     _lbuffer->updateRegion(s_row, s_col, lregion);
                     if (rregion->compare(*lregion, similar)) {
-                        if (!coordinates) {
-                            coordinates = data.createResult(row, col);
+                        if (!it) {
+                            it = data.createResult(row, col);
                         }
-                        data.addMatchedRegion(coordinates, s_row, s_col, similar);
+                        data.addMatchedRegion(it, s_row, s_col, similar);
                     }
                 }
             }
-            coordinates = NULL;
+            it = NULL;
         }
         std::cout << "SubStep4:" << row << "\n";
     }
