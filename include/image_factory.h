@@ -49,7 +49,8 @@ class ImageFactory
     };
 
     private:
-        uint8_t _pixel[STORAGE_SIZE];
+        static uint8_t _pixel[STORAGE_SIZE];
+        static uint32_t _used;
         std::vector<Image, ImageAllocator> _warehouse;
 
         ImageFactory() {}
