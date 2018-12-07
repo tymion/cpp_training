@@ -1,0 +1,14 @@
+set(TEST_SOURCES
+    main.cpp
+    algorithms_suite.cpp
+    png_suite.cpp
+    integration_test_suite.cpp
+    mask_suite.cpp
+    region_factory_suite.cpp
+    configuration_suite.cpp
+    libpng_suite.cpp
+    pixel_suite.cpp
+    region_suite.cpp
+    )
+
+add_executable(algo_test ${TEST_SOURCES})
