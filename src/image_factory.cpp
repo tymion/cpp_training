@@ -28,7 +28,7 @@ Image& ImageFactory::createImage(uint32_t height, uint32_t width)
     img._width = width;
     img._frame = frame;
     for (uint32_t i = 0; i < image_height; i++) {
-        img._data[i] = _pixel[_used + i * image_width];
+        img._data[i] = &_pixel[_used + i * image_width];
     }
     _used += image_height * image_width;
     return img;

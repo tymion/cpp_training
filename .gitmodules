@@ -1,0 +1,3 @@
+[submodule "libraries/libpng"]
+	path = libraries/libpng
+	url = https://github.com/glennrp/libpng.git

@@ -15,7 +15,11 @@ foreach(_src ${SOURCES})
 endforeach()
 
 add_library(algo ${SOURCES_OUT})
-set_target_properties(algo PROPERTIES CXX_STANDARD 17)
+if (${CMAKE_VERSION} VERSION_LESS "3.8.0")
+    set(CMAKE_CXX_FLAGS "${CMKAE_CXX_FLAGS} -std=c++17")
+else()
+    set_target_properties(algo PROPERTIES CXX_STANDARD 17)
+endif()
 
 add_executable(vr main.cpp)
 target_link_libraries(vr algo)
