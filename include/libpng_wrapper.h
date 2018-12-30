@@ -23,4 +23,5 @@ class PNGFileWrapper: public IImage {
         bool getData(uint32_t row, uint8_t **data);
         uint8_t getComponentSize();
         uint8_t getComponentCnt();
+        void setDataProvider(std::function<uint8_t(uint32_t)> func);
 };

@@ -83,3 +83,6 @@ bool PNGFileWrapper::getData(uint32_t row, uint8_t **data) {
     *data = (uint8_t*)_row_pointers[row];
     return true;
 }
+
+void PNGFileWrapper::setDataProvider(std::function<uint8_t(uint32_t)> func) {
+}

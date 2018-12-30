@@ -227,3 +227,6 @@ bool PNGFile::getData(uint32_t row, uint8_t **data) {
 */
     return true;
 }
+
+void PNGFile::setDataProvider(std::function<uint8_t(uint32_t)> func) {
+}

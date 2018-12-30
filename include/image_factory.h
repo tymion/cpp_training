@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <cstdint>
 #include <vector>
 
@@ -58,8 +59,7 @@ class ImageFactory
         static ImageFactory& getInstance();
 
     public:
-
-        static Image& createImage(uint32_t height, uint32_t width);
+        static Image& createImage(std::string filename);
 
         ImageFactory(ImageFactory const&) = delete;
         void operator=(ImageFactory const&) = delete;

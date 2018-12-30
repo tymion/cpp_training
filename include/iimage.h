@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <iostream>
+#include <functional>
 
 class IImage
 {
@@ -10,5 +11,6 @@ class IImage
         virtual bool getData(uint32_t row, uint8_t **data) = 0;
         virtual uint8_t getComponentSize() = 0;
         virtual uint8_t getComponentCnt() = 0;
+        virtual void setDataProvider(std::function<uint8_t(uint32_t)> func) = 0;
         virtual ~IImage(){};
 };

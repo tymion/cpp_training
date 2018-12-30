@@ -47,4 +47,7 @@ class IImageMock_3x8 : IImage
         uint8_t getComponentCnt() {
             return 3;
         }
+
+        void setDataProvider(std::function<uint8_t(uint32_t)> func) {
+        }
 };
