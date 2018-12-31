@@ -120,7 +120,7 @@ void SrsTest::runOptimization(SrsTestMap& map)
         if (found) {
             map[r] = SrsTestPair(i, j);
         } else {
-            throw std::invalid_argument("No 1 to 1 found???!!!");
+            throw std::invalid_argument("No 1 to 1 found?!!!");
         }
     }
 }

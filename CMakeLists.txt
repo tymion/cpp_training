@@ -1,6 +1,21 @@
 project(cpp_training)
 cmake_minimum_required(VERSION 3.5)
 
+include(FindPkgConfig)
+if(NOT PKG_CONFIG_FOUND)
+    message (FATAL_ERROR "pkg-config not found")
+endif()
+
+set(CMAKE_PREFIX_PATH ${ROOTFS})
+
+pkg_check_modules (LIBPNG libpng16 REQUIRED)
+if(NOT LIBPNG_FOUND)
+    message(FATAL_ERROR "You don't seem to have libpng16 development libraries installed")
+else ()
+    include_directories (${LIBPNG_INCLUDE_DIRS})
+    link_directories (${LIBPNG_LIBRARY_DIRS})
+endif ()
+
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 set(SOURCES
@@ -8,6 +23,14 @@ set(SOURCES
     loader.cpp
     libpng_wrapper.cpp
     image.cpp
+    srs_test.cpp
+    similar_region_search.cpp
+    srs_out_data.cpp
+    region_factory.cpp
+    config.cpp
+    mask.cpp
+    pixel_3x8.cpp
+    pixel_4x8.cpp
     )
 
 foreach(_src ${SOURCES})
@@ -15,7 +38,8 @@ foreach(_src ${SOURCES})
 endforeach()
 
 add_library(algo ${SOURCES_OUT})
-if (${CMAKE_VERSION} VERSION_LESS "3.8.0")
+target_link_libraries(algo ${LIBPNG_LIBRARIES})
+if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
     set(CMAKE_CXX_FLAGS "${CMKAE_CXX_FLAGS} -std=c++17")
 else()
     set_target_properties(algo PROPERTIES CXX_STANDARD 17)

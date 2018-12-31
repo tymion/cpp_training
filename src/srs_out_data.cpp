@@ -38,7 +38,7 @@ void SrsOutData::clear()
 bool SrsOutData::isOptimized()
 {
     if (_map.size() == 0) {
-        throw std::invalid_argument("Map has zero elements???!!!");
+        throw std::invalid_argument("Map has zero elements?!!!");
     }
     for (RegionMapIterator it = _map.begin(); it != _map.end(); ++it) {
         if (it->second.size() != 1) {
@@ -51,7 +51,7 @@ bool SrsOutData::isOptimized()
 bool SrsOutData::isUnderLimit(uint32_t limit)
 {
     if (_map.size() == 0) {
-        throw std::invalid_argument("Map has zero elements???!!!");
+        throw std::invalid_argument("Map has zero elements?!!!");
     }
     for (RegionMapIterator it = _map.begin(); it != _map.end(); ++it) {
         if (it->second.size() > limit) {
