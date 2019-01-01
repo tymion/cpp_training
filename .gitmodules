@@ -1,9 +1,9 @@
 [submodule "libraries/libpng"]
-	path = libraries/libpng
+	path = libs/libpng
 	url = https://github.com/glennrp/libpng.git
 [submodule "libraries/zlib"]
-	path = libraries/zlib
+	path = libs/zlib
 	url = https://github.com/madler/zlib.git
 [submodule "libraries/gtest"]
-	path = libraries/gtest
+	path = libs/gtest
 	url = https://github.com/google/googletest.git

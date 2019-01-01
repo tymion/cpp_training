@@ -48,5 +48,6 @@ endif()
 add_executable(vr main.cpp)
 target_link_libraries(vr algo)
 
+add_subdirectory(libs)
 add_subdirectory(test)
 add_subdirectory(tools)
