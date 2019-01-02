@@ -9,19 +9,21 @@ endif()
 set(CMAKE_PREFIX_PATH ${ROOTFS})
 
 pkg_check_modules (LIBPNG libpng16 REQUIRED)
-if(NOT LIBPNG_FOUND)
-    message(FATAL_ERROR "You don't seem to have libpng16 development libraries installed")
-else ()
-    include_directories (${LIBPNG_INCLUDE_DIRS})
-    link_directories (${LIBPNG_LIBRARY_DIRS})
-endif ()
+include_directories (${LIBPNG_INCLUDE_DIRS})
+link_directories (${LIBPNG_LIBRARY_DIRS})
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${ROOTFS}/include)
+include_directories(${ROOTFS}/usr/local/include)
+
+link_directories (${ROOTFS}/lib)
+link_directories (${ROOTFS}/usr/local/lib)
 
 set(SOURCES
     image_factory.cpp
     loader.cpp
     libpng_wrapper.cpp
+    pngfile.cpp
     image.cpp
     srs_test.cpp
     similar_region_search.cpp

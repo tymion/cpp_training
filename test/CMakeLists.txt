@@ -12,4 +12,4 @@ set(TEST_SOURCES
     )
 
 add_executable(algo_test ${TEST_SOURCES})
-target_link_libraries(algo_test algo)
+target_link_libraries(algo_test algo gtest pthread)
