@@ -35,13 +35,17 @@ if [ ! -d $BUILD_PATH ]; then
     mkdir -p $BUILD_PATH/qemu
 fi
 
-cd $BUILD_PATH/qemu
-if [ ! -f Makefile ]; then
-    $LIB_DIR/qemu/configure --prefix=$DESTDIR $QEMU_ARGS
+cd $BUILD_PATH/
+
+if [ "$HOST" != "" ]; then
+    cd qemu
+    if [ ! -f Makefile ]; then
+        $LIB_DIR/qemu/configure --prefix=$DESTDIR $QEMU_ARGS
+    fi
+    make $MAKEFILE_ARGS
+    make install
+    cd ../
 fi
-make $MAKEFILE_ARGS
-make install
-cd ../
 
 cd zlib
 if [ ! -f Makefile ]; then
@@ -59,6 +63,6 @@ make $MAKEFILE_ARGS
 make install
 cd ../
 
-cmake ../ -DCROSS_COMPILE=$CROSS_COMPILE -DCROSS_COMPILE_ROOT=$CROSS_COMPILE_PATH -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN_FILE -DROOTFS=$DESTDIR
+cmake ../ -DCROSS_COMPILE=$CROSS_COMPILE -DCROSS_COMPILE_PATH=$CROSS_COMPILE_PATH -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN_FILE -DROOTFS=$DESTDIR
 make $MAKEFILE_ARGS
 make DESTDIR=$DESTDIR install
