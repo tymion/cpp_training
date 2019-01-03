@@ -1,17 +1,6 @@
 project(cpp_training)
 cmake_minimum_required(VERSION 3.5)
 
-include(FindPkgConfig)
-if(NOT PKG_CONFIG_FOUND)
-    message (FATAL_ERROR "pkg-config not found")
-endif()
-
-set(CMAKE_PREFIX_PATH ${ROOTFS})
-
-pkg_check_modules (LIBPNG libpng16 REQUIRED)
-include_directories (${LIBPNG_INCLUDE_DIRS})
-link_directories (${LIBPNG_LIBRARY_DIRS})
-
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${ROOTFS}/include)
 include_directories(${ROOTFS}/usr/local/include)
@@ -19,8 +8,10 @@ include_directories(${ROOTFS}/usr/local/include)
 link_directories (${ROOTFS}/lib)
 link_directories (${ROOTFS}/usr/local/lib)
 
+add_subdirectory(libs)
+
 set(SOURCES
-    image_factory.cpp
+    image_storage_factory.cpp
     loader.cpp
     libpng_wrapper.cpp
     pngfile.cpp
@@ -40,7 +31,8 @@ foreach(_src ${SOURCES})
 endforeach()
 
 add_library(algo ${SOURCES_OUT})
-target_link_libraries(algo ${LIBPNG_LIBRARIES})
+target_link_libraries(algo png)
+add_dependencies(algo libpng_target)
 if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
     set(CMAKE_CXX_FLAGS "${CMKAE_CXX_FLAGS} -std=c++17")
 else()
@@ -58,6 +50,5 @@ install(TARGETS algo vr
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     )
 
-add_subdirectory(libs)
 add_subdirectory(test)
 add_subdirectory(tools)

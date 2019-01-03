@@ -1,17 +1,17 @@
 #include <cstdlib>
-#include "image_factory.h"
+#include "image_storage_factory.h"
 
-Image::Image(uint32_t height)
+ImageStorage::ImageStorage(uint32_t height)
 {
     _data = (uint8_t**) malloc(height * sizeof(_data));
 }
 
-uint32_t Image::getWidth()
+uint32_t ImageStorage::getWidth()
 {
     return _width;
 }
 
-uint32_t Image::getHeight()
+uint32_t ImageStorage::getHeight()
 {
     return _height;
 }

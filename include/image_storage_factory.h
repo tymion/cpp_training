@@ -14,10 +14,10 @@
 
 #define STORAGE_SIZE DATA_HEIGHT * DATA_WIDTH * 3
 
-class Image
+class ImageStorage
 {
-    friend class ImageFactory;
-    friend struct ImageAllocator;
+    friend class ImageStorageFactory;
+    friend struct ImageStorageAllocator;
 
     private:
         uint32_t _height;
@@ -25,7 +25,7 @@ class Image
         uint8_t _frame;
         uint8_t** _data;
 
-        Image(uint32_t height);
+        ImageStorage(uint32_t height);
         
     public:
         uint32_t getHeight();
@@ -33,9 +33,9 @@ class Image
 };
 
 
-class ImageFactory
+class ImageStorageFactory
 {
-    struct ImageAllocator: std::allocator<Image>
+    struct ImageStorageAllocator: std::allocator<ImageStorage>
     {
         template<class U, class... Args>
         void construct(U *u, Args&&... args)
@@ -45,22 +45,22 @@ class ImageFactory
         template<class U>
         struct rebind
         {
-            typedef ImageAllocator other;
+            typedef ImageStorageAllocator other;
         };
     };
 
     private:
         static uint8_t _pixel[STORAGE_SIZE];
         static uint32_t _used;
-        std::vector<Image, ImageAllocator> _warehouse;
+        std::vector<ImageStorage, ImageStorageAllocator> _warehouse;
 
-        ImageFactory() {}
+        ImageStorageFactory() {}
 
-        static ImageFactory& getInstance();
+        static ImageStorageFactory& getInstance();
 
     public:
-        static Image& createImage(std::string filename);
+        static ImageStorage& createImage(std::string filename);
 
-        ImageFactory(ImageFactory const&) = delete;
-        void operator=(ImageFactory const&) = delete;
+        ImageStorageFactory(ImageStorageFactory const&) = delete;
+        void operator=(ImageStorageFactory const&) = delete;
 };
