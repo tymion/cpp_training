@@ -50,6 +50,14 @@ endif()
 add_executable(vr main.cpp)
 target_link_libraries(vr algo)
 
+include(GNUInstallDirs)
+
+install(TARGETS algo vr
+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    )
+
 add_subdirectory(libs)
 add_subdirectory(test)
 add_subdirectory(tools)

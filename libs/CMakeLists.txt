@@ -1,9 +1,13 @@
 include(ExternalProject)
+
 ExternalProject_Add(
     gtest_target
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/gtest
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
-    CMAKE_ARGS ""
-    INSTALL_COMMAND make DESTDIR=${ROOTFS} install
+    CMAKE_ARGS
+    "-DCROSS_COMPILE=${CROSS_COMPILE}"
+    "-DCROSS_COMPILE_PATH=${CROSS_COMPILE_PATH}"
+    "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
+    INSTALL_COMMAND make DESTDIR=${DESTDIR} install
     )

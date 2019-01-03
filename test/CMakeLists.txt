@@ -13,3 +13,9 @@ set(TEST_SOURCES
 
 add_executable(algo_test ${TEST_SOURCES})
 target_link_libraries(algo_test algo gtest pthread)
+
+install(TARGETS algo_test
+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    )
