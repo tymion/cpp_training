@@ -12,6 +12,7 @@ set(TEST_SOURCES
     )
 
 add_executable(algo_test ${TEST_SOURCES})
+add_dependencies(algo_test gtest_target)
 target_link_libraries(algo_test algo gtest pthread)
 
 install(TARGETS algo_test
