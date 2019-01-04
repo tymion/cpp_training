@@ -26,7 +26,7 @@ class ImageStorage
         uint8_t** _data;
 
         ImageStorage(uint32_t height);
-        
+
     public:
         uint32_t getHeight();
         uint32_t getWidth();

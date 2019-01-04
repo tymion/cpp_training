@@ -41,6 +41,9 @@ endif()
 
 add_executable(vr main.cpp)
 target_link_libraries(vr algo)
+if (CROSS_COMPILE)
+    add_dependencies(vr qemu_target)
+endif ()
 
 include(GNUInstallDirs)
 
