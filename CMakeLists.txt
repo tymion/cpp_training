@@ -30,7 +30,7 @@ foreach(_src ${SOURCES})
     list(APPEND SOURCES_OUT src/${_src})
 endforeach()
 
-add_library(algo ${SOURCES_OUT})
+add_library(algo SHARED ${SOURCES_OUT})
 target_link_libraries(algo png)
 add_dependencies(algo libpng_target)
 if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
