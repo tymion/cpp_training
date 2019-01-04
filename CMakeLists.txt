@@ -31,7 +31,7 @@ foreach(_src ${SOURCES})
 endforeach()
 
 add_library(algo SHARED ${SOURCES_OUT})
-target_link_libraries(algo png)
+target_link_libraries(algo png z)
 add_dependencies(algo libpng_target)
 if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
     set(CMAKE_CXX_FLAGS "${CMKAE_CXX_FLAGS} -std=c++17")

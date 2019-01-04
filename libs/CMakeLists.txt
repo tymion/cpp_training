@@ -25,7 +25,9 @@ ExternalProject_Add(
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libpng
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
-    CONFIGURE_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/libpng/configure --prefix=${ROOTFS} --host=${HOST} CC=${CROSS_COMPILE}gcc AR=${CROSS_COMPILE}ar STRIP=${CROSS_COMPILE}strip RANLIB=${CROSS_COMPILE}ranlib CPPFLAGS=-I${ROOTFS}/include LDFLAGS=-L${ROOTFS}/lib/
+    CONFIGURE_COMMAND
+    ${CMAKE_CURRENT_SOURCE_DIR}/libpng/configure --prefix=${ROOTFS} --host=${HOST} CC=${CROSS_COMPILE}gcc AR=${CROSS_COMPILE}ar STRIP=${CROSS_COMPILE}strip RANLIB=${CROSS_COMPILE}ranlib CPPFLAGS=-I${ROOTFS}/include LDFLAGS=-L${ROOTFS}/lib/
+    BUILD_COMMAND make CPPFLAGS=-fPIC
     )
 
 add_dependencies(libpng_target zlib_target)
