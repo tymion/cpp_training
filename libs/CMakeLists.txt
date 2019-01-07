@@ -43,3 +43,13 @@ ExternalProject_Add(
     "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
     INSTALL_COMMAND make DESTDIR=${ROOTFS} install
     )
+
+ExternalProject_Add(
+    qemu-shell_target
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qemu-shell
+    DOWNLOAD_COMMAND ""
+    UPDATE_COMMAND ""
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND python3.5 ${CMAKE_CURRENT_SOURCE_DIR}/qemu-shell/setup.py install --prefix=${ROOTFS_HOST}
+    INSTALL_COMMAND ""
+    )
