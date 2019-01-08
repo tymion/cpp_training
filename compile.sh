@@ -30,7 +30,7 @@ create_rootfs() {
         mkdir -p $1/bin
         mkdir -p $1/sbin
         mkdir -p $1/include
-        mkdir -p $1/lib
+        mkdir -p $1/lib/python3.5/site-packages/
         mkdir -p $1/share
     fi
 }
@@ -38,6 +38,7 @@ create_rootfs() {
 create_rootfs $DESTDIR_HOST
 create_rootfs $DESTDIR_TARGET
 
+export PYTHONPATH=$DESTDIR_HOST/lib/python3.5/site-packages/
 cd $BUILD_PATH/
 
 cmake ../ -DCROSS_COMPILE=$CROSS_COMPILE -DCROSS_COMPILE_PATH=$CROSS_COMPILE_PATH -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN_FILE -DROOTFS=$DESTDIR_TARGET -DROOTFS_HOST=$DESTDIR_HOST -DHOST=$HOST

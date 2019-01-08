@@ -13,12 +13,8 @@
 [submodule "libs/qemu"]
 	path = libs/qemu
 	url = https://github.com/qemu/qemu.git
-[submodule "libs/lexer"]
-	path = libs/lexer
-	url = https://github.com/odalle/simple_shell_parser.git
-[submodule "libs/qemu-shell"]
-	path = libs/qemu-shell
-	url = https://github.com/tymion/qemu-shell.git
+    ignore = dirty
 [submodule "libs/qemu_shell"]
 	path = libs/qemu_shell
 	url = https://github.com/tymion/qemu_shell.git
+    ignore = dirty

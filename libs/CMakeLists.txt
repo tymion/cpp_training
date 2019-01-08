@@ -44,12 +44,19 @@ ExternalProject_Add(
     INSTALL_COMMAND make DESTDIR=${ROOTFS} install
     )
 
+set(ENV{PYTHONPATH} "${ROOTFS_HOST}/lib/python3.5/site-packages/")
+
 ExternalProject_Add(
-    qemu-shell_target
-    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qemu-shell
-    DOWNLOAD_COMMAND ""
+    qemu_shell_target
+    GIT_SUBMODULES qemu_shell
+    #    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qemu_shell
+    URL ${CMAKE_CURRENT_SOURCE_DIR}/qemu_shell
+    BUILD_IN_SOURCE 1
+    #    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ""
-    BUILD_COMMAND python3.5 ${CMAKE_CURRENT_SOURCE_DIR}/qemu-shell/setup.py install --prefix=${ROOTFS_HOST}
+    #    BUILD_COMMAND python3.5 ${CMAKE_CURRENT_SOURCE_DIR}/qemu-shell/setup.py install --install-base=${ROOTFS_HOST}/lib/python3.5/site-packages/
+    #BUILD_COMMAND python3.5 ${CMAKE_CURRENT_SOURCE_DIR}/qemu-shell/setup.py build -b ${CMAKE_CURRENT_BINARY_DIR} install --prefix=${ROOTFS_HOST}
+    BUILD_COMMAND python3.5 setup.py install --prefix=${ROOTFS_HOST}
     INSTALL_COMMAND ""
     )
