@@ -2,7 +2,6 @@
 #include <memory>
 #include "image_storage_factory.h"
 #include "iimage.h"
-#include "loader.h"
 
 uint32_t ImageStorageFactory::_used;
 uint8_t ImageStorageFactory::_pixel[STORAGE_SIZE];
@@ -13,14 +12,11 @@ ImageStorageFactory& ImageStorageFactory::getInstance()
     return instance;
 }
 
-ImageStorage& ImageStorageFactory::createImage(std::string filename)
+ImageStorage& ImageStorageFactory::createImageStorage(uint32_t height, uint32_t width)
 {
-    std::unique_ptr<IImage> image(Loader::loadImage(filename));
     uint8_t frame = 3;
     uint32_t image_height = 0;
     uint32_t image_width = 0;
-    uint32_t height = image->getHeight();
-    uint32_t width = image->getWidth();
     if (height + 2 * frame < height || width + 2 * frame < width) {
         frame = 0;
         image_height = height;

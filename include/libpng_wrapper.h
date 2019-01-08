@@ -20,8 +20,7 @@ class PNGFileWrapper: public IImage {
         ~PNGFileWrapper();
         uint32_t getHeight();
         uint32_t getWidth();
-        bool getData(uint32_t row, uint8_t **data);
+        bool loadImage(std::function<uint32_t* (uint32_t, uint32_t)> callback);
         uint8_t getComponentSize();
         uint8_t getComponentCnt();
-        void setDataProvider(std::function<uint8_t(uint32_t)> func);
 };

@@ -43,17 +43,9 @@ PNGFileWrapper::PNGFileWrapper(FILE *file) {
 
     png_read_update_info(_png, _info);
     _row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * _height);
-    for (uint32_t y = 0; y < _height; y++) {
-        _row_pointers[y] = (png_byte*)malloc(png_get_rowbytes(_png,_info));
-    }
-
-    png_read_image(_png, _row_pointers);
 }
 
 PNGFileWrapper::~PNGFileWrapper() {
-    for (uint32_t i = 0; i < _height; i++) {
-        free(_row_pointers[i]);
-    }
     free(_row_pointers);
     png_destroy_read_struct(&_png, &_info, NULL);
     fclose(_file);
@@ -75,14 +67,15 @@ uint8_t PNGFileWrapper::getComponentSize() {
     return _bit_depth;
 }
 
-bool PNGFileWrapper::getData(uint32_t row, uint8_t **data) {
-    if (row >= _height) {
-        throw std::invalid_argument("Invalid row value.");
+bool PNGFileWrapper::loadImage(std::function<uint32_t* (uint32_t, uint32_t)> callback) {
+    for (uint32_t y = 0; y < _height; y++) {
+        _row_pointers[y] = (png_byte*)callback(y, png_get_rowbytes(_png,_info));
+        if (!_row_pointers[y]) {
+            return false;
+        }
     }
 
-    *data = (uint8_t*)_row_pointers[row];
-    return true;
-}
+    png_read_image(_png, _row_pointers);
 
-void PNGFileWrapper::setDataProvider(std::function<uint8_t(uint32_t)> func) {
+    return true;
 }

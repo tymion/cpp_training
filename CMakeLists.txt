@@ -12,14 +12,14 @@ add_subdirectory(libs)
 
 set(SOURCES
     image_storage_factory.cpp
-    loader.cpp
+    image_factory.cpp
     libpng_wrapper.cpp
-    pngfile.cpp
+    #    pngfile.cpp
     image.cpp
-    srs_test.cpp
-    similar_region_search.cpp
-    srs_out_data.cpp
-    region_factory.cpp
+    #    srs_test.cpp
+    #    similar_region_search.cpp
+    #    srs_out_data.cpp
+    #    region_factory.cpp
     config.cpp
     mask.cpp
     pixel_3x8.cpp
@@ -39,7 +39,7 @@ else()
     set_target_properties(algo PROPERTIES CXX_STANDARD 17)
 endif()
 
-add_executable(vr main.cpp)
+add_executable(vr new_main.cpp)
 target_link_libraries(vr algo)
 if (CROSS_COMPILE)
     add_dependencies(vr qemu_target)
@@ -53,5 +53,5 @@ install(TARGETS algo vr
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     )
 
-add_subdirectory(test)
-add_subdirectory(tools)
+#add_subdirectory(test)
+#add_subdirectory(tools)

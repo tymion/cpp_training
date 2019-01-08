@@ -1,14 +1,14 @@
 #include <sys/stat.h>
-#include "loader.h"
 #include <stdexcept>
 #include <cstring>
 #include <iostream>
+#include "image_factory.h"
 #include "libpng_wrapper.h"
 
 #define PNG_HEADER_SIZE 8
 char PNG_HEADER[PNG_HEADER_SIZE] = {'\211', 'P', 'N', 'G', '\r', '\n', '\032', '\n'};
 
-bool Loader::isPNG(FILE *file) {
+bool ImageFactory::isPNG(FILE *file) {
     if (ftell(file) != 0) {
         fseek (file, 0, SEEK_SET); 
     }
@@ -26,7 +26,7 @@ bool Loader::isPNG(FILE *file) {
     return true;
 }
 
-IImage* Loader::loadImage(std::string filename) {
+IImage* ImageFactory::createImage(std::string filename) {
     struct stat stbuf;
     lstat(filename.c_str(), &stbuf);
     if (!S_ISREG(stbuf.st_mode)) {
