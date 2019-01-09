@@ -53,7 +53,7 @@ ExternalProject_Add(
     URL ${CMAKE_CURRENT_SOURCE_DIR}/qemu_shell
     BUILD_IN_SOURCE 1
     #    DOWNLOAD_COMMAND ""
-    UPDATE_COMMAND ""
+    UPDATE_COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/qemu_shell; git diff > ${CMAKE_CURRENT_BINARY_DIR}/qemu_shell_target-prefix/src/qemu_shell_target/patch.patch ; cd ${CMAKE_CURRENT_BINARY_DIR}/qemu_shell_target-prefix/src/qemu_shell_target/ ; git clean ; patch -p1 < patch.patch
     CONFIGURE_COMMAND ""
     #    BUILD_COMMAND python3.5 ${CMAKE_CURRENT_SOURCE_DIR}/qemu-shell/setup.py install --install-base=${ROOTFS_HOST}/lib/python3.5/site-packages/
     #BUILD_COMMAND python3.5 ${CMAKE_CURRENT_SOURCE_DIR}/qemu-shell/setup.py build -b ${CMAKE_CURRENT_BINARY_DIR} install --prefix=${ROOTFS_HOST}
