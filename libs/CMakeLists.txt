@@ -49,14 +49,22 @@ set(ENV{PYTHONPATH} "${PYTHON_PATH}")
 ExternalProject_Add(
     qemu_shell_target
     GIT_SUBMODULES qemu_shell
-    #    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qemu_shell
     URL ${CMAKE_CURRENT_SOURCE_DIR}/qemu_shell
     BUILD_IN_SOURCE 1
-    #    DOWNLOAD_COMMAND ""
-    UPDATE_COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/qemu_shell; git diff > ${CMAKE_CURRENT_BINARY_DIR}/qemu_shell_target-prefix/src/qemu_shell_target/patch.patch ; cd ${CMAKE_CURRENT_BINARY_DIR}/qemu_shell_target-prefix/src/qemu_shell_target/ ; git clean ; patch -p1 < patch.patch
+    UPDATE_COMMAND ""
     CONFIGURE_COMMAND ""
-    #    BUILD_COMMAND python3.5 ${CMAKE_CURRENT_SOURCE_DIR}/qemu-shell/setup.py install --install-base=${ROOTFS_HOST}/lib/python3.5/site-packages/
-    #BUILD_COMMAND python3.5 ${CMAKE_CURRENT_SOURCE_DIR}/qemu-shell/setup.py build -b ${CMAKE_CURRENT_BINARY_DIR} install --prefix=${ROOTFS_HOST}
     BUILD_COMMAND python3 setup.py install --prefix=${ROOTFS_HOST}
     INSTALL_COMMAND ""
+    )
+
+ExternalProject_Add_Step(
+    qemu_shell_target check_update
+    COMMAND cp -rf ${CMAKE_CURRENT_SOURCE_DIR}/qemu_shell .
+    COMMAND diff -Nuar --exclude=build --exclude=dist --exclude=qemu_shell.egg-info qemu_shell_target qemu_shell | patch -d qemu_shell_target -p1
+    COMMAND rm -rf qemu_shell
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/qemu_shell_target-prefix/src/
+    ALWAYS TRUE
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qemu_shell_target-prefix/src/qemu_shell_target/
+    DEPENDERS build
+    DEPENDEES download
     )
