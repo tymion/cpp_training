@@ -16,10 +16,10 @@ add_subdirectory(libs)
 
 set(SOURCES
     image_storage_factory.cpp
-    image_factory.cpp
+    image_file_factory.cpp
     libpng_wrapper.cpp
     #    pngfile.cpp
-    image.cpp
+    image_storage.cpp
     #    srs_test.cpp
     #    similar_region_search.cpp
     #    srs_out_data.cpp

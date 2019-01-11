@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include <memory>
 #include "image_storage_factory.h"
-#include "iimage.h"
+#include "image_file.h"
 
 uint32_t ImageStorageFactory::_used;
 uint8_t ImageStorageFactory::_pixel[STORAGE_SIZE];

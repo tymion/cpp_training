@@ -3,9 +3,9 @@
 #include <cstdbool>
 #include <cstdint>
 #include <png.h>
-#include "iimage.h"
+#include "image_file.h"
 
-class PNGFileWrapper: public IImage {
+class PNGFileWrapper: public ImageFile {
     private:
         FILE *_file;
         png_structp _png;

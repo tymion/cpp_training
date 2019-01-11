@@ -2,13 +2,13 @@
 #include <stdexcept>
 #include <cstring>
 #include <iostream>
-#include "image_factory.h"
+#include "image_file_factory.h"
 #include "libpng_wrapper.h"
 
 #define PNG_HEADER_SIZE 8
 char PNG_HEADER[PNG_HEADER_SIZE] = {'\211', 'P', 'N', 'G', '\r', '\n', '\032', '\n'};
 
-bool ImageFactory::isPNG(FILE *file) {
+bool ImageFileFactory::isPNG(FILE *file) {
     if (ftell(file) != 0) {
         fseek (file, 0, SEEK_SET); 
     }
@@ -26,7 +26,7 @@ bool ImageFactory::isPNG(FILE *file) {
     return true;
 }
 
-IImage* ImageFactory::createImage(std::string filename) {
+std::shared_ptr<ImageFile> ImageFileFactory::createImageFile(std::string filename) {
     struct stat stbuf;
     lstat(filename.c_str(), &stbuf);
     if (!S_ISREG(stbuf.st_mode)) {
@@ -36,9 +36,9 @@ IImage* ImageFactory::createImage(std::string filename) {
     if (!file) {
         throw std::invalid_argument("Can't open file.");
     }
-    IImage *image = NULL;
+    std::shared_ptr<ImageFile> image = NULL;
     if (isPNG(file)) {
-        image = (IImage*) new PNGFileWrapper(file);
+        image = (std::shared_ptr<ImageFile>) new PNGFileWrapper(file);
         std::cout << "Width: " << image->getWidth() << std::endl;
         std::cout << "Height: " << image->getHeight() << std::endl;
     }

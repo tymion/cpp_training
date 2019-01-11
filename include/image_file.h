@@ -3,7 +3,7 @@
 #include <iostream>
 #include <functional>
 
-class IImage
+class ImageFile
 {
     public:
         virtual uint32_t getHeight() = 0;
@@ -11,5 +11,5 @@ class IImage
         virtual bool loadImage(std::function<uint32_t* (uint32_t, uint32_t)> callback) = 0;
         virtual uint8_t getComponentSize() = 0;
         virtual uint8_t getComponentCnt() = 0;
-        virtual ~IImage(){};
+        virtual ~ImageFile(){};
 };
