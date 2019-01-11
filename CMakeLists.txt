@@ -8,6 +8,10 @@ include_directories(${ROOTFS}/usr/local/include)
 link_directories (${ROOTFS}/lib)
 link_directories (${ROOTFS}/usr/local/lib)
 
+set(CURR_PATH ENV{PATH})
+
+set(ENV{PATH} "${CURR_PATH}:${ROOTFS_HOST}/bin")
+
 add_subdirectory(libs)
 
 set(SOURCES

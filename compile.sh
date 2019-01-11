@@ -6,6 +6,8 @@ TOOLCHAIN_FILE=$PWD/toolchain.cmake
 DESTDIR_HOST=$CURR_PWD/$BUILD_PATH/rootfs-host
 NPROC=$(nproc)
 COMPILER_VERSION=$(gcc -v 2>&1 | grep "gcc version" | cut -c 13-17)
+PYTHON_VERSION=$(python3 --version | cut -c 8-10)
+PYTHONPATH=$DESTDIR_HOST/lib/python$PYTHON_VERSION/site-packages/
 HOST=
 DESTDIR_TARGET=
 
@@ -30,7 +32,6 @@ create_rootfs() {
         mkdir -p $1/bin
         mkdir -p $1/sbin
         mkdir -p $1/include
-        mkdir -p $1/lib
         mkdir -p $1/share
     fi
 }
@@ -38,9 +39,15 @@ create_rootfs() {
 create_rootfs $DESTDIR_HOST
 create_rootfs $DESTDIR_TARGET
 
+if [ ! -d $PYTHONPATH ]; then
+    mkdir -p $PYTHONPATH
+fi
+
+export PYTHONPATH=$PYTHONPATH
+
 cd $BUILD_PATH/
 
-cmake ../ -DCROSS_COMPILE=$CROSS_COMPILE -DCROSS_COMPILE_PATH=$CROSS_COMPILE_PATH -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN_FILE -DROOTFS=$DESTDIR_TARGET -DROOTFS_HOST=$DESTDIR_HOST -DHOST=$HOST
+cmake ../ -DCROSS_COMPILE=$CROSS_COMPILE -DCROSS_COMPILE_PATH=$CROSS_COMPILE_PATH -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN_FILE -DROOTFS=$DESTDIR_TARGET -DROOTFS_HOST=$DESTDIR_HOST -DHOST=$HOST -DPYTHONPATH=$PYTHONPATH
 make
 make DESTDIR=$DESTDIR_TARGET install
 
