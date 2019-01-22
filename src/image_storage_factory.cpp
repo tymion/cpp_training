@@ -38,3 +38,7 @@ ImageStorage& ImageStorageFactory::createImageStorage(uint32_t height, uint32_t 
     ImageStorageFactory::_used += image_height * image_width;
     return img;
 }
+
+void ImageStorageFactory::fillStorageWithData(ImageStorage &storage, ImageFile &file)
+{
+}

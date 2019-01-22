@@ -9,5 +9,4 @@ class Image {
 
     public:
         Image(ImageFile *file, ImageStorage &storage);
- 
 }

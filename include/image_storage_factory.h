@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <vector>
+#include "image_file.h"
 
 #define FULLHD_HEIGHT   1920
 #define FULLHD_WIDTH    1080
@@ -61,6 +62,7 @@ class ImageStorageFactory
 
     public:
         static ImageStorage& createImageStorage(uint32_t height, uint32_t width);
+        static void fillStorageWithData(ImageStorage &storage, ImageFile &file);
 
         ImageStorageFactory(ImageStorageFactory const&) = delete;
         void operator=(ImageStorageFactory const&) = delete;
