@@ -15,6 +15,7 @@ set(ENV{PATH} "${CURR_PATH}:${ROOTFS_HOST}/bin")
 add_subdirectory(libs)
 
 set(SOURCES
+    image.cpp
     image_storage_factory.cpp
     image_file_factory.cpp
     libpng_wrapper.cpp

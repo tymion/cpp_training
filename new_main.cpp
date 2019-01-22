@@ -17,13 +17,8 @@ int main() {
     std::string rightFile = "resources/left.png";
     //std::string rightFile = "resources/right.png";
     try {
-        std::shared_ptr<ImageFile> lFile = ImageFileFactory::createImageFile(leftFile);
-        std::shared_ptr<ImageFile> rFile = ImageFileFactory::createImageFile(rightFile);
-        ImageStorage lImageStorage = ImageStorageFactory::createImageStorage(lImage->getHeight(), lImage->getWidth());
-        ImageStorage rImageStorage = ImageStorageFactory::createImageStorage(rImage->getHeight(), rImage->getWidth());
-
-        Image lImage = new Image(lFile, lImageStorage);
-        Image rImage= new Image(rFile, rImageStorage);
+        Image *lImage = new Image(leftFile);
+        Image *rImage= new Image(rightFile);
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << "Time: "<< duration << std::endl;
     } catch (std::exception const &exc)

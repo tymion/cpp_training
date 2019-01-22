@@ -9,6 +9,7 @@ uint8_t ImageStorageFactory::_pixel[STORAGE_SIZE];
 ImageStorageFactory& ImageStorageFactory::getInstance()
 {
     static ImageStorageFactory instance;
+    instance._warehouse.reserve(4);
     return instance;
 }
 

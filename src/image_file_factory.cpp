@@ -26,7 +26,7 @@ bool ImageFileFactory::isPNG(FILE *file) {
     return true;
 }
 
-std::shared_ptr<ImageFile> ImageFileFactory::createImageFile(std::string filename) {
+ImageFile* ImageFileFactory::createImageFile(std::string filename) {
     struct stat stbuf;
     lstat(filename.c_str(), &stbuf);
     if (!S_ISREG(stbuf.st_mode)) {
@@ -36,9 +36,9 @@ std::shared_ptr<ImageFile> ImageFileFactory::createImageFile(std::string filenam
     if (!file) {
         throw std::invalid_argument("Can't open file.");
     }
-    std::shared_ptr<ImageFile> image = NULL;
+    ImageFile *image = NULL;
     if (isPNG(file)) {
-        image = (std::shared_ptr<ImageFile>) new PNGFileWrapper(file);
+        image = new PNGFileWrapper(file);
         std::cout << "Width: " << image->getWidth() << std::endl;
         std::cout << "Height: " << image->getHeight() << std::endl;
     }

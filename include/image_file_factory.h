@@ -13,7 +13,7 @@ class ImageFileFactory
         ImageFileFactory() {}
 
     public:
-        static std::shared_ptr<ImageFile> createImageFile(std::string filename);
+        static ImageFile* createImageFile(std::string filename);
 
         ImageFileFactory(ImageFileFactory const&) = delete;
         void operator=(ImageFileFactory const&) = delete;

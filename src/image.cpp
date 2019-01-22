@@ -1,5 +1,7 @@
 #include "image.h"
 
-Image::Image(ImageFile &file, ImageStorage &storage)
+Image::Image(std::string fileName)
 {
+    _file = std::unique_ptr<ImageFile>{ImageFileFactory::createImageFile(fileName)};
+    _storage = ImageStorageFactory::createImageStorage(_file->getHeight(), _file->getWidth());
 }
