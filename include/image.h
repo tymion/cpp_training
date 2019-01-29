@@ -7,7 +7,7 @@
 class Image {
     private:
         std::unique_ptr<ImageFile> _file;
-        ImageStorage& _storage;
+        std::unique_ptr<ImageStorage> _storage;
 
     public:
         Image(std::string fileName);

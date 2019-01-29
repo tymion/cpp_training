@@ -61,8 +61,8 @@ class ImageStorageFactory
         static ImageStorageFactory& getInstance();
 
     public:
-        static ImageStorage& createImageStorage(uint32_t height, uint32_t width);
-        static void fillStorageWithData(ImageStorage &storage, ImageFile &file);
+        static ImageStorage* createImageStorage(uint32_t height, uint32_t width);
+        //static void fillStorageWithData(ImageStorage &storage, ImageFile &file);
 
         ImageStorageFactory(ImageStorageFactory const&) = delete;
         void operator=(ImageStorageFactory const&) = delete;
