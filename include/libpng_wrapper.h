@@ -5,7 +5,8 @@
 #include <png.h>
 #include "image_file.h"
 
-class PNGFileWrapper: public ImageFile {
+class PNGFileWrapper: public ImageFile
+{
     private:
         FILE *_file;
         png_structp _png;
@@ -20,7 +21,7 @@ class PNGFileWrapper: public ImageFile {
         ~PNGFileWrapper();
         uint32_t getHeight();
         uint32_t getWidth();
-        bool loadImage(std::function<uint32_t* (uint32_t, uint32_t)> callback);
+        bool loadImage(std::function<uint32_t* (uint32_t)> callback);
         uint8_t getComponentSize();
         uint8_t getComponentCnt();
 };
