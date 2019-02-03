@@ -17,6 +17,7 @@ int main() {
     std::string rightFile = "resources/left.png";
     //std::string rightFile = "resources/right.png";
     try {
+        start = clock();
         Image *lImage = new Image(leftFile);
         Image *rImage= new Image(rightFile);
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;

@@ -33,6 +33,7 @@ class ImageStorage : public Storage
     public:
         uint32_t getHeight();
         uint32_t getWidth();
+        uint8_t getFrame();
 
         uint8_t* getRow(uint32_t index) {
             return _data[index];

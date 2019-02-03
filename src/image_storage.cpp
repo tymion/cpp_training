@@ -15,3 +15,8 @@ uint32_t ImageStorage::getHeight()
 {
     return _height;
 }
+
+uint8_t ImageStorage::getFrame()
+{
+    return _frame;
+}
