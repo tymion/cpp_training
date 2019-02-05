@@ -4,15 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-#define FULLHD_HEIGHT   1920
-#define FULLHD_WIDTH    1080
-
-#define FRAME   2
-
-#define DATA_HEIGHT (FULLHD_HEIGHT + 2 * FRAME)
-#define DATA_WIDTH  (FULLHD_WIDTH + 2 * FRAME)
-
-#define IMAGE_COMPONENT 4
+#include "config.h"
 
 #define STORAGE_SIZE DATA_HEIGHT * DATA_WIDTH * IMAGE_COMPONENT * 4
 

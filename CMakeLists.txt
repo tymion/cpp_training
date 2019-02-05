@@ -19,6 +19,8 @@ set(SOURCES
     image_factory.cpp
     image_file_factory.cpp
     libpng_wrapper.cpp
+    image_processor_factory.cpp
+    image_processor.cpp
     #    pngfile.cpp
     #    srs_test.cpp
     #    similar_region_search.cpp

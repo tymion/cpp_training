@@ -2,6 +2,16 @@
 #include <cstdint>
 #include <string>
 
+#define FULLHD_HEIGHT   1920
+#define FULLHD_WIDTH    1080
+
+#define FRAME   2
+
+#define DATA_HEIGHT (FULLHD_HEIGHT + 2 * FRAME)
+#define DATA_WIDTH  (FULLHD_WIDTH + 2 * FRAME)
+
+#define IMAGE_COMPONENT 4
+
 class Configuration
 {
     private:
