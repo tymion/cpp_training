@@ -1,23 +1,27 @@
-#include <string.h>
-#include "image.h"
-#include "storage.h"
+#include <cstdlib>
+#include "image_factory.h"
 
-Image::Image(std::string fileName)
+Image::Image(uint32_t height)
 {
-    _file = std::unique_ptr<ImageFile>{ImageFileFactory::createImageFile(fileName)};
-    _storage = std::unique_ptr<ImageStorage>{ImageStorageFactory::createImageStorage(_file->getHeight(), _file->getWidth())};
-    ImageStorage &storage = static_cast<ImageStorage&> (*_storage);
+    _data = (uint8_t**) malloc(height * sizeof(_data));
+}
 
-    auto callback = [&storage] (uint32_t row) { return storage[storage.getFrame() + row] + storage.getFrame(); };
-    _file->loadImage(callback);
-    for (auto i = 0; i < _storage->getFrame(); i++) {
-        memcpy(storage[i], storage[_storage->getFrame()], storage.getWidth());
-        memcpy(storage[storage.getHeight() + i], storage[_storage->getFrame() + storage.getHeight() - 1], storage.getWidth());
-    }
-    for (auto i = 0; i < storage.getHeight() + 2 * storage.getFrame(); i++) {
-        for (auto j = 0; j < storage.getFrame(); j++) {
-            storage[i][j] = storage[i][storage.getFrame()];
-            storage[i][storage.getFrame() + storage.getWidth() + j] = storage[i][storage.getFrame() + storage.getHeight()];
-        }
-    }
+uint32_t Image::getWidth()
+{
+    return _width;
+}
+
+uint32_t Image::getHeight()
+{
+    return _height;
+}
+
+uint8_t Image::getFrame()
+{
+    return _frame;
+}
+
+uint8_t* Image::operator[](uint32_t index)
+{
+     return _data[index];
 }
