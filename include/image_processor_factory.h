@@ -29,7 +29,7 @@ class ImageProcessorFactory
         static uint32_t _used;
 
     public:
-        ImageProcessor& createImageProcessor();
+        static ImageProcessor& createImageProcessor();
 
         ImageProcessorFactory(ImageProcessorFactory const&) = delete;
         void operator=(ImageProcessorFactory const&) = delete;

@@ -17,6 +17,7 @@ class Image
         uint32_t _height;
         uint32_t _width;
         uint8_t _frame;
+        uint8_t _component;
         uint8_t** _data;
 
         Image(uint32_t height);

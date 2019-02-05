@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <iostream>
 #include <functional>
+#include <memory>
 
 class ImageFile
 {
@@ -13,3 +14,5 @@ class ImageFile
         virtual uint8_t getComponentCnt() = 0;
         virtual ~ImageFile(){};
 };
+
+typedef std::unique_ptr<ImageFile> ImageFileUPtr;

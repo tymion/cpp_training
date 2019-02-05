@@ -5,6 +5,7 @@
 #include <memory>
 #include <ctime>
 #include "image_factory.h"
+#include "image_processor_factory.h"
 
 #define rsize 9
 
@@ -18,6 +19,8 @@ int main() {
         start = clock();
         Image& lImg = ImageFactory::createImageFromFile(leftFile);
         Image& rImg = ImageFactory::createImageFromFile(rightFile);
+        ImageProcessor& proc = ImageProcessorFactory::createImageProcessor();
+
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << "Time: "<< duration << std::endl;
     } catch (std::exception const &exc)

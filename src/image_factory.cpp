@@ -48,16 +48,17 @@ Image& ImageFactory::createImageFromFile(std::string fileName)
     uint8_t frame = 3;
     uint32_t image_height = 0;
     uint32_t image_width = 0;
-    std::unique_ptr<ImageFile> file = std::unique_ptr<ImageFile>{ImageFileFactory::createImageFile(fileName)};
+    ImageFileUPtr file = ImageFileUPtr{ImageFileFactory::createImageFile(fileName)};
     uint32_t height = file->getHeight();
     uint32_t width = file->getWidth();
+    uint8_t component = file->getComponentCnt();
     if (height + 2 * frame < height || width + 2 * frame < width) {
         frame = 0;
         image_height = height;
-        image_width = width;
+        image_width = width * component;
     } else {
         image_height = height + 2 * frame;
-        image_width = width + 2 * frame;
+        image_width = (width + 2 * frame) * component;
     }
     if (image_width * image_height > STORAGE_SIZE - _used) {
         throw std::out_of_range("Image side is out of factory range.");
@@ -66,20 +67,23 @@ Image& ImageFactory::createImageFromFile(std::string fileName)
     img._height = height;
     img._width = width;
     img._frame = frame;
+    img._component = component;
     for (uint32_t i = 0; i < image_height; i++) {
         img._data[i] = &ImageFactory::_pixel[_used + i * image_width];
     }
     ImageFactory::_used += image_height * image_width;
+
     auto callback = [=, &img] (uint32_t row) { return img[frame + row] + frame; };
     file->loadImage(callback);
+
     for (auto i = 0; i < frame; i++) {
-        memcpy(img[i], img[frame], width);
-        memcpy(img[frame + height + i], img[frame + height - 1], width);
+        memcpy(img[i], img[frame], image_width);
+        memcpy(img[frame + height + i], img[frame + height - 1], image_width);
     }
-    for (auto j = 0; j < frame; j++) {
+    for (auto j = 0; j < frame * component; j++) {
         for (auto i = 0; i < image_height; i++) {
-            img[i][j] = img[i][frame];
-            img[i][frame + width + j] = img[i][frame + height];
+            img[i][j] = img[i][frame * component + j % component];
+            img[i][(frame + width) * component + j] = img[i][(frame + width - 1) * component + j % component];
         }
     }
     return img;
