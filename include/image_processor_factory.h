@@ -1,6 +1,8 @@
 #pragma once
 
 #include "config.h"
+#include "color_space.h"
+#include "image_factory.h"
 
 #define PROCESSOR_FACTORY_SIZE DATA_HEIGHT * DATA_WIDTH * IMAGE_COMPONENT * 2
 #define PROCESSOR_SIZE DATA_HEIGHT
@@ -14,6 +16,8 @@ class ImageProcessor
         uint8_t* _data[PROCESSOR_SIZE];
 
     public:
+        Image& changeColorSpace(Image const& img, ColorSpace color);
+
         ImageProcessor(ImageProcessor const&) = delete;
         void operator=(ImageProcessor const&) = delete;
 };

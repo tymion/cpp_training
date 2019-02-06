@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "config.h"
+#include "color_space.h"
 
 #define STORAGE_SIZE DATA_HEIGHT * DATA_WIDTH * IMAGE_COMPONENT * 4
 
@@ -55,10 +56,12 @@ class ImageFactory
         ImageFactory() {}
 
         static ImageFactory& getInstance();
+        static Image& createImage(auto height, auto width, auto frame, auto component);
+        static void assignStorage(Image& img, auto height, auto width);
 
     public:
-        static Image* createImage(uint32_t height, uint32_t width);
         static Image& createImageFromFile(std::string fileName);
+        static Image& createImageFromImage(Image const& img, ColorSpace color);
 
         ImageFactory(ImageFactory const&) = delete;
         void operator=(ImageFactory const&) = delete;

@@ -15,50 +15,20 @@ ImageFactory& ImageFactory::getInstance()
     return instance;
 }
 
-Image* ImageFactory::createImage(uint32_t height, uint32_t width)
+void ImageFactory::assignStorage(Image& img, auto height, auto width)
 {
-    uint8_t frame = 3;
-    uint32_t image_height = 0;
-    uint32_t image_width = 0;
-    if (height + 2 * frame < height || width + 2 * frame < width) {
-        frame = 0;
-        image_height = height;
-        image_width = width;
-    } else {
-        image_height = height + 2 * frame;
-        image_width = width + 2 * frame;
+    for (auto i = 0; i < height; i++) {
+        img._data[i] = &ImageFactory::_pixel[_used + i * width];
     }
-    if (image_width * image_height > STORAGE_SIZE - _used) {
-        throw std::out_of_range("Image side is out of factory range.");
-    }
-//    Image& img = getInstance()._warehouse.emplace_back(image_height);
-    Image *img = new Image(image_height);
-    img->_height = height;
-    img->_width = width;
-    img->_frame = frame;
-    for (uint32_t i = 0; i < image_height; i++) {
-        img->_data[i] = &ImageFactory::_pixel[_used + i * image_width];
-    }
-    ImageFactory::_used += image_height * image_width;
-    return img;
+    ImageFactory::_used += height * width;
 }
 
-Image& ImageFactory::createImageFromFile(std::string fileName)
+Image& ImageFactory::createImage(auto height, auto width, auto frame, auto component)
 {
-    uint8_t frame = 3;
-    uint32_t image_height = 0;
-    uint32_t image_width = 0;
-    ImageFileUPtr file = ImageFileUPtr{ImageFileFactory::createImageFile(fileName)};
-    uint32_t height = file->getHeight();
-    uint32_t width = file->getWidth();
-    uint8_t component = file->getComponentCnt();
-    if (height + 2 * frame < height || width + 2 * frame < width) {
-        frame = 0;
-        image_height = height;
-        image_width = width * component;
-    } else {
-        image_height = height + 2 * frame;
-        image_width = (width + 2 * frame) * component;
+    auto image_height = height + 2 * frame;
+    auto image_width = (width + 2 * frame) * component;
+    if (image_height < height || image_width < width) {
+        throw std::out_of_range("After adding frame integer overflow");
     }
     if (image_width * image_height > STORAGE_SIZE - _used) {
         throw std::out_of_range("Image side is out of factory range.");
@@ -68,23 +38,37 @@ Image& ImageFactory::createImageFromFile(std::string fileName)
     img._width = width;
     img._frame = frame;
     img._component = component;
-    for (uint32_t i = 0; i < image_height; i++) {
-        img._data[i] = &ImageFactory::_pixel[_used + i * image_width];
-    }
-    ImageFactory::_used += image_height * image_width;
+
+    ImageFactory::assignStorage(img, image_height, image_width);
+
+    return img;
+}
+
+Image& ImageFactory::createImageFromFile(std::string fileName)
+{
+    uint8_t frame = Configuration::getImageFrame();
+    ImageFileUPtr file = ImageFileUPtr{ImageFileFactory::createImageFile(fileName)};
+    auto height = file->getHeight();
+    auto width = file->getWidth();
+    auto component = file->getComponentCnt();
+    Image& img = ImageFactory::createImage(height, width, frame, component);
 
     auto callback = [=, &img] (uint32_t row) { return img[frame + row] + frame; };
     file->loadImage(callback);
 
     for (auto i = 0; i < frame; i++) {
-        memcpy(img[i], img[frame], image_width);
-        memcpy(img[frame + height + i], img[frame + height - 1], image_width);
+        memcpy(&img[i][frame], &img[frame][frame], width * component);
+        memcpy(&img[frame + height + i][frame], &img[frame + height - 1][frame], width * component);
     }
     for (auto j = 0; j < frame * component; j++) {
-        for (auto i = 0; i < image_height; i++) {
+        for (auto i = 0; i < height + 2 * frame; i++) {
             img[i][j] = img[i][frame * component + j % component];
             img[i][(frame + width) * component + j] = img[i][(frame + width - 1) * component + j % component];
         }
     }
     return img;
+}
+
+Image& ImageFactory::createImageFromImage(Image const& img, ColorSpace color)
+{
 }

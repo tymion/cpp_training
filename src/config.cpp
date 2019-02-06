@@ -27,6 +27,16 @@ uint32_t Configuration::getSimilarityThreshold()
     return Configuration::getInstance()._similarityThreshold;
 }
 
+uint8_t Configuration::getImageFrame()
+{
+    return Configuration::getInstance()._frame;
+}
+
+void Configuration::setImageFrame(uint8_t frame)
+{
+    Configuration::getInstance()._frame = frame;
+}
+
 std::string Configuration::toString()
 {
     return "JacardThreshold:" + std::to_string(Configuration::getInstance()._jacardThreshold) + ", similarityThreshold:" + std::to_string(Configuration::getInstance()._similarityThreshold);

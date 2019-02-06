@@ -17,6 +17,7 @@ class Configuration
     private:
         double _jacardThreshold;
         uint32_t _similarityThreshold;
+        uint8_t _frame;
 
         Configuration() {}
 
@@ -28,6 +29,9 @@ class Configuration
 
         static uint32_t getSimilarityThreshold();
         static void setSimilarityThreshold(uint32_t new_threshold);
+
+        static uint8_t getImageFrame();
+        static void setImageFrame(uint8_t frame);
 
         static std::string toString();
 
