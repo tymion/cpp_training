@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdint>
+#include <vector>
+
 #include "config.h"
 #include "color_space.h"
 #include "image_factory.h"
@@ -10,27 +13,41 @@
 class ImageProcessor
 {
     friend class ImageProcessorFactory;
-    private:
-        ImageProcessor () {}
+    friend struct ImageProcessorAllocator;
 
+    private:
         uint8_t* _data[PROCESSOR_SIZE];
+
+        ImageProcessor () {}
 
     public:
         Image& changeColorSpace(Image const& img, ColorSpace color);
-
-        ImageProcessor(ImageProcessor const&) = delete;
-        void operator=(ImageProcessor const&) = delete;
 };
 
 class ImageProcessorFactory
 {
+    struct ImageProcessorAllocator: std::allocator<ImageProcessor>
+    {
+        template<class U, class... Args>
+        void construct(U *u, Args&&... args)
+        {
+            new((void*)u) U(std::forward<Args>(args)...);
+        }
+        template<class U>
+        struct rebind
+        {
+            typedef ImageProcessorAllocator other;
+        };
+    };
+
     private:
-        ImageProcessorFactory () {}
-
-        static ImageProcessorFactory& getInstance();
-
         static uint8_t _pixel[PROCESSOR_FACTORY_SIZE];
         static uint32_t _used;
+        std::vector<ImageProcessor, ImageProcessorAllocator> _warehouse;
+
+        ImageProcessorFactory() {}
+
+        static ImageProcessorFactory& getInstance();
 
     public:
         static ImageProcessor& createImageProcessor();

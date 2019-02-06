@@ -71,4 +71,16 @@ Image& ImageFactory::createImageFromFile(std::string fileName)
 
 Image& ImageFactory::createImageFromImage(Image const& img, ColorSpace color)
 {
+    switch (color) {
+        case ColorSpace::Grayscale:
+            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 1);
+        case ColorSpace::GrayscaleAlpha:
+            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 2);
+        case ColorSpace::TrueColor:
+            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 3);
+        case ColorSpace::TrueColorAlpha:
+            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 4);
+        default:
+            throw std::invalid_argument("Unknown color space.");
+    }
 }

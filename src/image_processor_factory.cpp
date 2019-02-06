@@ -12,10 +12,10 @@ ImageProcessorFactory& ImageProcessorFactory::getInstance()
 
 ImageProcessor& ImageProcessorFactory::createImageProcessor()
 {
-    ImageProcessor img;
     if (_used + PROCESSOR_SIZE * DATA_WIDTH > PROCESSOR_FACTORY_SIZE) {
         throw std::invalid_argument("Out of memory");
     }
+    ImageProcessor& img = getInstance()._warehouse.emplace_back();
     for (auto i = 0; i < PROCESSOR_SIZE; i++) {
         img._data[i] = &_pixel[_used + i * DATA_WIDTH];
     }

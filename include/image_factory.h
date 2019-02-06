@@ -24,11 +24,12 @@ class Image
         Image(uint32_t height);
 
     public:
-        uint32_t getHeight();
-        uint32_t getWidth();
-        uint8_t getFrame();
+        uint32_t getHeight() const;
+        uint32_t getWidth() const;
+        uint8_t getFrame() const;
+        uint8_t getComponent() const;
 
-        uint8_t* operator[](uint32_t index);
+        uint8_t* operator[](uint32_t index) const;
 };
 
 
