@@ -22,6 +22,7 @@ class Image
         uint8_t** _data;
 
         Image(uint32_t height);
+        ~Image();
 
     public:
         uint32_t getHeight() const;
@@ -63,6 +64,7 @@ class ImageFactory
     public:
         static Image& createImageFromFile(std::string fileName);
         static Image& createImageFromImage(Image const& img, ColorSpace color);
+        static Image& createImageFromImage(Image const& img);
 
         ImageFactory(ImageFactory const&) = delete;
         void operator=(ImageFactory const&) = delete;

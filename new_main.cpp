@@ -22,6 +22,7 @@ int main() {
         Image& rImg = ImageFactory::createImageFromFile(rightFile);
         ImageProcessor& proc = ImageProcessorFactory::createImageProcessor();
         Image& gray = proc.changeColorSpace(lImg, ColorSpace::Grayscale);
+        Image& low = proc.lowPassFilter(gray, 5);
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << "Time: "<< duration << std::endl;
     } catch (std::exception const &exc)

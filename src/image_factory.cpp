@@ -84,3 +84,8 @@ Image& ImageFactory::createImageFromImage(Image const& img, ColorSpace color)
             throw std::invalid_argument("Unknown color space.");
     }
 }
+
+Image& ImageFactory::createImageFromImage(Image const& img)
+{
+    return createImage(img.getHeight(), img.getWidth(), img.getFrame(), img.getComponent());
+}

@@ -22,6 +22,7 @@ class ImageProcessor
 
     public:
         Image& changeColorSpace(Image const& img, ColorSpace color);
+        Image& lowPassFilter(Image const& img, uint8_t kernel_size);
 };
 
 class ImageProcessorFactory
