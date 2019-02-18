@@ -52,5 +52,6 @@ make
 make DESTDIR=$DESTDIR_TARGET install
 
 export LD_LIBRARY_PATH=$DESTDIR/lib:$DESTDIR/usr/local/lib
-export QEMU_LD_PREFIX="$CROSS_COMPILE_PATH/$HOST/libc/"
+export QEMU_LD_PREFIX=$CROSS_COMPILE_PATH/$HOST/libc/
 export PATH=$PATH:$DESTDIR/bin:$DESTDIR/usr/local/bin
+echo "LD_LIBRARY_PATH=$DESTDIR/lib:$DESTDIR/usr/local/lib QEMU_LD_PREFIX=$CROSS_COMPILE_PATH/$HOST/libc/"

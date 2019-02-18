@@ -18,6 +18,7 @@ Image& ImageProcessor::lowPassFilter(Image const& img, uint8_t kernel_size)
     Image& outImg = ImageFactory::createImageFromImage(img);
     auto width = img.getWidth() + img.getFrame() * 2 - kernel_size + 1;
     auto height = img.getHeight() + img.getFrame() * 2;
+    // sum up values in a row to tmp tab
     for (auto i = 0; i < height; i++) {
         for (auto j = 0; j < width; j++) {
             _data[i][j] = 0;
@@ -26,13 +27,14 @@ Image& ImageProcessor::lowPassFilter(Image const& img, uint8_t kernel_size)
             }
         }
     }
+    // sum up values in col from tmp tab
     uint8_t kernel = kernel_size / 2;
     for (auto i = 0; i < height - kernel; i++) {
         for (auto j = 0; j < width; j++) {
             outImg[i][j + kernel] = _data[i][j];
             for (auto n = 1; n <= kernel; n++) {
-                outImg[i + n][j + kernel] = _data[i][j];
-                outImg[height - 1 - (i + n)][j + kernel] = _data[height - 1 - i][j];
+                outImg[i + n][j + kernel] += _data[i][j];
+                outImg[height - 1 - (i + n)][j + kernel] += _data[height - 1 - i][j];
             }
         }
     }
