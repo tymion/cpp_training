@@ -48,6 +48,11 @@ class ImageFactory
         {
             typedef ImageAllocator other;
         };
+        template<class U>
+        void destroy(U *u)
+        {
+            u->~U();
+        }
     };
 
     private:

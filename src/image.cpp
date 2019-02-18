@@ -6,7 +6,7 @@ Image::Image(uint32_t height)
     _data = (uint8_t**) malloc(height * sizeof(_data));
 }
 
-~Image::Image()
+Image::~Image()
 {
     free(_data);
 }
