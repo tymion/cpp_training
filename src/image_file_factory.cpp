@@ -26,7 +26,7 @@ bool ImageFileFactory::isPNG(FILE *file) {
     return true;
 }
 
-ImageFile* ImageFileFactory::createImageFile(std::string filename) {
+ImageFile* ImageFileFactory::openImageFile(std::string filename) {
     struct stat stbuf;
     lstat(filename.c_str(), &stbuf);
     if (!S_ISREG(stbuf.st_mode)) {
@@ -43,4 +43,8 @@ ImageFile* ImageFileFactory::createImageFile(std::string filename) {
         std::cout << "Height: " << image->getHeight() << std::endl;
     }
     return image;
+}
+
+ImageFile* ImageFileFactory::createImageFile(std::string filename) {
+    return nullptr;
 }

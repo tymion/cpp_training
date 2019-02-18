@@ -13,6 +13,7 @@ class ImageFileFactory
         ImageFileFactory() {}
 
     public:
+        static ImageFile* openImageFile(std::string filename);
         static ImageFile* createImageFile(std::string filename);
 
         ImageFileFactory(ImageFileFactory const&) = delete;
