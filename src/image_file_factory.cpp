@@ -28,7 +28,9 @@ bool ImageFileFactory::isPNG(FILE *file) {
 
 ImageFile* ImageFileFactory::openImageFile(std::string filename) {
     struct stat stbuf;
-    lstat(filename.c_str(), &stbuf);
+    if (lstat(filename.c_str(), &stbuf) != 0) {
+        throw std::invalid_argument("File not found");
+    }
     if (!S_ISREG(stbuf.st_mode)) {
         throw std::invalid_argument("Invalid parameter. Pass picture file name.");
     }
@@ -45,6 +47,15 @@ ImageFile* ImageFileFactory::openImageFile(std::string filename) {
     return image;
 }
 
-ImageFile* ImageFileFactory::createImageFile(std::string filename) {
-    return nullptr;
+ImageFile* ImageFileFactory::createImageFile(std::string filename, size_t width, size_t height,
+                                            size_t color_depth, ColorSpace color) {
+    struct stat stbuf;
+    if (lstat(filename.c_str(), &stbuf) != ENOENT) {
+        throw std::invalid_argument("File already exists.");
+    }
+    FILE *file = fopen(filename.c_str(), "wb");
+    if (!file) {
+        throw std::invalid_argument("Can't create file.");
+    }
+    return new PNGFileWrapper(file, width, height, color_depth, color);
 }

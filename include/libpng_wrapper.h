@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <png.h>
 #include "image_file.h"
+#include "color_space.h"
 
 class PNGFileWrapper: public ImageFile
 {
@@ -15,13 +16,19 @@ class PNGFileWrapper: public ImageFile
         png_bytep *_row_pointers;
         uint32_t _height;
         uint32_t _width;
+        bool _read;
+
+        png_byte ColorSpaceToLibPNG(ColorSpace color);
 
     public:
-        PNGFileWrapper(FILE *newfile);
+        PNGFileWrapper(FILE *file);
+        PNGFileWrapper(FILE *file, size_t width, size_t height, size_t color_depth,
+                        ColorSpace color);
         ~PNGFileWrapper();
         uint32_t getHeight();
         uint32_t getWidth();
         bool loadImage(std::function<uint8_t* (uint32_t)> callback);
+        bool saveImage(std::function<uint8_t* (uint32_t)> callback);
         uint8_t getComponentSize();
         uint8_t getComponentCnt();
 };

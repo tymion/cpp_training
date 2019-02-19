@@ -65,11 +65,13 @@ class ImageFactory
         static ImageFactory& getInstance();
         static Image& createImage(auto height, auto width, auto frame, auto component);
         static void assignStorage(Image& img, auto height, auto width);
+        static ColorSpace getColorSpaceFromComponent(size_t component);
 
     public:
         static Image& createImageFromFile(std::string fileName);
         static Image& createImageFromImage(Image const& img, ColorSpace color);
         static Image& createImageFromImage(Image const& img);
+        static bool createFileFromImage(std::string name, Image const& img);
 
         ImageFactory(ImageFactory const&) = delete;
         void operator=(ImageFactory const&) = delete;

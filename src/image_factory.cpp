@@ -47,7 +47,7 @@ Image& ImageFactory::createImage(auto height, auto width, auto frame, auto compo
 Image& ImageFactory::createImageFromFile(std::string fileName)
 {
     uint8_t frame = Configuration::getImageFrame();
-    ImageFileUPtr file = ImageFileUPtr{ImageFileFactory::createImageFile(fileName)};
+    ImageFileUPtr file = ImageFileUPtr{ImageFileFactory::openImageFile(fileName)};
     auto height = file->getHeight();
     auto width = file->getWidth();
     auto component = file->getComponentCnt();
@@ -85,7 +85,30 @@ Image& ImageFactory::createImageFromImage(Image const& img, ColorSpace color)
     }
 }
 
+ColorSpace ImageFactory::getColorSpaceFromComponent(size_t component)
+{
+    switch (component) {
+        case 1:
+            return ColorSpace::Grayscale;
+        case 2:
+            return ColorSpace::GrayscaleAlpha;
+        case 3:
+            return ColorSpace::TrueColor;
+        case 4:
+            return ColorSpace::TrueColorAlpha;
+        default:
+            throw std::invalid_argument("Invalid component value");
+    }
+}
+
 Image& ImageFactory::createImageFromImage(Image const& img)
 {
     return createImage(img.getHeight(), img.getWidth(), img.getFrame(), img.getComponent());
+}
+
+bool ImageFactory::createFileFromImage(std::string name, Image const& img)
+{
+    ColorSpace color = getColorSpaceFromComponent(img.getComponent());
+    ImageFile *file = ImageFileFactory::createImageFile(name, img.getWidth(), img.getHeight(), 8, color);
+    return true;
 }
