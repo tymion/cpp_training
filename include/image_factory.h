@@ -15,11 +15,11 @@ class Image
     friend struct ImageAllocator;
 
     private:
-        uint32_t _height;
-        uint32_t _width;
-        uint8_t _frame;
-        uint8_t _component;
-        uint8_t** _data;
+        uint32_t _height = 0;
+        uint32_t _width = 0;
+        uint8_t _frame = 0;
+        uint8_t _component = 0;
+        uint8_t** _data = NULL;
 
         Image(uint32_t height);
         ~Image();
@@ -29,7 +29,9 @@ class Image
         uint32_t getWidth() const;
         uint8_t getFrame() const;
         uint8_t getComponent() const;
+        void fillFrames();
 
+        uint8_t* operator[](uint32_t index);
         uint8_t* operator[](uint32_t index) const;
 };
 

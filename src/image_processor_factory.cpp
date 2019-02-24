@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include "image_processor_factory.h"
 
-uint8_t ImageProcessorFactory::_pixel[PROCESSOR_FACTORY_SIZE];
+uint32_t ImageProcessorFactory::_pixel[PROCESSOR_FACTORY_SIZE];
 uint32_t ImageProcessorFactory::_used = 0;
 
 ImageProcessorFactory& ImageProcessorFactory::getInstance()

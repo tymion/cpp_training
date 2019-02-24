@@ -16,7 +16,7 @@ class ImageProcessor
     friend struct ImageProcessorAllocator;
 
     private:
-        uint8_t* _data[PROCESSOR_SIZE];
+        uint32_t* _data[PROCESSOR_SIZE];
 
         ImageProcessor () {}
 
@@ -42,7 +42,7 @@ class ImageProcessorFactory
     };
 
     private:
-        static uint8_t _pixel[PROCESSOR_FACTORY_SIZE];
+        static uint32_t _pixel[PROCESSOR_FACTORY_SIZE];
         static uint32_t _used;
         std::vector<ImageProcessor, ImageProcessorAllocator> _warehouse;
 

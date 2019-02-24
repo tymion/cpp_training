@@ -50,7 +50,7 @@ ImageFile* ImageFileFactory::openImageFile(std::string filename) {
 ImageFile* ImageFileFactory::createImageFile(std::string filename, size_t width, size_t height,
                                             size_t color_depth, ColorSpace color) {
     struct stat stbuf;
-    if (lstat(filename.c_str(), &stbuf) != ENOENT) {
+    if (lstat(filename.c_str(), &stbuf) == -1 && errno != ENOENT) {
         throw std::invalid_argument("File already exists.");
     }
     FILE *file = fopen(filename.c_str(), "wb");

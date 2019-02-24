@@ -39,6 +39,11 @@ Image& ImageFactory::createImage(auto height, auto width, auto frame, auto compo
     img._frame = frame;
     img._component = component;
 
+    std::cout << "Height:" << height << "\n";
+    std::cout << "Width:" << width << "\n";
+    std::cout << "Frame:" << (uint32_t) frame << "\n";
+    std::cout << "Component:" << (uint32_t) component << "\n";
+
     ImageFactory::assignStorage(img, image_height, image_width);
 
     return img;
@@ -56,16 +61,8 @@ Image& ImageFactory::createImageFromFile(std::string fileName)
     auto callback = [=, &img] (uint32_t row) { return img[frame + row] + frame; };
     file->loadImage(callback);
 
-    for (auto i = 0; i < frame; i++) {
-        memcpy(&img[i][frame], &img[frame][frame], width * component);
-        memcpy(&img[frame + height + i][frame], &img[frame + height - 1][frame], width * component);
-    }
-    for (auto j = 0; j < frame * component; j++) {
-        for (auto i = 0; i < height + 2 * frame; i++) {
-            img[i][j] = img[i][frame * component + j % component];
-            img[i][(frame + width) * component + j] = img[i][(frame + width - 1) * component + j % component];
-        }
-    }
+//    img.fillFrames();
+
     return img;
 }
 
@@ -73,9 +70,9 @@ Image& ImageFactory::createImageFromImage(Image const& img, ColorSpace color)
 {
     switch (color) {
         case ColorSpace::Grayscale:
-            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 1);
+            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 3);
         case ColorSpace::GrayscaleAlpha:
-            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 2);
+            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 4);
         case ColorSpace::TrueColor:
             return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 3);
         case ColorSpace::TrueColorAlpha:
@@ -109,6 +106,12 @@ Image& ImageFactory::createImageFromImage(Image const& img)
 bool ImageFactory::createFileFromImage(std::string name, Image const& img)
 {
     ColorSpace color = getColorSpaceFromComponent(img.getComponent());
-    ImageFile *file = ImageFileFactory::createImageFile(name, img.getWidth(), img.getHeight(), 8, color);
+    ImageFileUPtr file = ImageFileUPtr{ImageFileFactory::createImageFile(name, img.getWidth(),
+            img.getHeight(), 8, color)};
+    auto callback = [&img](uint32_t row) {
+                                            uint8_t frame = img.getFrame();
+                                            return img[frame + row] + frame;
+                                        };
+    file->saveImage(callback);
     return true;
 }

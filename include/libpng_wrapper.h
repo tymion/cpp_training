@@ -9,14 +9,14 @@
 class PNGFileWrapper: public ImageFile
 {
     private:
-        FILE *_file;
+        FILE *_file = NULL;
         png_structp _png;
         png_infop _info;
         png_byte _bit_depth;
         png_bytep *_row_pointers;
-        uint32_t _height;
-        uint32_t _width;
-        bool _read;
+        uint32_t _height = 0;
+        uint32_t _width = 0;
+        bool _read = false;
 
         png_byte ColorSpaceToLibPNG(ColorSpace color);
 

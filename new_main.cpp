@@ -18,12 +18,15 @@ int main() {
     //std::string rightFile = "resources/right.png";
     try {
         start = clock();
+        Configuration::setImageFrame(2);
         Image& lImg = ImageFactory::createImageFromFile(leftFile);
         Image& rImg = ImageFactory::createImageFromFile(rightFile);
         ImageProcessor& proc = ImageProcessorFactory::createImageProcessor();
         Image& gray = proc.changeColorSpace(lImg, ColorSpace::Grayscale);
+        ImageFactory::createFileFromImage("test_gray.png", gray);
         Image& low = proc.lowPassFilter(gray, 5);
-
+        low.fillFrames();
+        ImageFactory::createFileFromImage("test_low.png", low);
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << "Time: "<< duration << std::endl;
     } catch (std::exception const &exc)

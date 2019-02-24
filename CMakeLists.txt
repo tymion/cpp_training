@@ -1,6 +1,8 @@
 project(cpp_training)
 cmake_minimum_required(VERSION 3.5)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${ROOTFS}/include)
 include_directories(${ROOTFS}/usr/local/include)
