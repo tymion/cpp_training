@@ -11,7 +11,12 @@ uint8_t ImageFactory::_pixel[STORAGE_SIZE];
 ImageFactory& ImageFactory::getInstance()
 {
     static ImageFactory instance;
-    instance._warehouse.reserve(4);
+    static bool init = false;
+    if (!init) {
+        auto size = Configuration::getStorageSize();
+        instance._warehouse.reserve(size);
+        init = true;
+    }
     return instance;
 }
 
@@ -53,15 +58,19 @@ Image& ImageFactory::createImageFromFile(std::string fileName)
 {
     uint8_t frame = Configuration::getImageFrame();
     ImageFileUPtr file = ImageFileUPtr{ImageFileFactory::openImageFile(fileName)};
+    if (!file) {
+        throw std::out_of_range("Opening file has failed");
+    }
     auto height = file->getHeight();
     auto width = file->getWidth();
     auto component = file->getComponentCnt();
     Image& img = ImageFactory::createImage(height, width, frame, component);
 
-    auto callback = [=, &img] (uint32_t row) { return img[frame + row] + frame; };
+    auto callback = [=, &img] (uint32_t row) {
+                                            return img[frame + row] + frame * component;
+                                            };
     file->loadImage(callback);
-
-//    img.fillFrames();
+    img.fillFrames();
 
     return img;
 }
@@ -70,9 +79,9 @@ Image& ImageFactory::createImageFromImage(Image const& img, ColorSpace color)
 {
     switch (color) {
         case ColorSpace::Grayscale:
-            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 3);
+            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 1);
         case ColorSpace::GrayscaleAlpha:
-            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 4);
+            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 2);
         case ColorSpace::TrueColor:
             return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 3);
         case ColorSpace::TrueColorAlpha:
@@ -108,10 +117,11 @@ bool ImageFactory::createFileFromImage(std::string name, Image const& img)
     ColorSpace color = getColorSpaceFromComponent(img.getComponent());
     ImageFileUPtr file = ImageFileUPtr{ImageFileFactory::createImageFile(name, img.getWidth(),
             img.getHeight(), 8, color)};
-    auto callback = [&img](uint32_t row) {
-                                            uint8_t frame = img.getFrame();
-                                            return img[frame + row] + frame;
-                                        };
+    auto component = img.getComponent();
+    auto frame = img.getFrame();
+    auto callback = [=, &img] (uint32_t row) {
+                                            return img[frame + row] + frame * component;
+                                            };
     file->saveImage(callback);
     return true;
 }

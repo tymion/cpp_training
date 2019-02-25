@@ -14,19 +14,23 @@ int main() {
     clock_t start;
     double duration;
     std::string leftFile = "resources/left.png";
-    std::string rightFile = "resources/left.png";
-    //std::string rightFile = "resources/right.png";
+    //std::string rightFile = "resources/left.png";
+    std::string rightFile = "resources/right.png";
     try {
         start = clock();
         Configuration::setImageFrame(2);
+        Configuration::setStorageSize(10);
         Image& lImg = ImageFactory::createImageFromFile(leftFile);
         Image& rImg = ImageFactory::createImageFromFile(rightFile);
         ImageProcessor& proc = ImageProcessorFactory::createImageProcessor();
-        Image& gray = proc.changeColorSpace(lImg, ColorSpace::Grayscale);
-        ImageFactory::createFileFromImage("test_gray.png", gray);
-        Image& low = proc.lowPassFilter(gray, 5);
-        low.fillFrames();
-        ImageFactory::createFileFromImage("test_low.png", low);
+        Image& lGray = proc.changeColorSpace(lImg, ColorSpace::Grayscale);
+        Image& rGray = proc.changeColorSpace(rImg, ColorSpace::Grayscale);
+        Image& lLow = proc.lowPassFilter(lGray, 5);
+        Image& rLow = proc.lowPassFilter(rGray, 5);
+        lLow.fillFrames();
+        rLow.fillFrames();
+        ImageFactory::createFileFromImage("test_lLow.png", lLow);
+        ImageFactory::createFileFromImage("test_rLow.png", rLow);
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << "Time: "<< duration << std::endl;
     } catch (std::exception const &exc)

@@ -32,14 +32,10 @@ PNGFileWrapper::PNGFileWrapper(FILE *file, size_t width, size_t height, size_t c
     _info = png_create_info_struct(_png);
     setjmp(png_jmpbuf(_png));
     png_init_io(_png, file);
-//    png_byte png_color = ColorSpaceToLibPNG(color);
-    png_byte png_color = ColorSpaceToLibPNG(ColorSpace::TrueColor);
+    png_byte png_color = ColorSpaceToLibPNG(color);
     png_set_IHDR(_png, _info, width, height, color_depth, png_color, PNG_INTERLACE_NONE,
-            PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+            PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
     png_write_info(_png, _info);
-    std::cout << "interlace:" << PNG_INTERLACE_NONE << "\n";
-    std::cout << "compression:" << PNG_COMPRESSION_TYPE_BASE << "\n";
-    std::cout << "filter:" << PNG_FILTER_TYPE_BASE << "\n";
     _width = width;
     _height = height;
     _bit_depth = color_depth;
@@ -56,10 +52,10 @@ PNGFileWrapper::PNGFileWrapper(FILE *file) {
     setjmp(png_jmpbuf(_png));
     png_init_io(_png, file);
     png_read_info(_png, _info);
-    _width = png_get_image_width(_png, _info);
-    _height = png_get_image_height(_png, _info);
     png_byte color_type = png_get_color_type(_png, _info);
     _bit_depth = png_get_bit_depth(_png, _info);
+    _width = png_get_image_width(_png, _info);
+    _height = png_get_image_height(_png, _info);
 
     if (_bit_depth == 16) {
         png_set_strip_16(_png);
@@ -71,27 +67,12 @@ PNGFileWrapper::PNGFileWrapper(FILE *file) {
     if (color_type == PNG_COLOR_TYPE_GRAY && _bit_depth < 8) {
         png_set_expand_gray_1_2_4_to_8(_png);
     }
-    if (png_get_valid(_png, _info, PNG_INFO_tRNS)) {
-        png_set_tRNS_to_alpha(_png);
-    }
-    if (color_type == PNG_COLOR_TYPE_RGB ||
-        color_type == PNG_COLOR_TYPE_GRAY ||
-        color_type == PNG_COLOR_TYPE_PALETTE)
-        png_set_filler(_png, 0xFF, PNG_FILLER_AFTER);
-
     if (color_type == PNG_COLOR_TYPE_GRAY ||
         color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
         png_set_gray_to_rgb(_png);
 
     png_read_update_info(_png, _info);
 
-    int interlace_method = 1;
-    int compression_method = 1;
-    int filter_method = 1;
-    png_get_IHDR(_png, _info, &_width, &_height, (int*) &_bit_depth, (int*) &color_type, &interlace_method, &compression_method, &filter_method);
-    std::cout << "interlace:" << interlace_method << "\n";
-    std::cout << "compression:" << compression_method << "\n";
-    std::cout << "filter:" << filter_method << "\n";
     _row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * _height);
     _read = true;
 }
