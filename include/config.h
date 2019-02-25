@@ -18,6 +18,7 @@ class Configuration
         double _jacardThreshold;
         uint32_t _similarityThreshold;
         uint8_t _frame;
+        uint8_t _storageSize;
 
         Configuration() {}
 
@@ -32,6 +33,9 @@ class Configuration
 
         static uint8_t getImageFrame();
         static void setImageFrame(uint8_t frame);
+
+        static uint8_t getStorageSize();
+        static void setStorageSize(uint8_t size);
 
         static std::string toString();
 

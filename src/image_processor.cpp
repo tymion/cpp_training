@@ -5,18 +5,11 @@ Image& ImageProcessor::changeColorSpace(Image const& img, ColorSpace color)
     Image& gray_img = ImageFactory::createImageFromImage(img, color);
     uint8_t tmp = 0;
     for (auto i = 0; i < img.getHeight() + img.getFrame() * 2; i++) {
-        for (auto j = 0; j < (img.getWidth() + img.getFrame() * 2) * img.getComponent(); j += img.getComponent()) {
-            /*
-            tmp = (uint8_t) ((float) img[i][j] * 0.3 +
-                (float) img[i][j + 1] * 0.59 +
-                (float) img[i][j + 2] * 0.11);
-            gray_img[i][j] = tmp;
-            gray_img[i][j + 1] = tmp;
-            gray_img[i][j + 2] = tmp;
-            */
-            gray_img[i][j] = img[i][j];
-            gray_img[i][j + 1] = img[i][j + 1];
-            gray_img[i][j + 2] = img[i][j + 2];
+        for (auto j = 0; j < img.getWidth() + img.getFrame() * 2; j++) {
+            gray_img[i][j] =
+                (uint8_t) ((float) img[i][j * img.getComponent()] * 0.3 +
+                (float) img[i][j * img.getComponent() + 1] * 0.59 +
+                (float) img[i][j * img.getComponent() + 2] * 0.11);
         }
     }
     return gray_img;
@@ -48,5 +41,11 @@ Image& ImageProcessor::lowPassFilter(Image const& img, uint8_t kernel_size)
             tmp = 0;
         }
     }
+    return outImg;
+}
+
+Image& ImageProcessor::subtraction(Image const& first, Image const& second)
+{
+    Image& outImg = ImageFactory::createImageFromImage(first);
     return outImg;
 }

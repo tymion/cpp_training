@@ -12,14 +12,11 @@ bool ImageFileFactory::isPNG(FILE *file) {
     if (ftell(file) != 0) {
         fseek (file, 0, SEEK_SET); 
     }
-    char header[PNG_HEADER_SIZE];
-    int ret = fread(header, sizeof(char), PNG_HEADER_SIZE, file);
-
-    if (ret == 0) {
+    uint8_t header[PNG_HEADER_SIZE];
+    if (fread(header, sizeof(uint8_t), PNG_HEADER_SIZE, file) == 0) {
         throw std::invalid_argument("Can't read file header.");
     }
-    ret = memcmp(header, PNG_HEADER, PNG_HEADER_SIZE*sizeof(char));
-    if (ret != 0) {
+    if (png_sig_cmp(header, 0, PNG_HEADER_SIZE) != 0) {
         return false;
     }
     fseek (file, 0, SEEK_SET);
@@ -41,8 +38,10 @@ ImageFile* ImageFileFactory::openImageFile(std::string filename) {
     ImageFile *image = NULL;
     if (isPNG(file)) {
         image = new PNGFileWrapper(file);
-        std::cout << "Width: " << image->getWidth() << std::endl;
-        std::cout << "Height: " << image->getHeight() << std::endl;
+        if (image) {
+            std::cout << "Width: " << image->getWidth() << std::endl;
+            std::cout << "Height: " << image->getHeight() << std::endl;
+        }
     }
     return image;
 }

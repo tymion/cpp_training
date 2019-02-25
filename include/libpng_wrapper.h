@@ -14,8 +14,8 @@ class PNGFileWrapper: public ImageFile
         png_infop _info;
         png_byte _bit_depth;
         png_bytep *_row_pointers;
-        uint32_t _height = 0;
-        uint32_t _width = 0;
+        png_uint_32 _height = 0;
+        png_uint_32 _width = 0;
         bool _read = false;
 
         png_byte ColorSpaceToLibPNG(ColorSpace color);
