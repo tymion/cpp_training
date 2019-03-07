@@ -18,6 +18,7 @@ add_subdirectory(libs)
 
 set(SOURCES
     image.cpp
+    image_allocator.cpp
     image_factory.cpp
     image_file_factory.cpp
     libpng_wrapper.cpp

@@ -1,9 +1,12 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <cstdint>
 #include <vector>
+#include <memory>
 
+#include "image_allocator.h"
 #include "config.h"
 #include "color_space.h"
 
@@ -12,7 +15,8 @@
 class Image
 {
     friend class ImageFactory;
-    friend struct ImageAllocator;
+    friend class ImageAllocator<Image>;
+//    friend void destroy(ImageAllocator<Image>& alloc, Image *p);
 
     private:
         uint32_t _height = 0;
@@ -38,29 +42,10 @@ class Image
 
 class ImageFactory
 {
-    struct ImageAllocator: std::allocator<Image>
-    {
-        template<class U, class... Args>
-        void construct(U *u, Args&&... args)
-        {
-            new((void*)u) U(std::forward<Args>(args)...);
-        }
-        template<class U>
-        struct rebind
-        {
-            typedef ImageAllocator other;
-        };
-        template<class U>
-        void destroy(U *u)
-        {
-            u->~U();
-        }
-    };
-
     private:
         static uint8_t _pixel[STORAGE_SIZE];
         static uint32_t _used;
-        std::vector<Image, ImageAllocator> _warehouse;
+        std::vector<Image, ImageAllocator<Image>> _warehouse;
 
         ImageFactory() {}
 
