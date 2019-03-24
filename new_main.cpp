@@ -27,16 +27,21 @@ int main() {
         Image& rGray = proc.changeColorSpace(rImg, ColorSpace::Grayscale);
         ImageFactory::deleteImage(&lImg);
         ImageFactory::deleteImage(&rImg);
-        Image& lLow = proc.lowPassFilter(lGray, 5);
-        Image& rLow = proc.lowPassFilter(rGray, 5);
-        ImageFactory::deleteImage(&lGray);
-        ImageFactory::deleteImage(&rGray);
+        uint8_t kernel = 5;
+        Image& lLow = proc.lowPassFilter(lGray, kernel);
+        Image& rLow = proc.lowPassFilter(rGray, kernel);
         lLow.fillFrames();
         rLow.fillFrames();
+        Image& lDiff = proc.standardDeviation(lGray, lLow, kernel);
+        Image& rDiff = proc.standardDeviation(rGray, rLow, kernel);
         ImageFactory::createFileFromImage("test_lLow.png", lLow);
         ImageFactory::createFileFromImage("test_rLow.png", rLow);
+        ImageFactory::deleteImage(&lGray);
+        ImageFactory::deleteImage(&rGray);
         ImageFactory::deleteImage(&lLow);
         ImageFactory::deleteImage(&rLow);
+        ImageFactory::createFileFromImage("test_lDiff.png", lDiff);
+        ImageFactory::createFileFromImage("test_rDiff.png", rDiff);
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << "Time: "<< duration << std::endl;
     } catch (std::exception const &exc)

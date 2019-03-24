@@ -1,3 +1,4 @@
+#include <cstring>
 #include "image_processor_factory.h"
 
 Image& ImageProcessor::changeColorSpace(Image const& img, ColorSpace color)
@@ -22,8 +23,8 @@ Image& ImageProcessor::lowPassFilter(Image const& img, uint8_t kernel_size)
     auto height = img.getHeight() + img.getFrame() * 2;
     // sum up values in a row to tmp tab
     for (auto i = 0; i < height; i++) {
+        memset(_data[i], 0, img.getWidth() + img.getFrame() * 2);
         for (auto j = 0; j < width; j++) {
-            _data[i][j] = 0;
             for (auto n = 0; n < kernel_size; n++) {
                 _data[i][j] += img[i][j + n];
             }
@@ -44,8 +45,30 @@ Image& ImageProcessor::lowPassFilter(Image const& img, uint8_t kernel_size)
     return outImg;
 }
 
-Image& ImageProcessor::subtraction(Image const& first, Image const& second)
+Image& ImageProcessor::standardDeviation(Image const& first, Image const& second, uint8_t kernel_size)
 {
     Image& outImg = ImageFactory::createImageFromImage(first);
+    auto width = outImg.getWidth() + outImg.getFrame() * 2 - kernel_size;
+    auto height = outImg.getHeight() + outImg.getFrame() * 2;
+    int32_t tmp = 0;
+    // sum up power of subtraction values in a row to tmp tab
+    for (auto i = 0; i < height; i++) {
+        memset(_data[i], 0, first.getWidth() + first.getFrame() * 2);
+        for (auto j = 0; j < width; j++) {
+            for (auto n = 0; n < kernel_size; n++) {
+                _data[i][j] += first[i][j + n];
+            }
+        }
+    }
+    for (auto i = 0; i < height; i++) {
+        for (auto j = 0; j < width; j++) {
+            tmp = first[i][j] - second[i][j];
+            outImg[i][j] = tmp * tmp;
+            if (outImg[i][j] < 0) {
+                outImg[i][j] = 0;
+            }
+        }
+    }
+
     return outImg;
 }
