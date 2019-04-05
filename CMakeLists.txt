@@ -61,5 +61,5 @@ install(TARGETS algo vr
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     )
 
-#add_subdirectory(test)
+add_subdirectory(test)
 #add_subdirectory(tools)

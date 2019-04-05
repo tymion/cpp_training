@@ -21,7 +21,7 @@ static FILE* openTestFile()
     }
     return file;
 }
-
+/*
 TEST(LibPNGTest, getData)
 {
     PNGFileWrapper *file = new PNGFileWrapper(openTestFile());
@@ -32,7 +32,7 @@ TEST(LibPNGTest, getData)
     EXPECT_EQ(file->getData(0, &data), true);
     delete file;
 }
-
+*/
 TEST(LibPNGTest, getters)
 {
     PNGFileWrapper *file = new PNGFileWrapper(openTestFile());
