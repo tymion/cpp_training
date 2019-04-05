@@ -78,4 +78,4 @@ install(TARGETS algo algo_debug vr vr_debug
     )
 
 add_subdirectory(test)
-#add_subdirectory(tools)
+add_subdirectory(tools)
