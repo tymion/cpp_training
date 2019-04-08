@@ -39,7 +39,7 @@ TEST(LibPNGTest, getters)
     EXPECT_EQ(file->getWidth(), (uint32_t) 500);
     EXPECT_EQ(file->getHeight(), (uint32_t) 200);
     EXPECT_EQ(file->getComponentSize(), (uint8_t) 8);
-    EXPECT_EQ(file->getComponentCnt(), (uint8_t) 4);
+    EXPECT_EQ(file->getComponentCnt(), (uint8_t) 3);
     delete file;
 }
 

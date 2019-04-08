@@ -4,6 +4,7 @@ set(TEST_SOURCES
     #    png_suite.cpp
     #integration_test_suite.cpp
     mask_suite.cpp
+    free_list_suite.cpp
     #region_factory_suite.cpp
     configuration_suite.cpp
     libpng_suite.cpp
