@@ -6,13 +6,15 @@
 
 #include "config.h"
 #include "color_space.h"
+#include "image_allocator.h"
 
 #define STORAGE_SIZE DATA_HEIGHT * DATA_WIDTH * IMAGE_COMPONENT * 4
 
 class Image
 {
     friend class ImageFactory;
-    friend struct ImageAllocator;
+//    friend struct ImageAllocator;
+    friend class ImageAllocator;
 
     private:
         uint32_t _height = 0;
@@ -38,6 +40,7 @@ class Image
 
 class ImageFactory
 {
+    /*
     struct ImageAllocator: std::allocator<Image>
     {
         template<class U, class... Args>
@@ -55,12 +58,15 @@ class ImageFactory
         {
             u->~U();
         }
-    };
+    };`
+    */
 
     private:
+
+        static ImageAllocator<Image, 10> allocator;
         static uint8_t _pixel[STORAGE_SIZE];
         static uint32_t _used;
-        std::vector<Image, ImageAllocator> _warehouse;
+        //std::vector<Image, ImageAllocator> _warehouse;
 
         ImageFactory() {}
 

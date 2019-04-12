@@ -11,12 +11,14 @@ uint8_t ImageFactory::_pixel[STORAGE_SIZE];
 ImageFactory& ImageFactory::getInstance()
 {
     static ImageFactory instance;
+    /*
     static bool init = false;
     if (!init) {
         auto size = Configuration::getStorageSize();
         instance._warehouse.reserve(size);
         init = true;
     }
+    */
     return instance;
 }
 
@@ -38,7 +40,7 @@ Image& ImageFactory::createImage(auto height, auto width, auto frame, auto compo
     if (image_width * image_height > STORAGE_SIZE - _used) {
         throw std::out_of_range("Image side is out of factory range.");
     }
-    Image& img = getInstance()._warehouse.emplace_back(image_height);
+    Image& img = *allocator.allocate(image_height);
     img._height = height;
     img._width = width;
     img._frame = frame;

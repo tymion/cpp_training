@@ -5,6 +5,8 @@ set(TEST_SOURCES
     #integration_test_suite.cpp
     mask_suite.cpp
     free_list_suite.cpp
+    stack_allocator_suite.cpp
+    nullptr_allocator_suite.cpp
     #region_factory_suite.cpp
     configuration_suite.cpp
     libpng_suite.cpp
