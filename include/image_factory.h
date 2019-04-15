@@ -6,15 +6,20 @@
 
 #include "config.h"
 #include "color_space.h"
-#include "image_allocator.h"
+#include "object_allocator.h"
 
 #define STORAGE_SIZE DATA_HEIGHT * DATA_WIDTH * IMAGE_COMPONENT * 4
+#define IMAGE_ALLOCATOR_POOL_SIZE 10
+
+class Image;
+
+using ImageAllocator = ObjectAllocator<Image, IMAGE_ALLOCATOR_POOL_SIZE>;
 
 class Image
 {
     friend class ImageFactory;
 //    friend struct ImageAllocator;
-    friend class ImageAllocator;
+    friend ImageAllocator;
 
     private:
         uint32_t _height = 0;
@@ -36,7 +41,6 @@ class Image
         uint8_t* operator[](uint32_t index);
         uint8_t* operator[](uint32_t index) const;
 };
-
 
 class ImageFactory
 {
@@ -63,7 +67,7 @@ class ImageFactory
 
     private:
 
-        static ImageAllocator<Image, 10> allocator;
+        static ImageAllocator _allocator;
         static uint8_t _pixel[STORAGE_SIZE];
         static uint32_t _used;
         //std::vector<Image, ImageAllocator> _warehouse;

@@ -7,22 +7,19 @@
 class Mallocator : NullPtrAllocator
 {
     public:
-        void
-        Mallocator::deallocate(Blk& mem)
+        void deallocate(Blk& mem)
         {
             free(mem.ptr);
             NullPtrAllocator::deallocate(mem);
         }
 
-        Blk&
-        Mallocator::allocate(size_t size)
+        Blk allocate(size_t size)
         {
             return { malloc(size), size };
         }
 
-        bool
-        Mallocator::owns(Blk& mem)
+        bool owns(Blk& mem)
         {
-            return true;
+            return !NullPtrAllocator::owns(mem);
         }
 };

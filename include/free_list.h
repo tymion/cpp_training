@@ -21,7 +21,7 @@ class FreeList : NullPtrAllocator {
             auto tmp = _root;
             _root = (Node *) mem.ptr;
             _root->next = tmp;
-            mem.ptr = nullptr;
+            NullPtrAllocator::deallocate(mem);
         }
 
         Blk allocate(size_t size)

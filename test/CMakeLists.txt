@@ -7,6 +7,7 @@ set(TEST_SOURCES
     free_list_suite.cpp
     stack_allocator_suite.cpp
     nullptr_allocator_suite.cpp
+    mallocator_suite.cpp
     #region_factory_suite.cpp
     configuration_suite.cpp
     libpng_suite.cpp

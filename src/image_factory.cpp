@@ -5,6 +5,7 @@
 #include "image_file.h"
 #include "image_file_factory.h"
 
+ImageAllocator ImageFactory::_allocator;
 uint32_t ImageFactory::_used;
 uint8_t ImageFactory::_pixel[STORAGE_SIZE];
 
@@ -40,7 +41,7 @@ Image& ImageFactory::createImage(auto height, auto width, auto frame, auto compo
     if (image_width * image_height > STORAGE_SIZE - _used) {
         throw std::out_of_range("Image side is out of factory range.");
     }
-    Image& img = *allocator.allocate(image_height);
+    Image& img = *ImageFactory::_allocator.allocate(image_height);
     img._height = height;
     img._width = width;
     img._frame = frame;

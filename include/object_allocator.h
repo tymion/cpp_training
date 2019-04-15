@@ -7,22 +7,25 @@
 #include <mallocator.h>
 
 template<typename T, size_t N>
-class ImageAllocator
+class ObjectAllocator
 {
+    /*
     FallbackAllocator<
         FreeList<
             StackAllocator<uint8_t, N, sizeof(T)>,
             sizeof(T)>,
         Mallocator> allocator;
+        */
     public:
-    template<class ...Args>
-        void* allocate(Args... args)
+    template<typename ...Args>
+        T* allocate(Args&& ... args)
         {
-            return new (allocator.allocate(sizeof(T)).ptr) T(args);
+//            return new (allocator.allocate(sizeof(T)).ptr) T(args...);
+            return NULL;
         }
 
-        void deallocate(void* ptr)
+        void deallocate(T* ptr)
         {
-            allocator.deallocate({ ptr, sizeof(T)});
+            //allocator.deallocate({ ptr, sizeof(T)});
         }
 };
