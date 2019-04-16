@@ -9,23 +9,25 @@
 template<typename T, size_t N>
 class ObjectAllocator
 {
-    /*
     FallbackAllocator<
         FreeList<
             StackAllocator<uint8_t, N, sizeof(T)>,
             sizeof(T)>,
         Mallocator> allocator;
-        */
+
+    Blk mem;
+
     public:
     template<typename ...Args>
         T* allocate(Args&& ... args)
         {
-//            return new (allocator.allocate(sizeof(T)).ptr) T(args...);
-            return NULL;
+            return new (allocator.allocate(sizeof(T)).ptr) T(args...);
         }
 
         void deallocate(T* ptr)
         {
-            //allocator.deallocate({ ptr, sizeof(T)});
+            mem.ptr = ptr;
+            mem.size = sizeof(T);
+            allocator.deallocate(mem);
         }
 };

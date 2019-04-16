@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdint>
 #include <vector>
+#include <memory>
 
 #include "config.h"
 #include "color_space.h"
@@ -18,7 +19,6 @@ using ImageAllocator = ObjectAllocator<Image, IMAGE_ALLOCATOR_POOL_SIZE>;
 class Image
 {
     friend class ImageFactory;
-//    friend struct ImageAllocator;
     friend ImageAllocator;
 
     private:
@@ -42,35 +42,17 @@ class Image
         uint8_t* operator[](uint32_t index) const;
 };
 
+using ImageSharedPtr = std::shared_ptr<Image>;
+
+void ImageDeleter(Image* img);
+
 class ImageFactory
 {
-    /*
-    struct ImageAllocator: std::allocator<Image>
-    {
-        template<class U, class... Args>
-        void construct(U *u, Args&&... args)
-        {
-            new((void*)u) U(std::forward<Args>(args)...);
-        }
-        template<class U>
-        struct rebind
-        {
-            typedef ImageAllocator other;
-        };
-        template<class U>
-        void destroy(U *u)
-        {
-            u->~U();
-        }
-    };`
-    */
-
     private:
 
         static ImageAllocator _allocator;
         static uint8_t _pixel[STORAGE_SIZE];
         static uint32_t _used;
-        //std::vector<Image, ImageAllocator> _warehouse;
 
         ImageFactory() {}
 
@@ -84,6 +66,7 @@ class ImageFactory
         static Image& createImageFromImage(Image const& img, ColorSpace color);
         static Image& createImageFromImage(Image const& img);
         static bool createFileFromImage(std::string name, Image const& img);
+        static void deleteImage(Image* img);
 
         ImageFactory(ImageFactory const&) = delete;
         void operator=(ImageFactory const&) = delete;

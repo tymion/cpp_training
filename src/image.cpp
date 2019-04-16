@@ -1,10 +1,14 @@
 #include <cstdlib>
 #include <string.h>
 #include "image_factory.h"
+#include <stdexcept>
 
 Image::Image(uint32_t height)
 {
     _data = (uint8_t**) malloc(height * sizeof(_data));
+    if (!_data) {
+        throw std::bad_alloc();
+    }
 }
 
 Image::~Image()

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <allocator.h>
+#include <cstdio>
 
 template<typename A, typename B>
 class FallbackAllocator : Allocator
@@ -19,8 +20,9 @@ class FallbackAllocator : Allocator
         {
             Blk mem = _main.allocate(size);
             if (mem.ptr == nullptr) {
-                mem = _fallback(size);
+                mem = _fallback.allocate(size);
             }
+            return mem;
         }
         bool owns(Blk& mem) {
             return _main.owns(mem) || _fallback.owns(mem);

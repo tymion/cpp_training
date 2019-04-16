@@ -3,7 +3,6 @@
 Image& ImageProcessor::changeColorSpace(Image const& img, ColorSpace color)
 {
     Image& gray_img = ImageFactory::createImageFromImage(img, color);
-    uint8_t tmp = 0;
     for (auto i = 0; i < img.getHeight() + img.getFrame() * 2; i++) {
         for (auto j = 0; j < img.getWidth() + img.getFrame() * 2; j++) {
             gray_img[i][j] =

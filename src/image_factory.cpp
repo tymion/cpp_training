@@ -9,6 +9,11 @@ ImageAllocator ImageFactory::_allocator;
 uint32_t ImageFactory::_used;
 uint8_t ImageFactory::_pixel[STORAGE_SIZE];
 
+void ImageDeleter(Image* img)
+{
+    ImageFactory::deleteImage(img);
+}
+
 ImageFactory& ImageFactory::getInstance()
 {
     static ImageFactory instance;
@@ -26,9 +31,14 @@ ImageFactory& ImageFactory::getInstance()
 void ImageFactory::assignStorage(Image& img, auto height, auto width)
 {
     for (auto i = 0; i < height; i++) {
-        img._data[i] = &ImageFactory::_pixel[_used + i * width];
+        img._data[i] = &ImageFactory::_pixel[_used];
+        ImageFactory::_used += width;
     }
-    ImageFactory::_used += height * width;
+}
+
+void ImageFactory::deleteImage(Image *img)
+{
+    _allocator.deallocate(img);
 }
 
 Image& ImageFactory::createImage(auto height, auto width, auto frame, auto component)

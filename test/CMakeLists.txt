@@ -8,6 +8,8 @@ set(TEST_SOURCES
     stack_allocator_suite.cpp
     nullptr_allocator_suite.cpp
     mallocator_suite.cpp
+    fallback_allocator_suite.cpp
+    image_allocator_suite.cpp
     #region_factory_suite.cpp
     configuration_suite.cpp
     libpng_suite.cpp
