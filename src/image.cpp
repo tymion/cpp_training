@@ -38,19 +38,19 @@ uint8_t Image::getComponent() const
 
 uint8_t* Image::operator[](uint32_t index) const
 {
-     return _data[index];
+    return _data[index];
 }
 
 uint8_t* Image::operator[](uint32_t index)
 {
-     return _data[index];
+    return _data[index];
 }
 
 void Image::fillFrames()
 {
     for (auto i = 0; i < _frame; i++) {
-        memcpy(&_data[i][_frame], &_data[_frame][_frame], _width * _component);
-        memcpy(&_data[_frame + _height + i][_frame], &_data[_frame + _height - 1][_frame], _width * _component);
+        memcpy(&_data[i][_frame * _component], &_data[_frame][_frame * _component], _width * _component);
+        memcpy(&_data[_frame + _height + i][_frame * _component], &_data[_frame + _height - 1][_frame * _component], _width * _component);
     }
     for (auto j = 0; j < _frame * _component; j++) {
         for (auto i = 0; i < _height + 2 * _frame; i++) {

@@ -21,11 +21,11 @@ class StackAllocator : NullPtrAllocator
 
         Blk allocate(size_t size)
         {
-            if (size != blk_size || _cur_blk == N) {
+            if (size != blk_size || _cur_blk >= N) {
                 return NullPtrAllocator::allocate(size);
             }
 
-            return { &_stack[N*_cur_blk++], size };
+            return { &_stack[blk_size*_cur_blk++], size };
         }
 
         bool owns(Blk& mem)

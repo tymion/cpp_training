@@ -113,6 +113,7 @@ bool PNGFileWrapper::loadImage(std::function<uint8_t* (uint32_t)> callback) {
     }
 
     png_read_image(_png, _row_pointers);
+    png_read_end(_png, NULL);
 
     return true;
 }
