@@ -11,7 +11,7 @@ class FreeList : NullPtrAllocator {
     public:
         void deallocate(Blk& mem)
         {
-            if (mem.ptr == nullptr || mem.size != blk_size) {
+            if (!owns(mem)) {
                 return;
             }
             _pool.deallocate(mem);
@@ -21,7 +21,8 @@ class FreeList : NullPtrAllocator {
             auto tmp = _root;
             _root = (Node *) mem.ptr;
             _root->next = tmp;
-            NullPtrAllocator::deallocate(mem);
+            mem.ptr = nullptr;
+            mem.size = 0;
         }
 
         Blk allocate(size_t size)

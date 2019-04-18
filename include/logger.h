@@ -1,5 +1,17 @@
 #pragma once
 
+#ifdef DEBUG
+#include <stdio.h>
+
+#define LOG printf
+
+#else
+
+#define LOG(...)
+
+#endif
+
+/*
 #define BOOST_LOG(arg) \
 if (rec) \
 { \
@@ -8,3 +20,4 @@ if (rec) \
     strm.flush(); \
     lg.push_record(boost::move(rec)); \
 }
+*/

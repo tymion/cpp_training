@@ -106,7 +106,6 @@ uint8_t PNGFileWrapper::getComponentSize() {
 bool PNGFileWrapper::loadImage(std::function<uint8_t* (uint32_t)> callback) {
     for (uint32_t y = 0; y < _height; y++) {
         _row_pointers[y] = (png_byte*)callback(y);
-//        _row_pointers[y] = (png_byte*)callback(y, png_get_rowbytes(_png,_info));
         if (!_row_pointers[y]) {
             return false;
         }

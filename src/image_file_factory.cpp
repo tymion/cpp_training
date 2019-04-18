@@ -4,6 +4,7 @@
 #include <iostream>
 #include "image_file_factory.h"
 #include "libpng_wrapper.h"
+#include "logger.h"
 
 #define PNG_HEADER_SIZE 8
 char PNG_HEADER[PNG_HEADER_SIZE] = {'\211', 'P', 'N', 'G', '\r', '\n', '\032', '\n'};
@@ -39,8 +40,8 @@ ImageFile* ImageFileFactory::openImageFile(std::string filename) {
     if (isPNG(file)) {
         image = new PNGFileWrapper(file);
         if (image) {
-            std::cout << "Width: " << image->getWidth() << std::endl;
-            std::cout << "Height: " << image->getHeight() << std::endl;
+            LOG("Width:%d\n", image->getWidth());
+            LOG("Height:%d\n", image->getHeight());
         }
     }
     return image;

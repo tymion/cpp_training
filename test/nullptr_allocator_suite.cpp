@@ -41,8 +41,8 @@ TEST_F(NullPtrAllocatorTest, deallocate_pointer)
 {
     Blk mem = { reinterpret_cast<void*>(0x100), 32 };
     allocator.deallocate(mem);
-    EXPECT_EQ(mem.ptr, nullptr);
-    EXPECT_EQ(mem.size, 0);
+    EXPECT_EQ(mem.ptr, reinterpret_cast<void*>(0x100));
+    EXPECT_EQ(mem.size, 32);
 }
 
 TEST_F(NullPtrAllocatorTest, allocate_and_deallocate)

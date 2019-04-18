@@ -26,6 +26,7 @@ class ObjectAllocator
 
         void deallocate(T* ptr)
         {
+            ptr->~T();
             mem.ptr = ptr;
             mem.size = sizeof(T);
             allocator.deallocate(mem);

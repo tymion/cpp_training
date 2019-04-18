@@ -41,24 +41,42 @@ TEST_F(FallbackAllocatorTest, allocate_success)
 {
     Blk mem = allocator1.allocate(blk_size);
     EXPECT_EQ(mem.ptr != nullptr, true);
+    allocator1.deallocate(mem);
+    EXPECT_EQ(mem.ptr, nullptr);
+    EXPECT_EQ(mem.size, 0);
 
     mem = allocator2.allocate(blk_size);
     EXPECT_EQ(mem.ptr != nullptr, true);
+    allocator2.deallocate(mem);
+    EXPECT_EQ(mem.ptr, nullptr);
+    EXPECT_EQ(mem.size, 0);
 
     mem = allocator3.allocate(blk_size);
     EXPECT_EQ(mem.ptr != nullptr, true);
+    allocator3.deallocate(mem);
+    EXPECT_EQ(mem.ptr, nullptr);
+    EXPECT_EQ(mem.size, 0);
 }
 
 TEST_F(FallbackAllocatorTest, allocate_zero)
 {
     Blk mem = allocator1.allocate(0);
     EXPECT_EQ(mem.ptr != nullptr, true);
+    allocator1.deallocate(mem);
+    EXPECT_EQ(mem.ptr, nullptr);
+    EXPECT_EQ(mem.size, 0);
 
     mem = allocator2.allocate(0);
     EXPECT_EQ(mem.ptr != nullptr, true);
+    allocator2.deallocate(mem);
+    EXPECT_EQ(mem.ptr, nullptr);
+    EXPECT_EQ(mem.size, 0);
 
     mem = allocator3.allocate(0);
     EXPECT_EQ(mem.ptr != nullptr, true);
+    allocator3.deallocate(mem);
+    EXPECT_EQ(mem.ptr, nullptr);
+    EXPECT_EQ(mem.size, 0);
 }
 
 TEST_F(FallbackAllocatorTest, deallocate_null)
@@ -167,6 +185,8 @@ TEST_F(FallbackAllocatorTest, allocate_all)
     Blk tmpmem = allocator3.allocate(blk_size);
     EXPECT_EQ(tmpmem.ptr != nullptr, true);
     allocator3.deallocate(tmpmem);
+    EXPECT_EQ(tmpmem.ptr, nullptr);
+    EXPECT_EQ(tmpmem.size, 0);
     for (uint8_t i = 0; i < blk_cnt; i++) {
         allocator3.deallocate(mem[i]);
         EXPECT_EQ(mem[i].ptr, nullptr);

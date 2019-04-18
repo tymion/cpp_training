@@ -12,10 +12,11 @@ class StackAllocator : NullPtrAllocator
     public:
         void deallocate(Blk& mem)
         {
-            if (mem.size == blk_size && mem.ptr == &_stack[N*(_cur_blk - 1)]) {
+            if (mem.size == blk_size && mem.ptr == &_stack[blk_size*(_cur_blk - 1)]) {
                 _cur_blk--;
 
-                NullPtrAllocator::deallocate(mem);
+                mem.ptr = nullptr;
+                mem.size = 0;
             }
         }
 

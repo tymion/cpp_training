@@ -77,6 +77,8 @@ TEST(AlgorithmsTest, index_jacarda_pixel3x8_same)
         pixel2[i] = (pixel_3x8 *) &data3_3x8_30[i*3*COL];
     }
     EXPECT_EQ(count_index_jacarda(pixel1, pixel2, ROW, COL), 1);
+    free(pixel1);
+    free(pixel2);
 }
 
 TEST(AlgorithmsTest, index_jacarda_pixel3x8_similar)
@@ -90,6 +92,8 @@ TEST(AlgorithmsTest, index_jacarda_pixel3x8_similar)
         pixel2[i] = (pixel_3x8 *) &data4_3x8_30[i*3*COL];
     }
     EXPECT_EQ(count_index_jacarda(pixel1, pixel2, ROW, COL), 0.9);
+    free(pixel1);
+    free(pixel2);
 }
 
 TEST(AlgorithmsTest, classic_compare_same)
@@ -101,6 +105,8 @@ TEST(AlgorithmsTest, classic_compare_same)
         pixel2[i] = (pixel_3x8 *) &data3_3x8_30[i*3*COL];
     }
     EXPECT_TRUE(classic_compare(pixel1, pixel2, ROW, COL));
+    free(pixel1);
+    free(pixel2);
 }
 
 TEST(AlgorithmsTest, classic_compare_different)
@@ -112,4 +118,6 @@ TEST(AlgorithmsTest, classic_compare_different)
         pixel2[i] = (pixel_3x8 *) &data4_3x8_30[i*3*COL];
     }
     EXPECT_FALSE(classic_compare(pixel1, pixel2, ROW, COL));
+    free(pixel1);
+    free(pixel2);
 }

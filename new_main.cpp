@@ -25,12 +25,18 @@ int main() {
         ImageProcessor& proc = ImageProcessorFactory::createImageProcessor();
         Image& lGray = proc.changeColorSpace(lImg, ColorSpace::Grayscale);
         Image& rGray = proc.changeColorSpace(rImg, ColorSpace::Grayscale);
+        ImageFactory::deleteImage(&lImg);
+        ImageFactory::deleteImage(&rImg);
         Image& lLow = proc.lowPassFilter(lGray, 5);
         Image& rLow = proc.lowPassFilter(rGray, 5);
+        ImageFactory::deleteImage(&lGray);
+        ImageFactory::deleteImage(&rGray);
         lLow.fillFrames();
         rLow.fillFrames();
         ImageFactory::createFileFromImage("test_lLow.png", lLow);
         ImageFactory::createFileFromImage("test_rLow.png", rLow);
+        ImageFactory::deleteImage(&lLow);
+        ImageFactory::deleteImage(&rLow);
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << "Time: "<< duration << std::endl;
     } catch (std::exception const &exc)

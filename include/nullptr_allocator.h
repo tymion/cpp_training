@@ -4,8 +4,9 @@ class NullPtrAllocator : Allocator {
     public:
         void deallocate(Blk& mem)
         {
-            mem.ptr = nullptr;
-            mem.size = 0;
+            if (mem.ptr == nullptr) {
+                mem.size = 0;
+            }
         }
 
         Blk allocate(size_t size)

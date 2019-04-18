@@ -4,6 +4,7 @@
 #include "image_factory.h"
 #include "image_file.h"
 #include "image_file_factory.h"
+#include "logger.h"
 
 ImageAllocator ImageFactory::_allocator;
 uint32_t ImageFactory::_used;
@@ -17,21 +18,13 @@ void ImageDeleter(Image* img)
 ImageFactory& ImageFactory::getInstance()
 {
     static ImageFactory instance;
-    /*
-    static bool init = false;
-    if (!init) {
-        auto size = Configuration::getStorageSize();
-        instance._warehouse.reserve(size);
-        init = true;
-    }
-    */
     return instance;
 }
 
 void ImageFactory::assignStorage(Image& img, auto height, auto width)
 {
     for (auto i = 0; i < height; i++) {
-        img._data[i] = &ImageFactory::_pixel[_used];
+        img._data[i] = &ImageFactory::_pixel[ImageFactory::_used];
         ImageFactory::_used += width;
     }
 }
@@ -57,10 +50,10 @@ Image& ImageFactory::createImage(auto height, auto width, auto frame, auto compo
     img._frame = frame;
     img._component = component;
 
-    std::cout << "Height:" << height << "\n";
-    std::cout << "Width:" << width << "\n";
-    std::cout << "Frame:" << (uint32_t) frame << "\n";
-    std::cout << "Component:" << (uint32_t) component << "\n";
+    LOG("Height:%d\n", height);
+    LOG("Width:%d\n", width);
+    LOG("Frame:%d\n", frame);
+    LOG("Component:%d\n", component);
 
     ImageFactory::assignStorage(img, image_height, image_width);
 
@@ -69,11 +62,11 @@ Image& ImageFactory::createImage(auto height, auto width, auto frame, auto compo
 
 Image& ImageFactory::createImageFromFile(std::string fileName)
 {
-    uint8_t frame = Configuration::getImageFrame();
     ImageFileUPtr file = ImageFileUPtr{ImageFileFactory::openImageFile(fileName)};
     if (!file) {
         throw std::out_of_range("Opening file has failed");
     }
+    auto frame = Configuration::getImageFrame();
     auto height = file->getHeight();
     auto width = file->getWidth();
     auto component = file->getComponentCnt();

@@ -10,7 +10,8 @@ class Mallocator : NullPtrAllocator
         void deallocate(Blk& mem)
         {
             free(mem.ptr);
-            NullPtrAllocator::deallocate(mem);
+            mem.ptr = nullptr;
+            mem.size = 0;
         }
 
         Blk allocate(size_t size)
