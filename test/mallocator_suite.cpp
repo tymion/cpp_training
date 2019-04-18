@@ -20,6 +20,7 @@ TEST_F(MallocatorTest, allocate)
 {
     Blk mem = allocator.allocate(0);
     EXPECT_EQ(mem.ptr != nullptr, true);
+    allocator.deallocate(mem);
     EXPECT_EQ(mem.size, 0);
     allocator.deallocate(mem);
     EXPECT_EQ(mem.ptr, nullptr);

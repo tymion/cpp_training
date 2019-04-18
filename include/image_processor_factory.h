@@ -24,6 +24,7 @@ class ImageProcessor
         Image& changeColorSpace(Image const& img, ColorSpace color);
         Image& lowPassFilter(Image const& img, uint8_t kernel_size);
         Image& standardDeviation(Image const& first, Image const& second, uint8_t kernel_size);
+        Image& subtraction(Image const& first, Image const& second);
 };
 
 class ImageProcessorFactory

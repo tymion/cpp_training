@@ -14,7 +14,6 @@ class StackAllocator : NullPtrAllocator
         {
             if (mem.size == blk_size && mem.ptr == &_stack[blk_size*(_cur_blk - 1)]) {
                 _cur_blk--;
-
                 mem.ptr = nullptr;
                 mem.size = 0;
             }

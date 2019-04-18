@@ -69,6 +69,19 @@ Image& ImageProcessor::standardDeviation(Image const& first, Image const& second
             }
         }
     }
+    return outImg;
+}
 
+Image& ImageProcessor::subtraction(Image const& first, Image const& second)
+{
+    Image& outImg = ImageFactory::createImageFromImage(first);
+    for (auto i = 0; i < first.getHeight() + first.getFrame() * 2; i++) {
+        for (auto j = 0; j < first.getWidth() + first.getFrame() * 2; j++) {
+            outImg[i][j] = first[i][j] - second[i][j];
+            if (outImg[i][j] < 0) {
+                outImg[i][j] = 0;
+            }
+        }
+    }
     return outImg;
 }
