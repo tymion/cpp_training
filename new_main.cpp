@@ -36,12 +36,14 @@ int main() {
         Image& rDiff = proc.standardDeviation(rGray, rLow, kernel);
         ImageFactory::createFileFromImage("test_lLow.png", lLow);
         ImageFactory::createFileFromImage("test_rLow.png", rLow);
+        ImageFactory::createFileFromImage("test_lDiff.png", lDiff);
+        ImageFactory::createFileFromImage("test_rDiff.png", rDiff);
         ImageFactory::deleteImage(&lGray);
         ImageFactory::deleteImage(&rGray);
         ImageFactory::deleteImage(&lLow);
         ImageFactory::deleteImage(&rLow);
-        ImageFactory::createFileFromImage("test_lDiff.png", lDiff);
-        ImageFactory::createFileFromImage("test_rDiff.png", rDiff);
+        ImageFactory::deleteImage(&lDiff);
+        ImageFactory::deleteImage(&rDiff);
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << "Time: "<< duration << std::endl;
     } catch (std::exception const &exc)
