@@ -19,14 +19,17 @@ Image& ImageProcessor::changeColorSpace(Image const& img, ColorSpace color)
 Image& ImageProcessor::lowPassFilter(Image const& img, uint8_t kernel_size)
 {
     Image& outImg = ImageFactory::createImageFromImage(img);
+    auto max_width = (img.getWidth() + img.getFrame() * 2) * img.getComponent();
     auto width = img.getWidth() + img.getFrame() * 2 - kernel_size;
     auto height = img.getHeight() + img.getFrame() * 2;
     // sum up values in a row to tmp tab
     for (auto i = 0; i < height; i++) {
-        memset(_data[i], 0, img.getWidth() + img.getFrame() * 2);
+        memset(_data[i], 0, max_width);
         for (auto j = 0; j < width; j++) {
             for (auto n = 0; n < kernel_size; n++) {
-                _data[i][j] += img[i][j + n];
+                for (auto c = 0; c < img.getComponent(); c++) {
+                    _data[i][j * img.getComponent() + c] += img[i][(j + n) * img.getComponent() + c];
+                }
             }
         }
     }
@@ -35,11 +38,13 @@ Image& ImageProcessor::lowPassFilter(Image const& img, uint8_t kernel_size)
     uint32_t tmp = 0;
     for (auto i = kernel; i < height - kernel; i++) {
         for (auto j = kernel; j < width + kernel; j++) {
-            for (auto n = -kernel; n <= kernel; n++) {
-                tmp += _data[i + n][j - kernel];
+            for (auto c = 0; c < img.getComponent(); c++) {
+                for (auto n = -kernel; n <= kernel; n++) {
+                    tmp += _data[i + n][(j - kernel) * img.getComponent() + c];
+                }
+                outImg[i][j * img.getComponent() + c] = (uint8_t) (tmp / (kernel_size * kernel_size));
+                tmp = 0;
             }
-            outImg[i][j] = (uint8_t) (tmp / (kernel_size * kernel_size));
-            tmp = 0;
         }
     }
     return outImg;

@@ -54,7 +54,7 @@ void Image::fillFrames()
     }
     for (auto j = 0; j < _frame * _component; j++) {
         for (auto i = 0; i < _height + 2 * _frame; i++) {
-            _data[i][j] = _data[i][_frame * _component + j % _component];
+            _data[i][j] = _data[i][_frame * _component + (j % _component)];
             _data[i][(_frame + _width) * _component + j] = _data[i][(_frame + _width - 1) * _component + j % _component];
         }
     }

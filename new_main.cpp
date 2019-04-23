@@ -25,31 +25,35 @@ int main() {
         ImageProcessor& proc = ImageProcessorFactory::createImageProcessor();
         Image& lGray = proc.changeColorSpace(lImg, ColorSpace::Grayscale);
         Image& rGray = proc.changeColorSpace(rImg, ColorSpace::Grayscale);
+        ImageFactory::createFileFromImage("test_grayL.png", lGray);
+        ImageFactory::createFileFromImage("test_grayR.png", rGray);
         ImageFactory::deleteImage(&lImg);
         ImageFactory::deleteImage(&rImg);
         uint8_t kernel = 5;
-        Image& lLow = proc.lowPassFilter(lGray, kernel);
         Image& rLow = proc.lowPassFilter(rGray, kernel);
+        Image& lLow = proc.lowPassFilter(lGray, kernel);
+        ImageFactory::createFileFromImage("test_LowR.png", rLow);
+        ImageFactory::createFileFromImage("test_LowL.png", lLow);
         lLow.fillFrames();
         rLow.fillFrames();
+        /*
         Image& lSub = proc.subtraction(lGray, lLow);
         Image& rSub = proc.subtraction(rGray, rLow);
         Image& lDiff = proc.standardDeviation(lGray, lLow, kernel);
         Image& rDiff = proc.standardDeviation(rGray, rLow, kernel);
+        ImageFactory::createFileFromImage("test_DiffL.png", lDiff);
+        ImageFactory::createFileFromImage("test_DiffR.png", rDiff);
+        ImageFactory::createFileFromImage("test_SubL.png", lSub);
+        ImageFactory::createFileFromImage("test_SubR.png", rSub);
         ImageFactory::deleteImage(&lGray);
         ImageFactory::deleteImage(&rGray);
-        ImageFactory::createFileFromImage("test_lLow.png", lLow);
-        ImageFactory::createFileFromImage("test_rLow.png", rLow);
-        ImageFactory::createFileFromImage("test_lDiff.png", lDiff);
-        ImageFactory::createFileFromImage("test_rDiff.png", rDiff);
-        ImageFactory::createFileFromImage("test_lSub.png", lSub);
-        ImageFactory::createFileFromImage("test_rSub.png", rSub);
         ImageFactory::deleteImage(&lLow);
         ImageFactory::deleteImage(&rLow);
         ImageFactory::deleteImage(&lDiff);
         ImageFactory::deleteImage(&rDiff);
         ImageFactory::deleteImage(&lSub);
         ImageFactory::deleteImage(&rSub);
+        */
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << "Time: "<< duration << std::endl;
     } catch (std::exception const &exc)
