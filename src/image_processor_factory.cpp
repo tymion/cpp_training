@@ -10,15 +10,16 @@ ImageProcessorFactory& ImageProcessorFactory::getInstance()
     return instance;
 }
 
-ImageProcessor& ImageProcessorFactory::createImageProcessor()
+ImageProcessor& ImageProcessorFactory::createImageProcessor(uint32_t height, uint32_t width)
 {
-    if (_used + PROCESSOR_SIZE * DATA_WIDTH > PROCESSOR_FACTORY_SIZE) {
+    uint64_t new_used = _used + height * width;
+    if (new_used > PROCESSOR_FACTORY_SIZE) {
         throw std::invalid_argument("Out of memory");
     }
     ImageProcessor& img = getInstance()._warehouse.emplace_back();
-    for (auto i = 0; i < PROCESSOR_SIZE; i++) {
-        img._data[i] = &_pixel[_used + i * DATA_WIDTH];
+    for (auto i = 0; i < height; i++) {
+        img._data[i] = &_pixel[_used];
+        _used += width;
     }
-    _used += PROCESSOR_SIZE * DATA_WIDTH;
     return img;
 }
