@@ -95,29 +95,38 @@ Image& ImageProcessor::lowPassFilter(Image const& img, uint8_t kernel_size)
 Image& ImageProcessor::standardDeviation(Image const& first, Image const& second, uint8_t kernel_size)
 {
     Image& outImg = ImageFactory::createImageFromImage(first);
-    auto width = outImg.getWidth() + outImg.getFrame() * 2 - kernel_size;
+    auto width = outImg.getWidth() + outImg.getFrame() * 2;
     auto height = outImg.getHeight() + outImg.getFrame() * 2;
     int32_t tmp = 0;
+    uint8_t kernel = kernel_size / 2;
     // sum up power of subtraction values in a row to tmp tab
-    for (auto i = 0; i < height; i++) {
-        memset(_data[i], 0, first.getWidth() + first.getFrame() * 2);
-        for (auto j = 0; j < width; j++) {
-            for (auto n = 0; n < kernel_size; n++) {
-                _data[i][j] += first[i][j + n];
-            }
+
+    for (auto i = kernel; i < height - kernel; i++) {
+        tmp = first[i][kernel] - second[i][kernel];
+        outImg[i][kernel] = tmp * tmp;
+        tmp = first[i][width - kernel - 2] - second[i][width - kernel - 2];
+        outImg[i][width - kernel - 2] = tmp * tmp;
+        for (auto n = 0; n < kernel; n++) {
+            outImg[i][n] = outImg[i][kernel];
+            outImg[i][width - 1 - n] = outImg[i][width - kernel - 2];
         }
-    }
-    for (auto i = 0; i < height; i++) {
-        for (auto j = 0; j < width; j++) {
+        for (auto j = kernel + 1; j < width - kernel - 2; j++) {
             tmp = first[i][j] - second[i][j];
             outImg[i][j] = tmp * tmp;
-            if (outImg[i][j] < 0) {
-                outImg[i][j] = 0;
-            }
-            for (auto n = 0; n < kernel_size; n++) {
-//                _data[i][j] += ;
-            }
         }
+    }
+    for (auto i = kernel; i < height - kernel; i++) {
+        _data[i][kernel] = outImg[i][0] * (kernel + 1);
+        for (auto n = kernel + 1; n < kernel_size; n++) {
+            _data[i][kernel] += outImg[i][n];
+        }
+        for (auto j = kernel + 1; j < width - kernel; j++) {
+            _data[i][j] = _data[i][j - 1] - outImg[i][j - kernel + 1] + outImg[i][j + kernel];
+        }
+    }
+    for (auto i = 0; i < kernel; i++) {
+        memcpy(_data[i], _data[kernel], width * sizeof(*_data[0]));
+        memcpy(_data[height - 1 - i], _data[height - 1 - kernel], width * sizeof(*_data[0]));
     }
     return outImg;
 }
