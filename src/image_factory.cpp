@@ -31,7 +31,7 @@ void ImageFactory::assignStorage(Image& img, auto height, auto width)
 
 void ImageFactory::deleteImage(Image *img)
 {
-    _allocator.deallocate(img);
+    ImageFactory::_allocator.deallocate(img);
 }
 
 Image& ImageFactory::createImage(auto height, auto width, auto frame, auto component)

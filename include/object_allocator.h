@@ -6,12 +6,12 @@
 #include <stack_allocator.h>
 #include <mallocator.h>
 
-template<typename T, size_t N>
+template<typename T, size_t N, typename D>
 class ObjectAllocator
 {
     FallbackAllocator<
         FreeList<
-            StackAllocator<uint8_t, N, sizeof(T)>,
+            StackAllocator<D, N, sizeof(T)>,
             sizeof(T)>,
         Mallocator> allocator;
 

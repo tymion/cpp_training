@@ -14,7 +14,7 @@
 
 class Image;
 
-using ImageAllocator = ObjectAllocator<Image, IMAGE_ALLOCATOR_POOL_SIZE>;
+using ImageAllocator = ObjectAllocator<Image, IMAGE_ALLOCATOR_POOL_SIZE, uint8_t>;
 
 class Image
 {
@@ -26,7 +26,7 @@ class Image
         uint32_t _width = 0;
         uint8_t _frame = 0;
         uint8_t _component = 0;
-        uint8_t** _data = NULL;
+        uint8_t** _data = nullptr;
 
         Image(uint32_t height);
         ~Image();

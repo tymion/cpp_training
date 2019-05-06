@@ -22,21 +22,20 @@ int main() {
         Configuration::setStorageSize(10);
         Image& lImg = ImageFactory::createImageFromFile(leftFile);
         Image& rImg = ImageFactory::createImageFromFile(rightFile);
-        ImageProcessor& proc = ImageProcessorFactory::createImageProcessor();
+        ImageProcessor& proc = ImageProcessorFactory::createImageProcessor(lImg.getHeight() + lImg.getFrame() * 2, lImg.getWidth() + lImg.getFrame() * 2);
         Image& lGray = proc.changeColorSpace(lImg, ColorSpace::Grayscale);
         Image& rGray = proc.changeColorSpace(rImg, ColorSpace::Grayscale);
-        ImageFactory::createFileFromImage("test_grayL.png", lGray);
-        ImageFactory::createFileFromImage("test_grayR.png", rGray);
         ImageFactory::deleteImage(&lImg);
         ImageFactory::deleteImage(&rImg);
         uint8_t kernel = 5;
         Image& rLow = proc.lowPassFilter(rGray, kernel);
         Image& lLow = proc.lowPassFilter(lGray, kernel);
         ImageFactory::createFileFromImage("test_LowR.png", rLow);
+        ImageFactory::createFileFromImage("test_grayL.png", lGray);
+        ImageFactory::createFileFromImage("test_grayR.png", rGray);
         ImageFactory::createFileFromImage("test_LowL.png", lLow);
         lLow.fillFrames();
         rLow.fillFrames();
-        /*
         Image& lSub = proc.subtraction(lGray, lLow);
         Image& rSub = proc.subtraction(rGray, rLow);
         Image& lDiff = proc.standardDeviation(lGray, lLow, kernel);
@@ -53,7 +52,7 @@ int main() {
         ImageFactory::deleteImage(&rDiff);
         ImageFactory::deleteImage(&lSub);
         ImageFactory::deleteImage(&rSub);
-        */
+        ImageProcessorFactory::deleteImageProcessor(&proc);
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << "Time: "<< duration << std::endl;
     } catch (std::exception const &exc)

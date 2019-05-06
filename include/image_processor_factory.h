@@ -10,15 +10,20 @@
 #define PROCESSOR_FACTORY_SIZE DATA_HEIGHT * DATA_WIDTH * IMAGE_COMPONENT * 2
 #define PROCESSOR_SIZE DATA_HEIGHT
 
+class ImageProcessor;
+
+using ImageProcessorAllocator = ObjectAllocator<ImageProcessor, IMAGE_ALLOCATOR_POOL_SIZE, uint32_t>;
+
 class ImageProcessor
 {
     friend class ImageProcessorFactory;
-    friend struct ImageProcessorAllocator;
+    friend ImageProcessorAllocator;
 
     private:
-        uint32_t* _data[PROCESSOR_SIZE];
+        uint32_t** _data = nullptr;
 
-        ImageProcessor () {}
+        ImageProcessor (uint32_t height);
+        ~ImageProcessor ();
 
     public:
         Image& changeColorSpace(Image const& img, ColorSpace color);
@@ -27,33 +32,24 @@ class ImageProcessor
         Image& subtraction(Image const& first, Image const& second);
 };
 
+void ImageProcessorDeleter(ImageProcessor* img);
+
 class ImageProcessorFactory
 {
-    struct ImageProcessorAllocator: std::allocator<ImageProcessor>
-    {
-        template<class U, class... Args>
-        void construct(U *u, Args&&... args)
-        {
-            new((void*)u) U(std::forward<Args>(args)...);
-        }
-        template<class U>
-        struct rebind
-        {
-            typedef ImageProcessorAllocator other;
-        };
-    };
 
     private:
+
+        static ImageProcessorAllocator _allocator;
         static uint32_t _pixel[PROCESSOR_FACTORY_SIZE];
         static uint32_t _used;
-        std::vector<ImageProcessor, ImageProcessorAllocator> _warehouse;
 
         ImageProcessorFactory() {}
 
         static ImageProcessorFactory& getInstance();
 
     public:
-        static ImageProcessor& createImageProcessor();
+        static ImageProcessor& createImageProcessor(uint32_t height, uint32_t width);
+        static void deleteImageProcessor(ImageProcessor* img);
 
         ImageProcessorFactory(ImageProcessorFactory const&) = delete;
         void operator=(ImageProcessorFactory const&) = delete;
