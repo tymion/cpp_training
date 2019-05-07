@@ -1,4 +1,5 @@
 #include <cstring>
+#include <cmath>
 #include "image_processor_factory.h"
 
 ImageProcessor::ImageProcessor(uint32_t height)
@@ -101,33 +102,48 @@ Image& ImageProcessor::standardDeviation(Image const& first, Image const& second
     uint8_t kernel = kernel_size / 2;
     // sum up power of subtraction values in a row to tmp tab
 
-    for (auto i = kernel; i < height - kernel; i++) {
+    for (uint32_t i = kernel; i < height - kernel; i++) {
         tmp = first[i][kernel] - second[i][kernel];
         outImg[i][kernel] = tmp * tmp;
         tmp = first[i][width - kernel - 2] - second[i][width - kernel - 2];
         outImg[i][width - kernel - 2] = tmp * tmp;
-        for (auto n = 0; n < kernel; n++) {
-            outImg[i][n] = outImg[i][kernel];
-            outImg[i][width - 1 - n] = outImg[i][width - kernel - 2];
+        for (uint8_t j = 0; j < kernel; j++) {
+            outImg[i][j] = outImg[i][kernel];
+            outImg[i][width - 1 - j] = outImg[i][width - kernel - 2];
         }
-        for (auto j = kernel + 1; j < width - kernel - 2; j++) {
+        for (uint32_t j = kernel + 1; j < width - kernel - 2; j++) {
             tmp = first[i][j] - second[i][j];
             outImg[i][j] = tmp * tmp;
         }
     }
-    for (auto i = kernel; i < height - kernel; i++) {
+    for (uint32_t i = kernel; i < height - kernel; i++) {
         _data[i][kernel] = outImg[i][0] * (kernel + 1);
-        for (auto n = kernel + 1; n < kernel_size; n++) {
-            _data[i][kernel] += outImg[i][n];
+        for (auto j = kernel + 1; j < kernel_size; j++) {
+            _data[i][kernel] += outImg[i][j];
         }
-        for (auto j = kernel + 1; j < width - kernel; j++) {
-            _data[i][j] = _data[i][j - 1] - outImg[i][j - kernel + 1] + outImg[i][j + kernel];
+        for (uint32_t j = kernel + 1; j < width - kernel; j++) {
+            _data[i][j] = _data[i][j - 1] - outImg[i][j - (kernel + 1)] + outImg[i][j + kernel];
         }
     }
     for (auto i = 0; i < kernel; i++) {
         memcpy(_data[i], _data[kernel], width * sizeof(*_data[0]));
         memcpy(_data[height - 1 - i], _data[height - 1 - kernel], width * sizeof(*_data[0]));
     }
+    for (uint32_t j = kernel; j < width - kernel; j++) {
+        outImg[kernel][j] = _data[kernel][j] * (kernel + 1);
+        for (auto i = kernel + 1; i < kernel_size; i++) {
+            outImg[kernel][j] += _data[i][j];
+        }
+        for (uint32_t i = kernel + 1; i < height - kernel; i++) {
+            outImg[i][j] = outImg[i - 1][j] - _data[i - (kernel + 1)][j] + _data[i + kernel][j];
+        }
+    }
+    for (uint32_t j = kernel; j < width - kernel; j++) {
+        for (uint32_t i = kernel; i < height - kernel; i++) {
+            outImg[i][j] = second[i][j] / sqrt(outImg[i][j] / kernel_size *kernel_size);
+        }
+    }
+
     return outImg;
 }
 
