@@ -3,10 +3,10 @@
 #include <allocator.h>
 #include <nullptr_allocator.h>
 
-template<typename T, size_t N, size_t blk_size>
+template<size_t N, size_t blk_size>
 class StackAllocator : NullPtrAllocator
 {
-    T _stack[N*blk_size];
+    uint8_t _stack[N*blk_size];
     size_t _cur_blk = 0;
 
     public:

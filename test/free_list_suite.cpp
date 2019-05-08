@@ -5,7 +5,7 @@
 #include "allocator.h"
 #include "stack_allocator.h"
 
-typedef FreeList<StackAllocator<uint32_t, 10, 512>, 512> FreeListAllocator;
+typedef FreeList<StackAllocator<10, 512>, 512> FreeListAllocator;
 
 class FreeListTest : public ::testing::Test
 {

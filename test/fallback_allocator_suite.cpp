@@ -23,7 +23,7 @@ class FallbackAllocatorTest : public ::testing::Test
 
         FallbackAllocator<
             FreeList<
-                StackAllocator<uint8_t, IMAGE_ALLOCATOR_POOL_SIZE, sizeof(Image)>,
+                StackAllocator<IMAGE_ALLOCATOR_POOL_SIZE, sizeof(Image)>,
                 sizeof(Image)>,
             Mallocator> allocator3;
 

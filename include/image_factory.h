@@ -14,7 +14,7 @@
 
 class Image;
 
-using ImageAllocator = ObjectAllocator<Image, IMAGE_ALLOCATOR_POOL_SIZE, uint8_t>;
+using ImageAllocator = ObjectAllocator<Image, IMAGE_ALLOCATOR_POOL_SIZE>;
 
 class Image
 {

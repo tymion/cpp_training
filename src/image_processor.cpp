@@ -69,25 +69,32 @@ Image& ImageProcessor::lowPassFilter(Image const& img, uint8_t kernel_size)
     auto max_width = img.getWidth() + img.getFrame() * 2;
     auto width = img.getWidth() + img.getFrame() * 2 - kernel_size;
     auto height = img.getHeight() + img.getFrame() * 2;
-    // sum up values in a row to tmp tab
-    for (auto i = 0; i < height; i++) {
-        memset(_data[i], 0, max_width * sizeof(uint32_t));
-        for (auto j = 0; j < width; j++) {
-            for (auto n = 0; n < kernel_size; n++) {
-                _data[i][j] += img[i][j + n];
-            }
-        }
-    }
-    // sum up values in col from tmp tab
     auto kernel = kernel_size / 2;
     uint32_t tmp = 0;
-    for (auto i = kernel; i < height - kernel; i++) {
-        for (auto j = kernel; j < width + kernel; j++) {
-            for (auto n = -kernel; n <= kernel; n++) {
-                tmp += _data[i + n][j - kernel];
-            }
+    // sum up values in a row to tmp tab
+    for (uint32_t i = kernel; i < height - kernel; i++) {
+        _data[i][kernel] = img[i][0] * (kernel + 1);
+        for (auto j = kernel + 1; j < kernel_size; j++) {
+            _data[i][kernel] += img[i][j];
+        }
+        for (uint32_t j = kernel + 1; j < width - kernel; j++) {
+            _data[i][j] = _data[i][j - 1] - img[i][j - (kernel + 1)] + img[i][j + kernel];
+        }
+    }
+    for (auto i = 0; i < kernel; i++) {
+        memcpy(_data[i], _data[kernel], width * sizeof(*_data[0]));
+        memcpy(_data[height - 1 - i], _data[height - 1 - kernel], width * sizeof(*_data[0]));
+    }
+    // sum up values in col from tmp tab
+    for (uint32_t j = kernel; j < width - kernel; j++) {
+        tmp = _data[kernel][j] * (kernel + 1);
+        for (auto i = kernel + 1; i < kernel_size; i++) {
+            tmp += _data[i][j];
+        }
+        outImg[kernel][j] = (uint8_t) (tmp / (kernel_size * kernel_size));
+        for (uint32_t i = kernel + 1; i < height - kernel; i++) {
+            tmp = tmp - _data[i - (kernel + 1)][j] + _data[i + kernel][j];
             outImg[i][j] = (uint8_t) (tmp / (kernel_size * kernel_size));
-            tmp = 0;
         }
     }
     return outImg;
@@ -99,21 +106,18 @@ Image& ImageProcessor::standardDeviation(Image const& first, Image const& second
     auto width = outImg.getWidth() + outImg.getFrame() * 2;
     auto height = outImg.getHeight() + outImg.getFrame() * 2;
     int32_t tmp = 0;
+    double dtmp = 0.0;
     uint8_t kernel = kernel_size / 2;
     // sum up power of subtraction values in a row to tmp tab
 
     for (uint32_t i = kernel; i < height - kernel; i++) {
-        tmp = first[i][kernel] - second[i][kernel];
-        outImg[i][kernel] = tmp * tmp;
-        tmp = first[i][width - kernel - 2] - second[i][width - kernel - 2];
-        outImg[i][width - kernel - 2] = tmp * tmp;
+        for (uint32_t j = kernel; j < width - kernel; j++) {
+            dtmp = first[i][j] - second[i][j];
+            outImg[i][j] = dtmp * dtmp;
+        }
         for (uint8_t j = 0; j < kernel; j++) {
             outImg[i][j] = outImg[i][kernel];
-            outImg[i][width - 1 - j] = outImg[i][width - kernel - 2];
-        }
-        for (uint32_t j = kernel + 1; j < width - kernel - 2; j++) {
-            tmp = first[i][j] - second[i][j];
-            outImg[i][j] = tmp * tmp;
+            outImg[i][width - 1 - j] = outImg[i][width - kernel - 1];
         }
     }
     for (uint32_t i = kernel; i < height - kernel; i++) {
@@ -130,17 +134,15 @@ Image& ImageProcessor::standardDeviation(Image const& first, Image const& second
         memcpy(_data[height - 1 - i], _data[height - 1 - kernel], width * sizeof(*_data[0]));
     }
     for (uint32_t j = kernel; j < width - kernel; j++) {
-        outImg[kernel][j] = _data[kernel][j] * (kernel + 1);
+        tmp = _data[kernel][j] * (kernel + 1);
         for (auto i = kernel + 1; i < kernel_size; i++) {
-            outImg[kernel][j] += _data[i][j];
+            tmp += _data[i][j];
         }
+        outImg[kernel][j] = tmp;
         for (uint32_t i = kernel + 1; i < height - kernel; i++) {
-            outImg[i][j] = outImg[i - 1][j] - _data[i - (kernel + 1)][j] + _data[i + kernel][j];
-        }
-    }
-    for (uint32_t j = kernel; j < width - kernel; j++) {
-        for (uint32_t i = kernel; i < height - kernel; i++) {
-            outImg[i][j] = second[i][j] / sqrt(outImg[i][j] / kernel_size *kernel_size);
+            tmp = tmp - _data[i - (kernel + 1)][j] + _data[i + kernel][j];
+//            outImg[i][j] = second[i][j] / sqrt(tmp / (kernel_size * kernel_size));
+            outImg[i][j] = second[i][j] / sqrt(tmp);
         }
     }
 

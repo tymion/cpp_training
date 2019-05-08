@@ -12,7 +12,7 @@
 
 class ImageProcessor;
 
-using ImageProcessorAllocator = ObjectAllocator<ImageProcessor, IMAGE_ALLOCATOR_POOL_SIZE, uint32_t>;
+using ImageProcessorAllocator = ObjectAllocator<ImageProcessor, IMAGE_ALLOCATOR_POOL_SIZE>;
 
 class ImageProcessor
 {
@@ -36,9 +36,7 @@ void ImageProcessorDeleter(ImageProcessor* img);
 
 class ImageProcessorFactory
 {
-
     private:
-
         static ImageProcessorAllocator _allocator;
         static uint32_t _pixel[PROCESSOR_FACTORY_SIZE];
         static uint32_t _used;
