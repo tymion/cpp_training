@@ -22,12 +22,17 @@ class ImageProcessor
     private:
         uint32_t** _data = nullptr;
 
-        ImageProcessor (uint32_t height);
-        ~ImageProcessor ();
-
     public:
         Image& changeColorSpace(Image const& img, ColorSpace color);
         Image& lowPassFilter(Image const& img, uint8_t kernel_size);
+        void horizontalConvolution(Image const& in, Image& out, uint32_t height, uint32_t width,
+                                    uint8_t kernel_size);
+        void verticalConvolution(Image const& in, Image& out, uint32_t height, uint32_t width,
+                                    uint8_t kernel_size);
+        void boxConvolution(Image const& in, Image& out, uint32_t height, uint32_t width,
+                                    uint8_t kernel_size);
+        void fastGaussianConvolution(Image const& in, Image& out, uint32_t height, uint32_t width,
+                                        uint8_t kernel_size);
         Image& standardDeviation(Image const& first, Image const& second, uint8_t kernel_size);
         Image& subtraction(Image const& first, Image const& second);
 };
@@ -38,15 +43,13 @@ class ImageProcessorFactory
 {
     private:
         static ImageProcessorAllocator _allocator;
-        static uint32_t _pixel[PROCESSOR_FACTORY_SIZE];
-        static uint32_t _used;
 
         ImageProcessorFactory() {}
 
         static ImageProcessorFactory& getInstance();
 
     public:
-        static ImageProcessor& createImageProcessor(uint32_t height, uint32_t width);
+        static ImageProcessor& createImageProcessor();
         static void deleteImageProcessor(ImageProcessor* img);
 
         ImageProcessorFactory(ImageProcessorFactory const&) = delete;

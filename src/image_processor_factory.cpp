@@ -19,11 +19,7 @@ void ImageProcessorFactory::deleteImageProcessor(ImageProcessor *img)
     ImageProcessorFactory::_allocator.deallocate(img);
 }
 
-ImageProcessor& ImageProcessorFactory::createImageProcessor(uint32_t height, uint32_t width)
+ImageProcessor& ImageProcessorFactory::createImageProcessor()
 {
-    uint64_t new_used = _used + height * width;
-    if (new_used > PROCESSOR_FACTORY_SIZE) {
-        throw std::invalid_argument("Out of memory");
-    }
     return *ImageProcessorFactory::_allocator.allocate();
 }

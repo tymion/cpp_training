@@ -22,7 +22,7 @@ int main() {
         Configuration::setStorageSize(10);
         Image& lImg = ImageFactory::createImageFromFile(leftFile);
         Image& rImg = ImageFactory::createImageFromFile(rightFile);
-        ImageProcessor& proc = ImageProcessorFactory::createImageProcessor(lImg.getHeight() + lImg.getFrame() * 2, lImg.getWidth() + lImg.getFrame() * 2);
+        ImageProcessor& proc = ImageProcessorFactory::createImageProcessor();
         Image& lGray = proc.changeColorSpace(lImg, ColorSpace::Grayscale);
         Image& rGray = proc.changeColorSpace(rImg, ColorSpace::Grayscale);
         ImageFactory::deleteImage(&lImg);
