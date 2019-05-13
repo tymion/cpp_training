@@ -37,16 +37,6 @@ void Configuration::setImageFrame(uint8_t frame)
     Configuration::getInstance()._frame = frame;
 }
 
-uint8_t Configuration::getStorageSize()
-{
-    return Configuration::getInstance()._storageSize;
-}
-
-void Configuration::setStorageSize(uint8_t size)
-{
-    Configuration::getInstance()._storageSize = size;
-}
-
 std::string Configuration::toString()
 {
     return "JacardThreshold:" + std::to_string(Configuration::getInstance()._jacardThreshold) + ", similarityThreshold:" + std::to_string(Configuration::getInstance()._similarityThreshold);
