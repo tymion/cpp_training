@@ -2,8 +2,8 @@
 #include <cstdint>
 #include <string>
 
-#define FULLHD_HEIGHT   1920
-#define FULLHD_WIDTH    1080
+#define FULLHD_HEIGHT   200
+#define FULLHD_WIDTH    500
 
 #define FRAME   2
 
@@ -12,27 +12,40 @@
 
 #define IMAGE_COMPONENT 4
 
+#define STORAGE_SIZE 1920*1240*10
+
 class Configuration
 {
     private:
-        double _jacardThreshold;
-        uint32_t _similarityThreshold;
+        static double _jacardThreshold;
+        static uint32_t _similarityThreshold;
+        static constexpr uint8_t _component = 1;
         static constexpr uint8_t _frame = 2;
-        static constexpr uint8_t _storageSize = 10;
+        static constexpr uint32_t _height = 200;
+        static constexpr uint32_t _width = 500;
+        static constexpr uint8_t _storageSize = 20;
 
         Configuration() {}
 
     public:
-        static Configuration& getInstance();
-
         static double getJacardThreshold();
-        static void setJacardThreshold(double new_threshold);
 
         static uint32_t getSimilarityThreshold();
-        static void setSimilarityThreshold(uint32_t new_threshold);
+
+        static constexpr uint8_t getImageComponent() {
+            return _component;
+        }
 
         static constexpr uint8_t getImageFrame() {
             return _frame;
+        }
+
+        static constexpr uint32_t getImageHeight() {
+            return _height;
+        }
+
+        static constexpr uint32_t getImageWidth() {
+            return _width;
         }
 
         static constexpr uint8_t getStorageSize() {

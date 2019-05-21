@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include "image_processor_factory.h"
 
-ImageProcessorAllocator ImageProcessorFactory::_allocator;
+ImageProcessorAlloc ImageProcessorFactory::_allocator;
 
 void ImageProcessorDeleter(ImageProcessor* img)
 {

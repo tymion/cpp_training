@@ -1,20 +1,13 @@
 #pragma once
 
-#define POOL_SIZE 10
+#include "image_processor.h"
 
-template<typename T, size_t N, size_t H, size_t W>
-class ImageProcessorAllocator: ObjectAllocator<T, N>
+template<size_t N, size_t H, size_t W>
+class ImageProcessorAllocator: ObjectAllocator<ImageProcessor<H, W>, N>
 {
-    static FreeList<StackAllocator<N, H*sizeof(uint32_t*)>, H*sizeof(uint32_t*)> _tabAllocator;
-    static FreeList<StackAllocator<N*H, W*sizeof(uint32_t*)>, W*sizeof(uint32_t)> _dataAllocator;
-
     public:
         ImageProcessor* allocate()
         {
-            ImageProcessor* img = new (allocator.allocate(sizeof(ImageProcessor)).ptr) T();
-            img->data = _tabAllocator.allocate(H*sizeof(uint32_t*)).ptr;
-            for (auto i = 0; i < H; i++) {
-                img._data[i] = _dataAllocator.allocate(W*sizeof(uint32_t*));
-            }
+            return new (ObjectAllocator<ImageProcessor<H, W>, N>::allocate(sizeof(ImageProcessor<H, W>))) ImageProcessor<H, W>();
         }
 };

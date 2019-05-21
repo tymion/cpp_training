@@ -36,28 +36,34 @@ void ImageFactory::deleteImage(Image *img)
 
 Image& ImageFactory::createImage(uint32_t height, uint32_t width, uint8_t frame, uint8_t component)
 {
-    auto image_height = height + 2 * frame;
-    auto image_width = (width + 2 * frame) * component;
-    if (image_height < height || image_width < width) {
-        throw std::out_of_range("After adding frame integer overflow");
-    }
-    if (image_width * image_height > STORAGE_SIZE - _used) {
-        throw std::out_of_range("Image side is out of factory range.");
-    }
-    Image& img = *ImageFactory::_allocator.allocate(image_height);
-    img._height = height;
-    img._width = width;
-    img._frame = frame;
-    img._component = component;
-
     LOG("Height:%d\n", height);
     LOG("Width:%d\n", width);
     LOG("Frame:%d\n", frame);
     LOG("Component:%d\n", component);
 
-    ImageFactory::assignStorage(img, image_height, image_width);
+    if (height == Configuration::getImageHeight() &&
+            width == Configuration::getImageWidth() &&
+            frame == Configuration::getImageFrame() &&
+            component == Configuration::getImageComponent()) {
+        Image& img = *dynamic_cast<Image*>(new StackImage<Configuration::getImageHeight(),
+                                    Configuration::getImageWidth(),
+                                    Configuration::getImageFrame(),
+                                    Configuration::getImageComponent()>());
+        return img;
+    } else {
+        auto image_height = height + 2 * frame;
+        auto image_width = (width + 2 * frame) * component;
+        if (image_height < height || image_width < width) {
+            throw std::out_of_range("After adding frame integer overflow");
+        }
+        if (image_width * image_height > STORAGE_SIZE - _used) {
+            throw std::out_of_range("Image side is out of factory range.");
+        }
+        Image& img = *ImageFactory::_allocator.allocate(height, width, frame, component);
+        ImageFactory::assignStorage(img, image_height, image_width);
 
-    return img;
+        return img;
+    }
 }
 
 Image& ImageFactory::createImageFromFile(std::string fileName)

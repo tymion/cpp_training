@@ -10,6 +10,8 @@
 
 #define rsize 9
 
+static constexpr uint8_t Configuration::getStorageSize();
+
 int main() {
     clock_t start;
     double duration;
