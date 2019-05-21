@@ -20,7 +20,7 @@ class ImageProcessor
     friend ImageProcessorAllocator;
 
     private:
-        uint32_t** _data = nullptr;
+        uint32_t _data[300][600];
 
     public:
         Image& changeColorSpace(Image const& img, ColorSpace color);

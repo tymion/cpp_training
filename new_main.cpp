@@ -18,7 +18,6 @@ int main() {
     std::string rightFile = "resources/right.png";
     try {
         start = clock();
-        Configuration::setImageFrame(2);
         Image& lImg = ImageFactory::createImageFromFile(leftFile);
         Image& rImg = ImageFactory::createImageFromFile(rightFile);
         ImageProcessor& proc = ImageProcessorFactory::createImageProcessor();

@@ -17,7 +17,7 @@ class Configuration
     private:
         double _jacardThreshold;
         uint32_t _similarityThreshold;
-        static constexpr uint8_t _frame = 0;
+        static constexpr uint8_t _frame = 2;
         static constexpr uint8_t _storageSize = 10;
 
         Configuration() {}
