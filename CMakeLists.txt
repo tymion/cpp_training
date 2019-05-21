@@ -53,6 +53,8 @@ else()
     set_target_properties(algo_debug PROPERTIES CXX_STANDARD 17)
 endif()
 
+set(CMAKE_CXX_FLAGS "${CMKAE_CXX_FLAGS} -Wall -pedantic -Wextra")
+
 add_executable(vr new_main.cpp)
 target_link_libraries(vr algo)
 

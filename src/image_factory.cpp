@@ -21,9 +21,9 @@ ImageFactory& ImageFactory::getInstance()
     return instance;
 }
 
-void ImageFactory::assignStorage(Image& img, auto height, auto width)
+void ImageFactory::assignStorage(Image& img, uint32_t height, uint32_t width)
 {
-    for (auto i = 0; i < height; i++) {
+    for (uint32_t i = 0; i < height; i++) {
         img._data[i] = &ImageFactory::_pixel[ImageFactory::_used];
         ImageFactory::_used += width;
     }
@@ -34,7 +34,7 @@ void ImageFactory::deleteImage(Image *img)
     ImageFactory::_allocator.deallocate(img);
 }
 
-Image& ImageFactory::createImage(auto height, auto width, auto frame, auto component)
+Image& ImageFactory::createImage(uint32_t height, uint32_t width, uint8_t frame, uint8_t component)
 {
     auto image_height = height + 2 * frame;
     auto image_width = (width + 2 * frame) * component;

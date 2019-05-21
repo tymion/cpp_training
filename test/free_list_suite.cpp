@@ -5,13 +5,14 @@
 #include "allocator.h"
 #include "stack_allocator.h"
 
+#define blk_cnt 10
+
 typedef FreeList<StackAllocator<10, 512>, 512> FreeListAllocator;
 
 class FreeListTest : public ::testing::Test
 {
     protected:
         uint32_t blk_size = 512;
-        uint8_t blk_cnt = 10;
 
         FreeListAllocator allocator;
 
@@ -26,7 +27,7 @@ static void
 free_mem_from_stack_to_free_list(FreeListAllocator *allocator, size_t blk_size)
 {
     Blk mem1 = allocator->allocate(blk_size);
-    Blk mem2 = allocator->allocate(blk_size);
+    allocator->allocate(blk_size);
     allocator->deallocate(mem1);
 }
 

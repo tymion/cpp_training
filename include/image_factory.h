@@ -57,8 +57,8 @@ class ImageFactory
         ImageFactory() {}
 
         static ImageFactory& getInstance();
-        static Image& createImage(auto height, auto width, auto frame, auto component);
-        static void assignStorage(Image& img, auto height, auto width);
+        static Image& createImage(uint32_t height, uint32_t width, uint8_t frame, uint8_t component);
+        static void assignStorage(Image& img, uint32_t height, uint32_t width);
         static ColorSpace getColorSpaceFromComponent(size_t component);
 
     public:

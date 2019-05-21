@@ -6,8 +6,8 @@ Image& ImageProcessor::changeColorSpace(Image const& img, ColorSpace color)
 {
     Image& gray_img = ImageFactory::createImageFromImage(img, color);
     uint8_t comp = img.getComponent();
-    for (auto i = 0; i < img.getHeight() + img.getFrame() * 2; i++) {
-        for (auto j = 0; j < img.getWidth() + img.getFrame() * 2; j++) {
+    for (uint32_t i = 0; i < img.getHeight() + img.getFrame() * 2; i++) {
+        for (uint32_t j = 0; j < img.getWidth() + img.getFrame() * 2; j++) {
             gray_img[i][j] =
                 (uint8_t) ((float) img[i][j * comp] * 0.3 +
                 (float) img[i][j * comp + 1] * 0.59 +
@@ -56,8 +56,7 @@ Image& ImageProcessor::lowPassFilter(Image const& img, uint8_t kernel_size)
 Image& ImageProcessor::lowPassFilter(Image const& img, uint8_t kernel_size)
 {
     Image& outImg = ImageFactory::createImageFromImage(img);
-    auto max_width = img.getWidth() + img.getFrame() * 2;
-    auto width = img.getWidth() + img.getFrame() * 2 - kernel_size;
+    auto width = img.getWidth() + img.getFrame() * 2;
     auto height = img.getHeight() + img.getFrame() * 2;
     auto kernel = kernel_size / 2;
     uint32_t tmp = 0;
@@ -143,6 +142,13 @@ void ImageProcessor::fastGaussianConvolution(Image const& in, Image& out, uint32
     ImageProcessor::boxConvolution(tmp, out, height, width, kernel_size);
 }
 
+Image& ImageProcessor::gaussian(Image const& in, uint8_t kernel_size)
+{
+    Image& out = ImageFactory::createImageFromImage(in);
+    ImageProcessor::fastGaussianConvolution(in, out, in.getHeight(), in.getWidth(), kernel_size);
+    return out;
+}
+
 Image& ImageProcessor::standardDeviation(Image const& first, Image const& second, uint8_t kernel_size)
 {
     Image& outImg = ImageFactory::createImageFromImage(first);
@@ -195,11 +201,14 @@ Image& ImageProcessor::standardDeviation(Image const& first, Image const& second
 Image& ImageProcessor::subtraction(Image const& first, Image const& second)
 {
     Image& outImg = ImageFactory::createImageFromImage(first);
-    for (auto i = 0; i < first.getHeight() + first.getFrame() * 2; i++) {
-        for (auto j = 0; j < first.getWidth() + first.getFrame() * 2; j++) {
-            outImg[i][j] = first[i][j] - second[i][j];
-            if (outImg[i][j] < 0) {
+    int32_t tmp = 0;
+    for (uint32_t i = 0; i < first.getHeight() + first.getFrame() * 2; i++) {
+        for (uint32_t j = 0; j < first.getWidth() + first.getFrame() * 2; j++) {
+            tmp = first[i][j] - second[i][j];
+            if (tmp < 0) {
                 outImg[i][j] = 0;
+            } else {
+                outImg[i][j] = tmp;
             }
         }
     }

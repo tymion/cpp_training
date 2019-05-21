@@ -9,6 +9,8 @@
 #include "free_list.h"
 #include "image_factory.h"
 
+constexpr uint32_t blk_size = sizeof(Image);
+
 class FallbackAllocatorTest : public ::testing::Test
 {
     protected:
@@ -27,7 +29,6 @@ class FallbackAllocatorTest : public ::testing::Test
                 sizeof(Image)>,
             Mallocator> allocator3;
 
-        uint32_t blk_size = sizeof(Image);
         uint32_t blk_cnt = IMAGE_ALLOCATOR_POOL_SIZE;
 
         virtual void SetUp() {
@@ -43,19 +44,19 @@ TEST_F(FallbackAllocatorTest, allocate_success)
     EXPECT_EQ(mem.ptr != nullptr, true);
     allocator1.deallocate(mem);
     EXPECT_EQ(mem.ptr, nullptr);
-    EXPECT_EQ(mem.size, 0);
+    EXPECT_EQ(mem.size, (uint32_t) 0);
 
     mem = allocator2.allocate(blk_size);
     EXPECT_EQ(mem.ptr != nullptr, true);
     allocator2.deallocate(mem);
     EXPECT_EQ(mem.ptr, nullptr);
-    EXPECT_EQ(mem.size, 0);
+    EXPECT_EQ(mem.size, (uint32_t) 0);
 
     mem = allocator3.allocate(blk_size);
     EXPECT_EQ(mem.ptr != nullptr, true);
     allocator3.deallocate(mem);
     EXPECT_EQ(mem.ptr, nullptr);
-    EXPECT_EQ(mem.size, 0);
+    EXPECT_EQ(mem.size, (uint32_t) 0);
 }
 
 TEST_F(FallbackAllocatorTest, allocate_zero)
@@ -64,19 +65,19 @@ TEST_F(FallbackAllocatorTest, allocate_zero)
     EXPECT_EQ(mem.ptr != nullptr, true);
     allocator1.deallocate(mem);
     EXPECT_EQ(mem.ptr, nullptr);
-    EXPECT_EQ(mem.size, 0);
+    EXPECT_EQ(mem.size, (uint32_t) 0);
 
     mem = allocator2.allocate(0);
     EXPECT_EQ(mem.ptr != nullptr, true);
     allocator2.deallocate(mem);
     EXPECT_EQ(mem.ptr, nullptr);
-    EXPECT_EQ(mem.size, 0);
+    EXPECT_EQ(mem.size, (uint32_t) 0);
 
     mem = allocator3.allocate(0);
     EXPECT_EQ(mem.ptr != nullptr, true);
     allocator3.deallocate(mem);
     EXPECT_EQ(mem.ptr, nullptr);
-    EXPECT_EQ(mem.size, 0);
+    EXPECT_EQ(mem.size, (uint32_t) 0);
 }
 
 TEST_F(FallbackAllocatorTest, deallocate_null)
@@ -186,7 +187,7 @@ TEST_F(FallbackAllocatorTest, allocate_all)
     EXPECT_EQ(tmpmem.ptr != nullptr, true);
     allocator3.deallocate(tmpmem);
     EXPECT_EQ(tmpmem.ptr, nullptr);
-    EXPECT_EQ(tmpmem.size, 0);
+    EXPECT_EQ(tmpmem.size, (uint32_t) 0);
     for (uint8_t i = 0; i < blk_cnt; i++) {
         allocator3.deallocate(mem[i]);
         EXPECT_EQ(mem[i].ptr, nullptr);

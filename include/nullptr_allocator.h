@@ -11,6 +11,7 @@ class NullPtrAllocator : Allocator {
 
         Blk allocate(size_t size)
         {
+            (void) size;
             return { nullptr, 0 };
         }
 

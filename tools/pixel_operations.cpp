@@ -14,7 +14,7 @@ T random(T  min, T max) {
         std::uniform_real_distribution<T>
     >;
     return dist{min, max}(gen);
-};
+}
 
 #define kernel 8
 #define component 4
@@ -23,13 +23,14 @@ T random(T  min, T max) {
 
 int main(int argc, char *argv[])
 {
+    (void) argc;
+    (void) argv;
     uint8_t rgb[SIZE8];
     uint32_t rgb32[SIZE32];
     uint8_t fdata8[SIZE8/kernel] = {0};
     uint32_t fdata32[SIZE32/kernel] = {0};
     uint8_t sdata8[SIZE8/kernel] = {0};
     uint32_t sdata32[SIZE32/kernel] = {0};
-    uint32_t data32[SIZE32/kernel] = {0};
     for (uint32_t i = 0; i < SIZE8; i++)
     {
         rgb[i] = random(0, UINT8_MAX);
@@ -40,7 +41,6 @@ int main(int argc, char *argv[])
     }
 
     uint32_t tmp32[component] = {0};
-    uint8_t tmp8 = 0;
     uint8_t tmp = 0;
     double duration;
     std::cout.precision(10);

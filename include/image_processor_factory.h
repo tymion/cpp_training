@@ -33,6 +33,7 @@ class ImageProcessor
                                     uint8_t kernel_size);
         void fastGaussianConvolution(Image const& in, Image& out, uint32_t height, uint32_t width,
                                         uint8_t kernel_size);
+        Image& gaussian(Image const& in, uint8_t kernel_size);
         Image& standardDeviation(Image const& first, Image const& second, uint8_t kernel_size);
         Image& subtraction(Image const& first, Image const& second);
 };
