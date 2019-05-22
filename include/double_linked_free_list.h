@@ -3,7 +3,7 @@
 #include "allocator.h"
 #include "nullptr_allocator.h"
 
-class FreeList : NullPtrAllocator
+class DoubleLinkedFreeList
 {
     A _pool;
     struct Node {
