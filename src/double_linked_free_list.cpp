@@ -64,11 +64,12 @@ DoubleLinkedFreeList::mergeBeforeNode(Node *node, Node *ptr)
 }
 
 inline void
-DoubleLinkedFreeList::insertNodeAfterLast(Node* last, Node* ptr)
+DoubleLinkedFreeList::insertNodeAfterLast(Node* ptr)
 {
-    last->next = ptr;
-    ptr->prev = last;
+    _last->next = ptr;
+    ptr->prev = _last;
     ptr->next = nullptr;
+    _last = ptr;
 }
 
 inline void
@@ -77,6 +78,7 @@ DoubleLinkedFreeList::insertNodeAsRoot(Node* ptr)
     _root = ptr;
     _root->prev = nullptr;
     _root->next = nullptr;
+    _last = _root;
 }
 
 void
@@ -98,10 +100,11 @@ DoubleLinkedFreeList::insertNode(Node* ptr)
         if (iterator->size > ptr->size) {
             insertBeforeNode(iterator, ptr);
         }
-    } while (iterator->next != nullptr && iterator = iterator->next)
+	iterator = iterator->next;
+    } while (iterator != nullptr)
     // If we end up here that means we didn't insert ptr
     // We put region at the end
-    insertNodeAfterLast(iterator, ptr);
+    insertNodeAfterLast(ptr);
 }
 
 void
@@ -125,13 +128,14 @@ DoubleLinkedFreeList::insertNodeWithMerge(Node* ptr)
         if (!tmp && iterator->size > ptr->size) {
             tmp = iterator;
         }
-    } while (iterator->next != nullptr && iterator = iterator->next)
+	iterator = iterator->next;
+    } while (iterator != nullptr)
     // If we end up here that means we didn't merge regions
     if (tmp) {
         // We put region between others (sorted)
         insertBeforeNode(tmp, ptr);
     } else {
         // We put region at the end
-        insertNodeAfterLast(iterator, ptr);
+        insertNodeAfterLast(ptr);
     }
 }
