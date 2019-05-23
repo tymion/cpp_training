@@ -12,7 +12,7 @@ class Image
         uint8_t **_data = nullptr;
 
     public:
-        //Image(uint32_t height, uint32_t width, uint32_t frame, uint32_t component);
+        Image(uint32_t height, uint32_t width, uint32_t frame, uint32_t component);
         virtual ~Image();
         uint32_t getHeight() const;
         uint32_t getWidth() const;
@@ -31,12 +31,8 @@ class StackImage : public Image
         uint8_t _stack_data[H + 2*F][(W + 2*F)*C] = {};
 
     public:
-        StackImage()
+        StackImage() : Image(H, W, F, C)
         {
-            Image::_height = H;
-            Image::_width = W;
-            Image::_frame = F;
-            Image::_component = C;
             Image::_data = reinterpret_cast<uint8_t**>(_stack_data);
         }
 };
@@ -46,13 +42,10 @@ class HeapImage : public Image
 {
     public:
         HeapImage(uint32_t height, uint32_t width, uint8_t frame,
-                    uint8_t component, uint8_t **data)
+                    uint8_t component, uint8_t **data) :
+                    Image(height, width, frame, component)
         {
-            Image::_height = H;
-            Image::_width = W;
-            Image::_frame = F;
-            Image::_component = C;
-            Image::_data = reinterpret_cast<uint8_t**>(_stack_data);
+            Image::_data = data;
         }
 };
 

@@ -21,14 +21,6 @@ ImageFactory& ImageFactory::getInstance()
     return instance;
 }
 
-void ImageFactory::assignStorage(Image& img, uint32_t height, uint32_t width)
-{
-    for (uint32_t i = 0; i < height; i++) {
-        img._data[i] = &ImageFactory::_pixel[ImageFactory::_used];
-        ImageFactory::_used += width;
-    }
-}
-
 void ImageFactory::deleteImage(Image *img)
 {
     ImageFactory::_allocator.deallocate(img);
@@ -60,7 +52,6 @@ Image& ImageFactory::createImage(uint32_t height, uint32_t width, uint8_t frame,
             throw std::out_of_range("Image side is out of factory range.");
         }
         Image& img = *ImageFactory::_allocator.allocate(height, width, frame, component);
-        ImageFactory::assignStorage(img, image_height, image_width);
 
         return img;
     }
