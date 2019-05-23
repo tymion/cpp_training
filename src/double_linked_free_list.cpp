@@ -13,63 +13,64 @@ DoubleLinkedFreeList::getNode(size_t size)
     return tmp;
 }
 
+void mergeBeforeNode(Node *node, Node *ptr, size_t size)
+{
+    if (node->prev) {
+        node->prev->next = ptr;
+    } else {
+        _root = ptr;
+    }
+    if (node->next) {
+        node->next->prev = ptr;
+    }
+    ptr->prev = node->prev;
+    ptr->next = node->next;
+    ptr->size = node->size + size;
+}
+
 void
-DoubleLinkedFreeList::insertBlk(Blk& mem)
+DoubleLinkedFreeList::insertNode(Node* ptr, size_t size)
 {
     Node *iterator = _root;
-    Node *tmp = _root;
-    if (_root == NULL) {
-        _root = (Node *) mem.ptr;
+    Node *tmp = nullptr;
+    if (_root == nullptr) {
+        _root = ptr;
         _root->prev = nullptr;
         _root->next = nullptr;
-        _root->size = mem.size;
+        _root->size = size;
         return;
     }
     do {
-        if (iterator == mem.ptr + mem.size) {
-            Node *ltmp = (Node *) mem.ptr;
+        if (iterator == ptr + size) {
             if (iterator->prev) {
-                iterator->prev->next = ltmp;
+                iterator->prev->next = ptr;
             } else {
-                _root = ltmp;
+                _root = ptr;
             }
             if (iterator->next) {
-                iterator->next->prev = ltmp;
+                iterator->next->prev = ptr;
             }
-            ltmp->prev = iterator->prev;
-            ltmp->next = iterator->next;
-            ltmp->size = iterator->size + mem.size;
+            ptr->prev = iterator->prev;
+            ptr->next = iterator->next;
+            ptr->size = iterator->size + size;
             return;
         }
-        if (iterator + iterator.size == mem.ptr) {
-            iterator->size = iterator->size + mem.size;
+        if (iterator + iterator.size == ptr) {
+            iterator->size = iterator->size + size;
             return;
         }
-        if (!tmp && iterator->size > mem.ptr) {
+        if (!tmp && iterator->size > ptr) {
             tmp = iterator;
         }
-    } while (iterator->next != NULL && iterator = iterator->next)
+    } while (iterator->next != nullptr && iterator = iterator->next)
     // If we end up here that means we didn't merge regions
     if (tmp) {
         // We put region between others (sorted)
-        Node *ltmp = (Node *) mem.ptr;
-        if (tmp->prev) {
-            tmp->prev->next = ltmp;
-        } else {
-            _root = ltmp;
-        }
-        if (tmp->next) {
-            tmp->next->prev = ltmp;
-        }
-        ltmp->prev = tmp->prev;
-        ltmp->next = tmp->next;
-        ltmp->size = tmp->size + mem.size;
     } else {
         // We put region at the end
-        Node *ltmp = (Node *) mem.ptr;
-        iterator->next = ltmp;
-        ltmp->prev = iterator;
-        ltmp->size = mem.size;
-        ltmp->next = nullptr;
+        iterator->next = ptr;
+        ptr->prev = iterator;
+        ptr->size = size;
+        ptr->next = nullptr;
     }
 }
