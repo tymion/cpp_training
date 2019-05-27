@@ -18,7 +18,7 @@ class DoubleLinkedFreeList
         Node *_last = nullptr;
         void beforeNode(Node *node, Node *ptr);
         void insertBeforeNode(Node *node, Node *ptr);
-        void insertNodeAfterLast(Node* last, Node* ptr);
+        void insertNodeAfterLast(Node* ptr);
         void insertNodeAsRoot(Node* ptr);
         void mergeBeforeNode(Node *node, Node *ptr);
 

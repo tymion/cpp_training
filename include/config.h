@@ -17,8 +17,8 @@
 class Configuration
 {
     private:
-        static double _jacardThreshold;
-        static uint32_t _similarityThreshold;
+        static constexpr double _jacardThreshold = 0.0;
+        static constexpr uint32_t _similarityThreshold = 0;
         static constexpr uint8_t _component = 1;
         static constexpr uint8_t _frame = 2;
         static constexpr uint32_t _height = 200;
@@ -28,9 +28,14 @@ class Configuration
         Configuration() {}
 
     public:
-        static double getJacardThreshold();
 
-        static uint32_t getSimilarityThreshold();
+        static constexpr double getJacardThreshold() {
+            return _jacardThreshold;
+        }
+
+        static constexpr uint32_t getSimilarityThreshold() {
+            return _similarityThreshold;
+        }
 
         static constexpr uint8_t getImageComponent() {
             return _component;

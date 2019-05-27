@@ -5,13 +5,13 @@ BUILD_PATH=build
 TOOLCHAIN_FILE=$PWD/toolchain.cmake
 DESTDIR_HOST=$CURR_PWD/$BUILD_PATH/rootfs-host
 NPROC=$(nproc)
-COMPILER_VERSION=$(gcc -v 2>&1 | grep "gcc version" | cut -c 13-17)
+COMPILER_VERSION=$(gcc -v 2>&1 | grep " version" | cut -c 13-17)
 PYTHON_VERSION=$(python3 --version | cut -c 8-10)
 PYTHONPATH=$DESTDIR_HOST/lib/python$PYTHON_VERSION/site-packages/
 HOST=
 DESTDIR_TARGET=
 
-if [ "$COMPILER_VERSION" \> "7.0.0" ]; then
+if [ "$COMPILER_VERSION" \> "6.0.0" ]; then
     echo "Host compiler is greater version than 7. It supports C++17. There's no need to use toolchain."
     HOST=x86_64
     DESTDIR_TARGET=$DESTDIR_HOST

@@ -1,20 +1,20 @@
 set(TEST_SOURCES
     main.cpp
-    algorithms_suite.cpp
+    #   algorithms_suite.cpp
     #    png_suite.cpp
     #integration_test_suite.cpp
-    mask_suite.cpp
+    #   mask_suite.cpp
     free_list_suite.cpp
     stack_allocator_suite.cpp
     nullptr_allocator_suite.cpp
     mallocator_suite.cpp
-    fallback_allocator_suite.cpp
-    image_allocator_suite.cpp
+    #    fallback_allocator_suite.cpp
+    #  image_allocator_suite.cpp
     #region_factory_suite.cpp
-    configuration_suite.cpp
+    #   configuration_suite.cpp
     libpng_suite.cpp
     pixel_suite.cpp
-    region_suite.cpp
+    #   region_suite.cpp
     )
 
 add_executable(algo_test ${TEST_SOURCES})

@@ -68,8 +68,6 @@ uint8_t data4_3x8_30[ROW*COL*3] = {
 
 TEST(AlgorithmsTest, index_jacarda_pixel3x8_same)
 {
-    Configuration::setSimilarityThreshold(10);
-    Configuration::setJacardThreshold(0.9);
     pixel_3x8 **pixel1 = (pixel_3x8 **) malloc(ROW * sizeof(pixel_3x8 *));
     pixel_3x8 **pixel2 = (pixel_3x8 **) malloc(ROW * sizeof(pixel_3x8 *));
     for (int i = 0 ; i < ROW; i++) {
@@ -83,8 +81,6 @@ TEST(AlgorithmsTest, index_jacarda_pixel3x8_same)
 
 TEST(AlgorithmsTest, index_jacarda_pixel3x8_similar)
 {
-    Configuration::setSimilarityThreshold(10);
-    Configuration::setJacardThreshold(0.9);
     pixel_3x8 **pixel1 = (pixel_3x8 **) malloc(ROW * sizeof(pixel_3x8 *));
     pixel_3x8 **pixel2 = (pixel_3x8 **) malloc(ROW * sizeof(pixel_3x8 *));
     for (int i = 0 ; i < ROW; i++) {

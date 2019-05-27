@@ -13,7 +13,7 @@ set(CURR_PATH ENV{PATH})
 
 set(ENV{PATH} "${CURR_PATH}:${ROOTFS_HOST}/bin")
 
-add_subdirectory(libs)
+#add_subdirectory(libs)
 
 set(SOURCES
     image.cpp
@@ -29,9 +29,9 @@ set(SOURCES
     #    srs_out_data.cpp
     #    region_factory.cpp
     config.cpp
-    mask.cpp
-    pixel_3x8.cpp
-    pixel_4x8.cpp
+    #    mask.cpp
+    #    pixel_3x8.cpp
+    #    pixel_4x8.cpp
     )
 
 foreach(_src ${SOURCES})

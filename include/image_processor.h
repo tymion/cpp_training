@@ -27,7 +27,7 @@ class ImageProcessor
 };
 
 template<size_t H, size_t W>
-class StackImageProcessor: ImageProcessor
+class StackImageProcessor: public ImageProcessor
 {
     private:
         uint32_t _stack_data[H][W] = {};
@@ -35,6 +35,6 @@ class StackImageProcessor: ImageProcessor
     public:
         StackImageProcessor()
         {
-            ImageProcessor::_data = _stack_data;
+            ImageProcessor::_data = reinterpret_cast<uint32_t**>(_stack_data);
         }
 };

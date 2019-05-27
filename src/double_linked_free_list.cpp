@@ -101,7 +101,7 @@ DoubleLinkedFreeList::insertNode(Node* ptr)
             insertBeforeNode(iterator, ptr);
         }
 	iterator = iterator->next;
-    } while (iterator != nullptr)
+    } while (iterator != nullptr);
     // If we end up here that means we didn't insert ptr
     // We put region at the end
     insertNodeAfterLast(ptr);
@@ -129,7 +129,7 @@ DoubleLinkedFreeList::insertNodeWithMerge(Node* ptr)
             tmp = iterator;
         }
 	iterator = iterator->next;
-    } while (iterator != nullptr)
+    } while (iterator != nullptr);
     // If we end up here that means we didn't merge regions
     if (tmp) {
         // We put region between others (sorted)
