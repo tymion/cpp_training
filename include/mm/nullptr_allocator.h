@@ -1,5 +1,7 @@
 #pragma once
 
+#include "mm/allocator.h"
+
 class NullPtrAllocator : Allocator {
     public:
         void deallocate(Blk& mem)

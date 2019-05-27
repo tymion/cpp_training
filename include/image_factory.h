@@ -8,7 +8,7 @@
 #include "config.h"
 #include "color_space.h"
 #include "image.h"
-#include "object_allocator.h"
+#include "mm/object_allocator.h"
 
 using ImageSharedPtr = std::shared_ptr<Image>;
 

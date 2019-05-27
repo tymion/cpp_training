@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cstdio>
 #include "gtest/gtest.h"
-#include "allocator.h"
-#include "mallocator.h"
+#include "mm/allocator.h"
+#include "mm/mallocator.h"
 
 class MallocatorTest : public ::testing::Test
 {

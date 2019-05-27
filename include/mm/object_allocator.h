@@ -1,10 +1,10 @@
 #pragma once
 
-#include <allocator.h>
-#include <fallback_allocator.h>
-#include <free_list.h>
-#include <stack_allocator.h>
-#include <mallocator.h>
+#include <mm/allocator.h>
+#include <mm/fallback_allocator.h>
+#include <mm/free_list.h>
+#include <mm/stack_allocator.h>
+#include <mm/mallocator.h>
 
 template<typename T, size_t N>
 class ObjectAllocator
