@@ -25,6 +25,7 @@ class DoubleLinkedRegionList
     public:
         void* findRegion(size_t size);
         void insertRegion(void* ptr, size_t size);
+        void insertRegionWithMerge(void* ptr, size_t size);
 
         Node * removeNode(size_t size);
         void insertNode(Node* ptr);

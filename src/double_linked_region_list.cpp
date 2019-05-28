@@ -82,6 +82,13 @@ DoubleLinkedRegionList::insertNodeAsRoot(Node* ptr)
 }
 
 void
+DoubleLinkedRegionList::insertRegionWithMerge(void* ptr, size_t size)
+{
+    ((Node*) ptr)->size = size;
+    insertNodeWithMerge((Node*) ptr);
+}
+
+void
 DoubleLinkedRegionList::insertRegion(void* ptr, size_t size)
 {
     ((Node*) ptr)->size = size;

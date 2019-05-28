@@ -4,9 +4,11 @@
 #include "mm/nullptr_allocator.h"
 
 template<class A, size_t blk_size>
-class FixedSizeFreeList : NullPtrAllocator {
-    A _pool;
-    struct Node { Node * next; } *_root = nullptr;
+class FixedSizeFreeList : NullPtrAllocator
+{
+    private:
+        A _pool;
+        struct Node { Node * next; } *_root = nullptr;
 
     public:
         void deallocate(Blk& mem)
