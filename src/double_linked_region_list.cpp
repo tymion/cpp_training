@@ -1,7 +1,7 @@
-#include "double_linked_free_list.h"
+#include "double_linked_region_list.h"
 
 Node *
-DoubleLinkedFreeList::removeNode(size_t size)
+DoubleLinkedRegionList::removeNode(size_t size)
 {
     Node *tmp = _root;
     while (tmp != nullptr) {
@@ -20,7 +20,7 @@ DoubleLinkedFreeList::removeNode(size_t size)
 }
 
 void *
-DoubleLinkedFreeList::findRegion(size_t size)
+DoubleLinkedRegionList::findRegion(size_t size)
 {
     Node *tmp = removeNode(size);
     if (tmp == nullptr) {
@@ -35,7 +35,7 @@ DoubleLinkedFreeList::findRegion(size_t size)
 }
 
 inline void
-DoubleLinkedFreeList::beforeNode(Node *node, Node *ptr)
+DoubleLinkedRegionList::beforeNode(Node *node, Node *ptr)
 {
     if (node->prev) {
         node->prev->next = ptr;
@@ -49,14 +49,14 @@ DoubleLinkedFreeList::beforeNode(Node *node, Node *ptr)
 }
 
 inline void
-DoubleLinkedFreeList::insertBeforeNode(Node *node, Node *ptr)
+DoubleLinkedRegionList::insertBeforeNode(Node *node, Node *ptr)
 {
     beforeNode(node, ptr);
     ptr->next = node;
 }
 
 inline void
-DoubleLinkedFreeList::mergeBeforeNode(Node *node, Node *ptr)
+DoubleLinkedRegionList::mergeBeforeNode(Node *node, Node *ptr)
 {
     beforeNode(node, ptr);
     ptr->next = node->next;
@@ -64,7 +64,7 @@ DoubleLinkedFreeList::mergeBeforeNode(Node *node, Node *ptr)
 }
 
 inline void
-DoubleLinkedFreeList::insertNodeAfterLast(Node* ptr)
+DoubleLinkedRegionList::insertNodeAfterLast(Node* ptr)
 {
     _last->next = ptr;
     ptr->prev = _last;
@@ -73,7 +73,7 @@ DoubleLinkedFreeList::insertNodeAfterLast(Node* ptr)
 }
 
 inline void
-DoubleLinkedFreeList::insertNodeAsRoot(Node* ptr)
+DoubleLinkedRegionList::insertNodeAsRoot(Node* ptr)
 {
     _root = ptr;
     _root->prev = nullptr;
@@ -82,14 +82,14 @@ DoubleLinkedFreeList::insertNodeAsRoot(Node* ptr)
 }
 
 void
-DoubleLinkedFreeList::insertRegion(void* ptr, size_t size)
+DoubleLinkedRegionList::insertRegion(void* ptr, size_t size)
 {
     ((Node*) ptr)->size = size;
     insertNode((Node*) ptr);
 }
 
 void
-DoubleLinkedFreeList::insertNode(Node* ptr)
+DoubleLinkedRegionList::insertNode(Node* ptr)
 {
     Node *iterator = _root;
     if (_root == nullptr) {
@@ -108,7 +108,7 @@ DoubleLinkedFreeList::insertNode(Node* ptr)
 }
 
 void
-DoubleLinkedFreeList::insertNodeWithMerge(Node* ptr)
+DoubleLinkedRegionList::insertNodeWithMerge(Node* ptr)
 {
     Node *iterator = _root;
     Node *tmp = nullptr;

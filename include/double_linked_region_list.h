@@ -10,7 +10,7 @@ struct Node_ {
     size_t size;
 };
 
-class DoubleLinkedFreeList
+class DoubleLinkedRegionList
 {
 
     private:

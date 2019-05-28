@@ -2,7 +2,7 @@
 
 #include <mm/allocator.h>
 #include <mm/fallback_allocator.h>
-#include <mm/free_list.h>
+#include <mm/fixed_size_free_list.h>
 #include <mm/stack_allocator.h>
 #include <mm/mallocator.h>
 
@@ -10,7 +10,7 @@ template<typename T, size_t N>
 class ObjectAllocator
 {
     FallbackAllocator<
-        FreeList<
+        FixedSizeFreeList<
             StackAllocator<N, sizeof(T)>,
             sizeof(T)>,
         Mallocator> allocator;

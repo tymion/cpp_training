@@ -1,15 +1,14 @@
 #include <iostream>
 #include <cstdio>
 #include "gtest/gtest.h"
-#include "mm/free_list.h"
-#include "mm/allocator.h"
+#include "mm/fixed_size_free_list.h"
 #include "mm/stack_allocator.h"
 
 #define blk_cnt 10
 
-typedef FreeList<StackAllocator<10, 512>, 512> FreeListAllocator;
+typedef FixedSizeFreeList<StackAllocator<10, 512>, 512> FreeListAllocator;
 
-class FreeListTest : public ::testing::Test
+class FixedSizeFreeListTest : public ::testing::Test
 {
     protected:
         uint32_t blk_size = 512;
@@ -31,7 +30,7 @@ free_mem_from_stack_to_free_list(FreeListAllocator *allocator, size_t blk_size)
     allocator->deallocate(mem1);
 }
 
-TEST_F(FreeListTest, allocate_success)
+TEST_F(FixedSizeFreeListTest, allocate_success)
 {
     free_mem_from_stack_to_free_list(&allocator, blk_size);
 
@@ -39,7 +38,7 @@ TEST_F(FreeListTest, allocate_success)
     EXPECT_EQ(mem.ptr != nullptr, true);
 }
 
-TEST_F(FreeListTest, allocate_edge_blk_size)
+TEST_F(FixedSizeFreeListTest, allocate_edge_blk_size)
 {
     free_mem_from_stack_to_free_list(&allocator, blk_size);
 
@@ -50,7 +49,7 @@ TEST_F(FreeListTest, allocate_edge_blk_size)
     EXPECT_EQ(mem.ptr, nullptr);
 }
 
-TEST_F(FreeListTest, allocate_zero)
+TEST_F(FixedSizeFreeListTest, allocate_zero)
 {
     free_mem_from_stack_to_free_list(&allocator, blk_size);
 
@@ -58,7 +57,7 @@ TEST_F(FreeListTest, allocate_zero)
     EXPECT_EQ(mem.ptr, nullptr);
 }
 
-TEST_F(FreeListTest, deallocate_null)
+TEST_F(FixedSizeFreeListTest, deallocate_null)
 {
     free_mem_from_stack_to_free_list(&allocator, blk_size);
 
@@ -67,7 +66,7 @@ TEST_F(FreeListTest, deallocate_null)
     EXPECT_EQ(mem.ptr, nullptr);
 }
 
-TEST_F(FreeListTest, allocate_and_deallocate)
+TEST_F(FixedSizeFreeListTest, allocate_and_deallocate)
 {
     free_mem_from_stack_to_free_list(&allocator, blk_size);
 
@@ -76,7 +75,7 @@ TEST_F(FreeListTest, allocate_and_deallocate)
     EXPECT_EQ(mem.ptr, nullptr);
 }
 
-TEST_F(FreeListTest, allocate_and_owns_and_deallocate)
+TEST_F(FixedSizeFreeListTest, allocate_and_owns_and_deallocate)
 {
     free_mem_from_stack_to_free_list(&allocator, blk_size);
 
@@ -85,7 +84,7 @@ TEST_F(FreeListTest, allocate_and_owns_and_deallocate)
     allocator.deallocate(mem);
 }
 
-TEST_F(FreeListTest, owns_null)
+TEST_F(FixedSizeFreeListTest, owns_null)
 {
     free_mem_from_stack_to_free_list(&allocator, blk_size);
 
@@ -93,7 +92,7 @@ TEST_F(FreeListTest, owns_null)
     EXPECT_EQ(allocator.owns(mem), false);
 }
 
-TEST_F(FreeListTest, owns_invalid_pointer)
+TEST_F(FixedSizeFreeListTest, owns_invalid_pointer)
 {
     free_mem_from_stack_to_free_list(&allocator, blk_size);
 
@@ -101,7 +100,7 @@ TEST_F(FreeListTest, owns_invalid_pointer)
     EXPECT_EQ(allocator.owns(mem), false);
 }
 
-TEST_F(FreeListTest, allocate_and_owns_invalid_blk_size_and_deallocate)
+TEST_F(FixedSizeFreeListTest, allocate_and_owns_invalid_blk_size_and_deallocate)
 {
     free_mem_from_stack_to_free_list(&allocator, blk_size);
 
@@ -113,7 +112,7 @@ TEST_F(FreeListTest, allocate_and_owns_invalid_blk_size_and_deallocate)
     allocator.deallocate(mem);
 }
 
-TEST_F(FreeListTest, multi_allocate_and_deallocate_order)
+TEST_F(FixedSizeFreeListTest, multi_allocate_and_deallocate_order)
 {
     Blk mem1 = allocator.allocate(blk_size);
     Blk mem2 = allocator.allocate(blk_size);
@@ -128,7 +127,7 @@ TEST_F(FreeListTest, multi_allocate_and_deallocate_order)
     EXPECT_EQ(mem1.ptr, tmp);
 }
 
-TEST_F(FreeListTest, allocate_all)
+TEST_F(FixedSizeFreeListTest, allocate_all)
 {
     Blk mem[blk_cnt];
     for (uint8_t i = 0; i < blk_cnt; i++) {

@@ -1,8 +1,6 @@
 #include <iostream>
 #include <cstdio>
 #include "gtest/gtest.h"
-#include "mm/free_list.h"
-#include "mm/allocator.h"
 #include "mm/stack_allocator.h"
 
 class StackAllocatorTest : public ::testing::Test

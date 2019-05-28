@@ -22,7 +22,7 @@ set(SOURCES
     libpng_wrapper.cpp
     image_processor_factory.cpp
     image_processor.cpp
-    mm/double_linked_free_list.cpp
+    double_linked_region_list.cpp
     #    pngfile.cpp
     #    srs_test.cpp
     #    similar_region_search.cpp

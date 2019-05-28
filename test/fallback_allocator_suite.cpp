@@ -2,11 +2,11 @@
 #include <cstdio>
 #include "gtest/gtest.h"
 #include "allocator.h"
-#include "fallback_allocator.h"
-#include "nullptr_allocator.h"
-#include "mallocator.h"
-#include "stack_allocator.h"
-#include "free_list.h"
+#include "mm/fallback_allocator.h"
+#include "mm/nullptr_allocator.h"
+#include "mm/mallocator.h"
+#include "mm/stack_allocator.h"
+#include "mm/fixed_size_free_list.h"
 #include "image_factory.h"
 
 constexpr uint32_t blk_size = sizeof(Image);
@@ -24,7 +24,7 @@ class FallbackAllocatorTest : public ::testing::Test
             NullPtrAllocator> allocator2;
 
         FallbackAllocator<
-            FreeList<
+            FixedSizeFreeList<
                 StackAllocator<IMAGE_ALLOCATOR_POOL_SIZE, sizeof(Image)>,
                 sizeof(Image)>,
             Mallocator> allocator3;

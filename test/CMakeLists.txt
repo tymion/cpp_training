@@ -4,7 +4,7 @@ set(TEST_SOURCES
     #    png_suite.cpp
     #integration_test_suite.cpp
     #   mask_suite.cpp
-    free_list_suite.cpp
+    fixed_size_free_list_suite.cpp
     stack_allocator_suite.cpp
     nullptr_allocator_suite.cpp
     mallocator_suite.cpp
