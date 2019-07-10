@@ -23,8 +23,8 @@ class StackAllocator : NullPtrAllocator
 
         inline bool _owns(void* ptr)
         {
-            LOG("Stack allocator owns: mem.ptr=%p (_stack=%p|end_of_stack:%p)\n",
-                    ptr, _stack, _stack + N*blk_size);
+            LOG_ALLOC("Stack allocator owns: mem.ptr=%p (_stack=%p|end_of_stack:%p)\n",
+                        ptr, _stack, _stack + N*blk_size);
             if (_stack <= ptr && ptr < _stack + N*blk_size) {
                 return true;
             }
@@ -56,19 +56,17 @@ class StackAllocator : NullPtrAllocator
 
         void* allocate()
         {
-            LOG("%s:!!!!!!!!\n", __func__);
             if (_cur_blk >= N) {
                 return NullPtrAllocator::allocate();
             }
-            LOG("%s:!!!!!%p!!!1\n", __func__, &_stack[blk_size*_cur_blk]);
 
             return &_stack[blk_size*_cur_blk++];
         }
 
         bool owns(Blk& mem)
         {
-           LOG("Stack allocator owns: mem.size=0x%lx (blk_size=0x%lx)\n",
-                    mem.size, blk_size);
+            LOG_ALLOC("Stack allocator owns: mem.size=0x%lx (blk_size=0x%lx)\n",
+                        mem.size, blk_size);
             if (mem.size == blk_size && _owns(mem.ptr)) {
                 return true;
             }

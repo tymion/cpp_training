@@ -3,6 +3,12 @@
 #include <cstdint>
 #include <cstddef>
 
+#ifdef DEBUG_ALLOCATION
+#define LOG_ALLOC LOG
+#else
+#define LOG_ALLOC(...)
+#endif
+
 struct Blk_ {
     void* ptr;
     size_t size;

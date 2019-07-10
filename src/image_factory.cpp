@@ -36,13 +36,8 @@ ImageSharedPtr ImageFactory::createImageFromFile(std::string fileName)
     auto width = file->getWidth();
     auto component = file->getComponentCnt();
     ImageSharedPtr img = ImageFactory::createImage(height, width, frame, component);
-    LOG("Test:%p\n", img.get());
 
     auto callback = [=, &img] (uint32_t row) {
-//    std::function<uint8_t* (uint32_t)> callback = [=, &img] (uint32_t row) {
-                                            //return (*img.get())[frame + row] + frame * component;
-                                            //return (*img.get())[row] + frame * component;
-                                            //return (*img.get())[(frame + (frame + row) * (2 * frame + width)) * component];
                                             return (*img)[frame + row] + frame * component;
                                             };
     file->loadImage(callback);
@@ -103,10 +98,7 @@ bool ImageFactory::createFileFromImage(std::string name, ImageSharedPtr const im
                                                                 8, color)};
     auto component = img->getComponent();
     auto frame = img->getFrame();
-    auto width = file->getWidth();
     auto callback = [=, &img] (uint32_t row) {
-                                            //return (*img)[frame + row] + frame * component;
-                                            //return (*img.get())[(frame + (frame + row) * (2 * frame + width)) * component];
                                             return (*img)[frame + row] + frame * component;
                                             };
     file->saveImage(callback);

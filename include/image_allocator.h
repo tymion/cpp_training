@@ -42,11 +42,8 @@ class ImageAllocator
         ImageSharedPtr allocate(uint32_t height, uint32_t width, uint8_t frame,
                                 uint8_t component)
         {
-            LOG("!!!!!!!!\n");
             if (Conf::getImageHeight() == height && Conf::getImageFrame() == frame) {
-            LOG("!!!!!!!!1\n");
                 if (max_width * 3 == (width + 2 * frame) * component) {
-            LOG("!!!!!!!!2\n");
                     return ImageSharedPtr(new (stackImageBigAlloc.allocate())
                                             StackImageBig(), [=](Image* img)
                             {
@@ -54,7 +51,6 @@ class ImageAllocator
                                 stackImageBigAlloc.deallocate(img);
                             });
                 } else if (max_width * 1 == (width + 2 * frame) * component) {
-            LOG("!!!!!!!!3\n");
                     return ImageSharedPtr(new (stackImageSmallAlloc.allocate())
                                             StackImageSmall(), [=](Image* img)
                             {
@@ -63,7 +59,6 @@ class ImageAllocator
                             });
                 }
             } else {
-            LOG("!!!!!!!!4\n");
                 uint8_t **ptr = static_cast<uint8_t**>(alloc.allocate(height + 2 * frame * sizeof(uint8_t*)).ptr);
                 uint8_t *tmp = static_cast<uint8_t*>(alloc.allocate(
                                                         (height + 2 * frame) *

@@ -45,7 +45,6 @@ PNGFileWrapper::PNGFileWrapper(FILE *file, size_t width, size_t height,
             png_color == PNG_COLOR_TYPE_GRAY_ALPHA) {
         png_set_gray_to_rgb(_png);
     }
-    LOG("bit_depth[%d|%x] \n", _bit_depth, png_color);
     _row_pointers = (png_bytepp)png_malloc(_png, sizeof(png_bytepp) * height);
 }
 
@@ -63,7 +62,6 @@ PNGFileWrapper::PNGFileWrapper(FILE *file) {
     _bit_depth = png_get_bit_depth(_png, _info);
     _width = png_get_image_width(_png, _info);
     _height = png_get_image_height(_png, _info);
-    LOG("bit_depth[%d|%x] \n", _bit_depth, color_type);
 
     if (_bit_depth == 16) {
         png_set_strip_16(_png);

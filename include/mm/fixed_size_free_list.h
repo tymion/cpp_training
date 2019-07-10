@@ -20,10 +20,10 @@ class FixedSizeFreeList : NullPtrAllocator
             }
             _pool.deallocate(mem);
             if (mem.ptr == nullptr) {
-                LOG("Deallocating from pool failed.\n");
+                LOG_ALLOC("Deallocating from pool failed.\n");
                 return;
             }
-            LOG("Deallocating will supply a free list.\n");
+            LOG_ALLOC("Deallocating will supply a free list.\n");
             auto tmp = _root;
             _root = (Node *) mem.ptr;
             _root->next = tmp;
@@ -51,10 +51,10 @@ class FixedSizeFreeList : NullPtrAllocator
                 return NullPtrAllocator::allocate(size);
             }
             if (_root == nullptr) {
-                LOG("Allocating from pool.\n");
+                LOG_ALLOC("Allocating from pool.\n");
                 return _pool.allocate(size);
             }
-            LOG("Allocating from free list.\n");
+            LOG_ALLOC("Allocating from free list.\n");
             auto tmp = _root;
             _root = _root->next;
             return { tmp, size };
@@ -63,10 +63,10 @@ class FixedSizeFreeList : NullPtrAllocator
         void* allocate()
         {
             if (_root == nullptr) {
-                LOG("Allocating from pool.\n");
+                LOG_ALLOC("Allocating from pool.\n");
                 return _pool.allocate();
             }
-            LOG("Allocating from free list.\n");
+            LOG_ALLOC("Allocating from free list.\n");
             auto tmp = _root;
             _root = _root->next;
             return tmp;
@@ -74,13 +74,14 @@ class FixedSizeFreeList : NullPtrAllocator
 
         bool owns(Blk& mem)
         {
-            LOG("Owns(Blk):%s\n", (mem.size == blk_size && _pool.owns(mem)) ? "true" : "false");
+            LOG_ALLOC("Owns(Blk):%s\n",
+                        (mem.size == blk_size && _pool.owns(mem)) ? "true" : "false");
             return mem.size == blk_size && _pool.owns(mem);
         }
 
         bool owns(void* ptr)
         {
-            LOG("Owns(void*):%s\n", _pool.owns(ptr) ? "true" : "false");
+            LOG_ALLOC("Owns(void*):%s\n", _pool.owns(ptr) ? "true" : "false");
             return _pool.owns(ptr);
         }
 };

@@ -8,7 +8,12 @@
 #include "image_processor_factory.h"
 #include "color_space.h"
 
-#define rsize 9
+#ifdef DEBUG
+#define SAVE_IMG ImageFactory::createFileFromImage
+#else
+#define SAVE_IMG(file, image);
+#endif
+
 
 int main() {
     clock_t start;
@@ -19,31 +24,31 @@ int main() {
     try {
         start = clock();
         ImageSharedPtr lImg = ImageFactory::createImageFromFile(leftFile);
-        ImageFactory::createFileFromImage("test_outL.png", lImg);
+        SAVE_IMG("test_outL.png", lImg);
         ImageSharedPtr rImg = ImageFactory::createImageFromFile(rightFile);
-        ImageFactory::createFileFromImage("test_outR.png", rImg);
+        SAVE_IMG("test_outR.png", rImg);
         ImageProcessor& proc = ImageProcessorFactory::createImageProcessor();
         ImageSharedPtr lGray = proc.changeColorSpace(lImg, ColorSpace::Grayscale);
-        ImageFactory::createFileFromImage("test_grayL.png", lGray);
+        SAVE_IMG("test_grayL.png", lGray);
         ImageSharedPtr rGray = proc.changeColorSpace(rImg, ColorSpace::Grayscale);
-        ImageFactory::createFileFromImage("test_grayR.png", rGray);
+        SAVE_IMG("test_grayR.png", rGray);
         uint8_t kernel = 5;
         ImageSharedPtr rG = proc.gaussian(rGray, kernel);
         ImageSharedPtr rLow = proc.lowPassFilter(rGray, kernel);
         ImageSharedPtr lLow = proc.lowPassFilter(lGray, kernel);
         lLow->fillFrames();
         rLow->fillFrames();
-        ImageFactory::createFileFromImage("test_GausR.png", rG);
-        ImageFactory::createFileFromImage("test_LowL.png", lLow);
-        ImageFactory::createFileFromImage("test_LowR.png", rLow);
+        SAVE_IMG("test_GausR.png", rG);
+        SAVE_IMG("test_LowL.png", lLow);
+        SAVE_IMG("test_LowR.png", rLow);
         ImageSharedPtr lSub = proc.subtraction(lGray, lLow);
         ImageSharedPtr rSub = proc.subtraction(rGray, rLow);
         ImageSharedPtr lDiff = proc.standardDeviation(lGray, lLow, kernel);
         ImageSharedPtr rDiff = proc.standardDeviation(rGray, rLow, kernel);
-        ImageFactory::createFileFromImage("test_DiffL.png", lDiff);
-        ImageFactory::createFileFromImage("test_DiffR.png", rDiff);
-        ImageFactory::createFileFromImage("test_SubL.png", lSub);
-        ImageFactory::createFileFromImage("test_SubR.png", rSub);
+        SAVE_IMG("test_DiffL.png", lDiff);
+        SAVE_IMG("test_DiffR.png", rDiff);
+        SAVE_IMG("test_SubL.png", lSub);
+        SAVE_IMG("test_SubR.png", rSub);
         ImageProcessorFactory::deleteImageProcessor(&proc);
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << "Time: "<< duration << std::endl;
