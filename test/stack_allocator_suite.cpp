@@ -9,7 +9,7 @@ class StackAllocatorTest : public ::testing::Test
         uint32_t blk_size = 512;
         uint8_t blk_cnt = 10;
 
-        StackAllocator<10, 512> allocator;
+        StackAllocator<512, 10> allocator;
 
         virtual void SetUp() {
         }

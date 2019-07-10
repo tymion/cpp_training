@@ -4,7 +4,7 @@
 #include <cstddef>
 
 struct Blk_ {
-    void *ptr;
+    void* ptr;
     size_t size;
 };
 

@@ -6,14 +6,7 @@
 #include "image_file_factory.h"
 #include "logger.h"
 
-ImageAllocator ImageFactory::_allocator;
-uint32_t ImageFactory::_used;
-uint8_t ImageFactory::_pixel[STORAGE_SIZE];
-
-void ImageDeleter(Image* img)
-{
-    ImageFactory::deleteImage(img);
-}
+ImageAllocator ImageFactory::alloc;
 
 ImageFactory& ImageFactory::getInstance()
 {
@@ -21,43 +14,18 @@ ImageFactory& ImageFactory::getInstance()
     return instance;
 }
 
-void ImageFactory::deleteImage(Image *img)
-{
-    ImageFactory::_allocator.deallocate(img);
-}
-
-Image& ImageFactory::createImage(uint32_t height, uint32_t width, uint8_t frame, uint8_t component)
+ImageSharedPtr ImageFactory::createImage(uint32_t height, uint32_t width,
+                                            uint8_t frame, uint8_t component)
 {
     LOG("Height:%d\n", height);
     LOG("Width:%d\n", width);
     LOG("Frame:%d\n", frame);
     LOG("Component:%d\n", component);
 
-    if (height == Configuration::getImageHeight() &&
-            width == Configuration::getImageWidth() &&
-            frame == Configuration::getImageFrame() &&
-            component == Configuration::getImageComponent()) {
-        Image& img = *dynamic_cast<Image*>(new StackImage<Configuration::getImageHeight(),
-                                    Configuration::getImageWidth(),
-                                    Configuration::getImageFrame(),
-                                    Configuration::getImageComponent()>());
-        return img;
-    } else {
-        auto image_height = height + 2 * frame;
-        auto image_width = (width + 2 * frame) * component;
-        if (image_height < height || image_width < width) {
-            throw std::out_of_range("After adding frame integer overflow");
-        }
-        if (image_width * image_height > STORAGE_SIZE - _used) {
-            throw std::out_of_range("Image side is out of factory range.");
-        }
-        Image& img = *ImageFactory::_allocator.allocate(height, width, frame, component);
-
-        return img;
-    }
+    return alloc.allocate(height, width, frame, component);
 }
 
-Image& ImageFactory::createImageFromFile(std::string fileName)
+ImageSharedPtr ImageFactory::createImageFromFile(std::string fileName)
 {
     ImageFileUPtr file = ImageFileUPtr{ImageFileFactory::openImageFile(fileName)};
     if (!file) {
@@ -67,28 +35,37 @@ Image& ImageFactory::createImageFromFile(std::string fileName)
     auto height = file->getHeight();
     auto width = file->getWidth();
     auto component = file->getComponentCnt();
-    Image& img = ImageFactory::createImage(height, width, frame, component);
+    ImageSharedPtr img = ImageFactory::createImage(height, width, frame, component);
+    LOG("Test:%p\n", img.get());
 
     auto callback = [=, &img] (uint32_t row) {
-                                            return img[frame + row] + frame * component;
+//    std::function<uint8_t* (uint32_t)> callback = [=, &img] (uint32_t row) {
+                                            //return (*img.get())[frame + row] + frame * component;
+                                            //return (*img.get())[row] + frame * component;
+                                            //return (*img.get())[(frame + (frame + row) * (2 * frame + width)) * component];
+                                            return (*img)[frame + row] + frame * component;
                                             };
     file->loadImage(callback);
-    img.fillFrames();
+    img->fillFrames();
 
     return img;
 }
 
-Image& ImageFactory::createImageFromImage(Image const& img, ColorSpace color)
+ImageSharedPtr ImageFactory::createImageFromImage(ImageSharedPtr const img, ColorSpace color)
 {
     switch (color) {
         case ColorSpace::Grayscale:
-            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 1);
+            return createImage(img->getImageHeight(), img->getImageWidth(),
+                                img->getFrame(), 1);
         case ColorSpace::GrayscaleAlpha:
-            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 2);
+            return createImage(img->getImageHeight(), img->getImageWidth(),
+                                img->getFrame(), 2);
         case ColorSpace::TrueColor:
-            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 3);
+            return createImage(img->getImageHeight(), img->getImageWidth(),
+                                img->getFrame(), 3);
         case ColorSpace::TrueColorAlpha:
-            return createImage(img.getHeight(), img.getWidth(), img.getFrame(), 4);
+            return createImage(img->getImageHeight(), img->getImageWidth(),
+                                img->getFrame(), 4);
         default:
             throw std::invalid_argument("Unknown color space.");
     }
@@ -110,20 +87,27 @@ ColorSpace ImageFactory::getColorSpaceFromComponent(size_t component)
     }
 }
 
-Image& ImageFactory::createImageFromImage(Image const& img)
+ImageSharedPtr ImageFactory::createImageFromImage(ImageSharedPtr const img)
 {
-    return createImage(img.getHeight(), img.getWidth(), img.getFrame(), img.getComponent());
+    return createImage(img->getImageHeight(), img->getImageWidth(),
+                        img->getFrame(), img->getComponent());
 }
 
-bool ImageFactory::createFileFromImage(std::string name, Image const& img)
+bool ImageFactory::createFileFromImage(std::string name, ImageSharedPtr const img)
 {
-    ColorSpace color = getColorSpaceFromComponent(img.getComponent());
-    ImageFileUPtr file = ImageFileUPtr{ImageFileFactory::createImageFile(name, img.getWidth(),
-            img.getHeight(), 8, color)};
-    auto component = img.getComponent();
-    auto frame = img.getFrame();
+    ColorSpace color = getColorSpaceFromComponent(img->getComponent());
+    ImageFileUPtr file = ImageFileUPtr{
+                            ImageFileFactory::createImageFile(name,
+                                                                img->getImageWidth(),
+                                                                img->getImageHeight(),
+                                                                8, color)};
+    auto component = img->getComponent();
+    auto frame = img->getFrame();
+    auto width = file->getWidth();
     auto callback = [=, &img] (uint32_t row) {
-                                            return img[frame + row] + frame * component;
+                                            //return (*img)[frame + row] + frame * component;
+                                            //return (*img.get())[(frame + (frame + row) * (2 * frame + width)) * component];
+                                            return (*img)[frame + row] + frame * component;
                                             };
     file->saveImage(callback);
     return true;

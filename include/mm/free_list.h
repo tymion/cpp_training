@@ -1,18 +1,21 @@
 #pragma once
 
 #include "mm/allocator.h"
-#include "mm/nullptr_allocator.h"
+#include "double_linked_region_list.h"
 
-class FreeList : NullPtrAllocator, DoubleLinkedRegionList
+class FreeList : Allocator, DoubleLinkedRegionList
 {
     private:
         Blk _mem;
 
     public:
-        FreeList(Blk& mem)
+        FreeList(void* mem, uint32_t mem_size)
         {
-            _mem = mem;
-            insertRegion(mem.ptr, mem.size);
+            _mem = {
+                mem,
+                mem_size
+            };
+            insertRegion(mem, mem_size);
         }
 
         void deallocate(Blk& mem)
@@ -28,9 +31,9 @@ class FreeList : NullPtrAllocator, DoubleLinkedRegionList
         Blk allocate(size_t size)
         {
             Blk mem = {
-                .ptr = findRegion(size);
-                .size = size;
-            }
+                findRegion(size),
+                size
+            };
             if (mem.ptr == nullptr) {
                 mem.size = 0;
             }
@@ -39,6 +42,6 @@ class FreeList : NullPtrAllocator, DoubleLinkedRegionList
 
         bool owns(Blk& mem)
         {
-            return mem.ptr < _mem.ptr && mem.ptr > _mem.ptr + _mem.size && _mem.size >= mem.size;
+            return mem.ptr < _mem.ptr && (uintptr_t) mem.ptr > (uintptr_t) _mem.ptr + _mem.size && _mem.size >= mem.size;
         }
 };

@@ -11,7 +11,7 @@ class ObjectAllocator
 {
     FallbackAllocator<
         FixedSizeFreeList<
-            StackAllocator<N, sizeof(T)>,
+            StackAllocator<sizeof(T), N>,
             sizeof(T)>,
         Mallocator> allocator;
 

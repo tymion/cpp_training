@@ -3,24 +3,26 @@
 #include <stdexcept>
 #include "image.h"
 
-Image::Image(uint32_t height, uint32_t width, uint32_t frame, uint32_t component) :
-                _height(height), _width(width), _frame(frame), _component(component)
+Image::Image(uint32_t height, uint32_t width, uint8_t frame, uint8_t component,
+                uint8_t **data) :
+                                Matrix<uint8_t>(height + 2 * frame,
+                                                (width + 2 * frame) * component, data),
+                                _height(height), _width(width), _frame(frame), _component(component)
 {
 }
 
 Image::~Image()
 {
-    free(_data);
 }
 
-uint32_t Image::getWidth() const
-{
-    return _width;
-}
-
-uint32_t Image::getHeight() const
+uint32_t Image::getImageHeight() const
 {
     return _height;
+}
+
+uint32_t Image::getImageWidth() const
+{
+    return _width;
 }
 
 uint8_t Image::getFrame() const
@@ -31,16 +33,6 @@ uint8_t Image::getFrame() const
 uint8_t Image::getComponent() const
 {
     return _component;
-}
-
-uint8_t* Image::operator[](uint32_t index) const
-{
-    return _data[index];
-}
-
-uint8_t* Image::operator[](uint32_t index)
-{
-    return _data[index];
 }
 
 void Image::fillFrames()

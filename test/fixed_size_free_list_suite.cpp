@@ -6,7 +6,7 @@
 
 #define blk_cnt 10
 
-typedef FixedSizeFreeList<StackAllocator<10, 512>, 512> FreeListAllocator;
+typedef FixedSizeFreeList<StackAllocator<512, 10>, 512> FreeListAllocator;
 
 class FixedSizeFreeListTest : public ::testing::Test
 {

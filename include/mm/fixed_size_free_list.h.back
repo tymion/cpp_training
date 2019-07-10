@@ -1,12 +1,10 @@
 #pragma once
 
 #include "mm/allocator.h"
-#include "mm/fixed_size_allocator.h"
 #include "mm/nullptr_allocator.h"
-#include "logger.h"
 
-template<class A, size_t blk_size>
-class FixedSizeFreeList : NullPtrAllocator
+template<size_t blk_size, class A>
+class FixedSizeFreeList : NullPtrAllocator, FixedSizeAllocator
 {
     private:
         A _pool;
@@ -20,27 +18,24 @@ class FixedSizeFreeList : NullPtrAllocator
             }
             _pool.deallocate(mem);
             if (mem.ptr == nullptr) {
-                LOG("Deallocating from pool failed.\n");
                 return;
             }
-            LOG("Deallocating will supply a free list.\n");
             auto tmp = _root;
             _root = (Node *) mem.ptr;
             _root->next = tmp;
             mem.ptr = nullptr;
             mem.size = 0;
         }
-
-        bool deallocate(void* ptr)
+        bool deallocate(void* mem)
         {
-            if (!owns(ptr)) {
+            if (!owns(mem)) {
                 return false;
             }
-            if (_pool.deallocate(ptr)) {
+            if (_pool.deallocate(mem)) {
                 return true;
             }
             auto tmp = _root;
-            _root = (Node *) ptr;
+            _root = (Node *) mem;
             _root->next = tmp;
             return true;
         }
@@ -51,10 +46,8 @@ class FixedSizeFreeList : NullPtrAllocator
                 return NullPtrAllocator::allocate(size);
             }
             if (_root == nullptr) {
-                LOG("Allocating from pool.\n");
                 return _pool.allocate(size);
             }
-            LOG("Allocating from free list.\n");
             auto tmp = _root;
             _root = _root->next;
             return { tmp, size };
@@ -63,10 +56,8 @@ class FixedSizeFreeList : NullPtrAllocator
         void* allocate()
         {
             if (_root == nullptr) {
-                LOG("Allocating from pool.\n");
                 return _pool.allocate();
             }
-            LOG("Allocating from free list.\n");
             auto tmp = _root;
             _root = _root->next;
             return tmp;
@@ -74,13 +65,11 @@ class FixedSizeFreeList : NullPtrAllocator
 
         bool owns(Blk& mem)
         {
-            LOG("Owns(Blk):%s\n", (mem.size == blk_size && _pool.owns(mem)) ? "true" : "false");
             return mem.size == blk_size && _pool.owns(mem);
         }
 
-        bool owns(void* ptr)
+        bool owns(void* mem)
         {
-            LOG("Owns(void*):%s\n", _pool.owns(ptr) ? "true" : "false");
-            return _pool.owns(ptr);
+            return _pool.owns(mem);
         }
 };

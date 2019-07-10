@@ -13,9 +13,13 @@ class Configuration;
 
 void ImageProcessorDeleter(ImageProcessor* img);
 
-using ImageProcessorAlloc = ImageProcessorAllocator<Configuration::getStorageSize(),
-                                                    Configuration::getImageHeight(),
-                                                    Configuration::getImageWidth()>;
+using ImageProcessorAlloc =
+    ImageProcessorAllocator<Configuration::getStorageSize(),
+                            Configuration::getImageHeight() 
+                                + Configuration::getImageFrame() * 2,
+                            (Configuration::getImageWidth()
+                                + Configuration::getImageFrame()) * 2 *
+                            Configuration::getImageMaxComponent()>;
 class ImageProcessorFactory
 {
     private:

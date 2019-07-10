@@ -19,7 +19,7 @@ set(TEST_SOURCES
 
 add_executable(algo_test ${TEST_SOURCES})
 add_dependencies(algo_test gtest_target)
-target_link_libraries(algo_test algo gtest pthread)
+target_link_libraries(algo_test algo_debug gtest pthread)
 if (CROSS_COMPILE)
     add_dependencies(algo_test qemu_target)
 endif ()

@@ -21,16 +21,16 @@ TEST_F(MallocatorTest, allocate)
     Blk mem = allocator.allocate(0);
     EXPECT_EQ(mem.ptr != nullptr, true);
     allocator.deallocate(mem);
-    EXPECT_EQ(mem.size, 0);
+    EXPECT_EQ(mem.size, (uint32_t) 0);
     allocator.deallocate(mem);
     EXPECT_EQ(mem.ptr, nullptr);
-    EXPECT_EQ(mem.size, 0);
+    EXPECT_EQ(mem.size, (uint32_t) 0);
     mem = allocator.allocate(1);
     EXPECT_EQ(mem.ptr != nullptr, true);
-    EXPECT_EQ(mem.size, 1);
+    EXPECT_EQ(mem.size, (uint32_t) 1);
     allocator.deallocate(mem);
     EXPECT_EQ(mem.ptr, nullptr);
-    EXPECT_EQ(mem.size, 0);
+    EXPECT_EQ(mem.size, (uint32_t) 0);
 }
 
 TEST_F(MallocatorTest, deallocate_null)
@@ -38,7 +38,7 @@ TEST_F(MallocatorTest, deallocate_null)
     Blk mem = { nullptr, 128 };
     allocator.deallocate(mem);
     EXPECT_EQ(mem.ptr, nullptr);
-    EXPECT_EQ(mem.size, 0);
+    EXPECT_EQ(mem.size, (uint32_t) 0);
 }
 
 TEST_F(MallocatorTest, allocate_and_deallocate)
@@ -46,7 +46,7 @@ TEST_F(MallocatorTest, allocate_and_deallocate)
     Blk mem = allocator.allocate(16);
     allocator.deallocate(mem);
     EXPECT_EQ(mem.ptr, nullptr);
-    EXPECT_EQ(mem.size, 0);
+    EXPECT_EQ(mem.size, (uint32_t) 0);
 }
 
 TEST_F(MallocatorTest, allocate_and_owns_and_deallocate)
@@ -55,7 +55,7 @@ TEST_F(MallocatorTest, allocate_and_owns_and_deallocate)
     EXPECT_EQ(allocator.owns(mem), true);
     allocator.deallocate(mem);
     EXPECT_EQ(mem.ptr, nullptr);
-    EXPECT_EQ(mem.size, 0);
+    EXPECT_EQ(mem.size, (uint32_t) 0);
 }
 
 TEST_F(MallocatorTest, owns_null_and_large_size)

@@ -3,6 +3,7 @@
 #include <cstring>
 #include <iostream>
 #include "libpng_wrapper.h"
+#include "logger.h"
 
 png_byte PNGFileWrapper::ColorSpaceToLibPNG(ColorSpace color)
 {
@@ -22,8 +23,8 @@ png_byte PNGFileWrapper::ColorSpaceToLibPNG(ColorSpace color)
     }
 }
 
-PNGFileWrapper::PNGFileWrapper(FILE *file, size_t width, size_t height, size_t color_depth,
-                                ColorSpace color) {
+PNGFileWrapper::PNGFileWrapper(FILE *file, size_t width, size_t height,
+                                size_t color_depth, ColorSpace color) {
     if (file == NULL) {
         throw std::invalid_argument("Invalid file descriptor.");
     }
@@ -33,13 +34,19 @@ PNGFileWrapper::PNGFileWrapper(FILE *file, size_t width, size_t height, size_t c
     setjmp(png_jmpbuf(_png));
     png_init_io(_png, file);
     png_byte png_color = ColorSpaceToLibPNG(color);
-    png_set_IHDR(_png, _info, width, height, color_depth, png_color, PNG_INTERLACE_NONE,
-            PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+    png_set_IHDR(_png, _info, width, height, color_depth, png_color,
+                    PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
+                    PNG_FILTER_TYPE_DEFAULT);
     png_write_info(_png, _info);
     _width = width;
     _height = height;
     _bit_depth = color_depth;
-    _row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * _height);
+    if (png_color == PNG_COLOR_TYPE_GRAY ||
+            png_color == PNG_COLOR_TYPE_GRAY_ALPHA) {
+        png_set_gray_to_rgb(_png);
+    }
+    LOG("bit_depth[%d|%x] \n", _bit_depth, png_color);
+    _row_pointers = (png_bytepp)png_malloc(_png, sizeof(png_bytepp) * height);
 }
 
 PNGFileWrapper::PNGFileWrapper(FILE *file) {
@@ -56,6 +63,7 @@ PNGFileWrapper::PNGFileWrapper(FILE *file) {
     _bit_depth = png_get_bit_depth(_png, _info);
     _width = png_get_image_width(_png, _info);
     _height = png_get_image_height(_png, _info);
+    LOG("bit_depth[%d|%x] \n", _bit_depth, color_type);
 
     if (_bit_depth == 16) {
         png_set_strip_16(_png);
@@ -73,7 +81,7 @@ PNGFileWrapper::PNGFileWrapper(FILE *file) {
 
     png_read_update_info(_png, _info);
 
-    _row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * _height);
+    _row_pointers = (png_bytepp)png_malloc(_png, sizeof(png_bytepp) * _height);
     _read = true;
 }
 
@@ -107,6 +115,7 @@ bool PNGFileWrapper::loadImage(std::function<uint8_t* (uint32_t)> callback) {
     for (uint32_t y = 0; y < _height; y++) {
         _row_pointers[y] = (png_byte*)callback(y);
         if (!_row_pointers[y]) {
+            LOG("row_pointers[%d] is null\n", y);
             return false;
         }
     }

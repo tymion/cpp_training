@@ -19,7 +19,7 @@ class Configuration
     private:
         static constexpr double _jacardThreshold = 0.0;
         static constexpr uint32_t _similarityThreshold = 0;
-        static constexpr uint8_t _component = 1;
+        static constexpr uint8_t _component = 4;
         static constexpr uint8_t _frame = 2;
         static constexpr uint32_t _height = 200;
         static constexpr uint32_t _width = 500;
@@ -37,7 +37,7 @@ class Configuration
             return _similarityThreshold;
         }
 
-        static constexpr uint8_t getImageComponent() {
+        static constexpr uint8_t getImageMaxComponent() {
             return _component;
         }
 

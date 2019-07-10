@@ -13,7 +13,7 @@ set(CURR_PATH ENV{PATH})
 
 set(ENV{PATH} "${CURR_PATH}:${ROOTFS_HOST}/bin")
 
-#add_subdirectory(libs)
+add_subdirectory(libs)
 
 set(SOURCES
     image.cpp
