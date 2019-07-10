@@ -206,7 +206,7 @@ ImageProcessor::standardDeviation(ImageSharedPtr const first,
         for (auto h = kernel + 1; h < kernel_size; h++) {
             tmp += _data[h][w];
         }
-        (*outImg)[kernel][w] = tmp;
+        (*outImg)[kernel][w] = (*second)[kernel][w] / sqrt(tmp);
         for (uint32_t h = kernel + 1; h < height - kernel; h++) {
             tmp = tmp - _data[h - (kernel + 1)][w] + _data[h + kernel][w];
 //            outImg[h][w] = second[h][w] / sqrt(tmp / (kernel_size * kernel_size));
