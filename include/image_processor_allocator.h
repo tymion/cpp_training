@@ -9,11 +9,13 @@ class ImageProcessorAllocator: ObjectAllocator<StackImageProcessor<H, W>, N>
     public:
         ImageProcessor* allocate()
         {
-            return new (ObjectAllocator<StackImageProcessor<H, W>, N>::allocate()) StackImageProcessor<H, W>();
+            return new (ObjectAllocator<StackImageProcessor<H, W>, N>::allocate())
+                    StackImageProcessor<H, W>();
         }
 
-	void deallocate(ImageProcessor *ptr)
-	{
-            ObjectAllocator<StackImageProcessor<H, W>, N>::deallocate(static_cast<StackImageProcessor<H, W>*>(ptr));
-	}
+        void deallocate(ImageProcessor *ptr)
+        {
+            ObjectAllocator<StackImageProcessor<H, W>, N>::deallocate(
+                    static_cast<StackImageProcessor<H, W>*>(ptr));
+        }
 };

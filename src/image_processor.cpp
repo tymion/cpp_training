@@ -104,37 +104,40 @@ ImageSharedPtr ImageProcessor::lowPassFilter(ImageSharedPtr const img, uint8_t k
 void ImageProcessor::horizontalConvolution(ImageSharedPtr const in, ImageSharedPtr out,
                                             uint32_t height, uint32_t width, uint8_t kernel_size)
 {
-    uint8_t frame = kernel_size / 2;
+    uint32_t frame = kernel_size / 2;
     int32_t tmp = 0;
-    uint32_t w = 0;
+    uint32_t w, j = 0;
     for (uint32_t h = 0; h < height - kernel_size; h++) {
         for (w = 0; w < kernel_size; w++) {
             tmp += (*in)[h][w];
         }
         (*out)[h][frame++] = tmp / kernel_size;
-        for (w = 1; w < width - kernel_size; w++, frame++) {
-            tmp = tmp - (*in)[h][w - 1] + (*in)[h][w + kernel_size - 1];
+        for (w = 0, j = kernel_size; w < width - kernel_size; w++, frame++, j++) {
+            tmp = tmp - (*in)[h][w] + (*in)[h][j];
             (*out)[h][frame] = tmp / kernel_size;
         }
         frame = kernel_size / 2;
+        tmp = 0;
     }
 }
 
 void ImageProcessor::verticalConvolution(ImageSharedPtr const in, ImageSharedPtr out,
                                             uint32_t height, uint32_t width, uint8_t kernel_size)
 {
-    uint8_t frame = kernel_size / 2;
+    uint32_t frame = kernel_size / 2;
     int32_t tmp = 0;
-    uint32_t h = 0;
+    uint32_t h, j = 0;
     for (uint32_t w = 0; w < width - kernel_size; w++) {
         for (h = 0; h < kernel_size; h++) {
             tmp += (*in)[h][w];
         }
-        (*out)[frame][w] = tmp / kernel_size;
-        for (h = 1; h < height - kernel_size; h++) {
-            tmp = tmp - (*in)[h - 1][w] + (*in)[h + kernel_size - 1][w];
-            (*out)[frame + h][w] = tmp / kernel_size;
+        (*out)[frame++][w] = tmp / kernel_size;
+        for (h = 0, j = kernel_size; j < height - kernel_size; h++, frame++, j++) {
+            tmp = tmp - (*in)[h][w] + (*in)[j][w];
+            (*out)[frame][w] = tmp / kernel_size;
         }
+        frame = kernel_size / 2;
+        tmp = 0;
     }
 }
 
@@ -142,9 +145,8 @@ void ImageProcessor::boxConvolution(ImageSharedPtr const in, ImageSharedPtr out,
                                     uint32_t height, uint32_t width, uint8_t kernel_size)
 {
     ImageSharedPtr tmp = ImageFactory::createImageFromImage(in);
-//    ImageProcessor::horizontalConvolution(in, tmp, height, width, kernel_size);
-    ImageProcessor::horizontalConvolution(in, out, height, width, kernel_size);
-//    ImageProcessor::verticalConvolution(tmp, out, height, width, kernel_size);
+    ImageProcessor::horizontalConvolution(in, tmp, height, width, kernel_size);
+    ImageProcessor::verticalConvolution(tmp, out, height, width, kernel_size);
 }
 
 void ImageProcessor::fastGaussianConvolution(ImageSharedPtr const in, ImageSharedPtr out,
@@ -153,8 +155,8 @@ void ImageProcessor::fastGaussianConvolution(ImageSharedPtr const in, ImageShare
 {
     ImageSharedPtr tmp = ImageFactory::createImageFromImage(in);
     ImageProcessor::boxConvolution(in, out, height, width, kernel_size);
-//    ImageProcessor::boxConvolution(out, tmp, height, width, kernel_size);
-//    ImageProcessor::boxConvolution(tmp, out, height, width, kernel_size);
+    ImageProcessor::boxConvolution(out, tmp, height, width, kernel_size);
+    ImageProcessor::boxConvolution(tmp, out, height, width, kernel_size);
 }
 
 ImageSharedPtr ImageProcessor::gaussian(ImageSharedPtr const in, uint8_t kernel_size)
@@ -193,13 +195,13 @@ ImageProcessor::standardDeviation(ImageSharedPtr const first,
         for (auto w = kernel + 1; w < kernel_size; w++) {
             _data[w][kernel] += (*outImg)[h][w];
         }
-        for (uint32_t w = kernel + 1; w < width - kernel; w++) {
-            _data[h][w] = _data[h][w - 1] - (*outImg)[h][w - (kernel + 1)] + (*outImg)[h][w + kernel];
+        for (uint32_t w = kernel + 1, j = 0, k = kernel_size; w < width - kernel; w++, j++, k++) {
+            _data[h][w] = _data[h][w - 1] - (*outImg)[h][j] + (*outImg)[h][k];
         }
     }
-    for (auto h = 0; h < kernel; h++) {
+    for (uint32_t h = 0, j = height - 1; h < kernel; h++, j--) {
         memcpy(_data[h], _data[kernel], width * sizeof(*_data[0]));
-        memcpy(_data[height - 1 - h], _data[height - 1 - kernel], width * sizeof(*_data[0]));
+        memcpy(_data[j], _data[height - 1 - kernel], width * sizeof(*_data[0]));
     }
     for (uint32_t w = kernel; w < width - kernel; w++) {
         tmp = _data[kernel][w] * (kernel + 1);
@@ -207,8 +209,8 @@ ImageProcessor::standardDeviation(ImageSharedPtr const first,
             tmp += _data[h][w];
         }
         (*outImg)[kernel][w] = (*second)[kernel][w] / sqrt(tmp);
-        for (uint32_t h = kernel + 1; h < height - kernel; h++) {
-            tmp = tmp - _data[h - (kernel + 1)][w] + _data[h + kernel][w];
+        for (uint32_t h = kernel + 1, j = 0, k = kernel_size; h < height - kernel; h++, j++, k++) {
+            tmp = tmp - _data[j][w] + _data[k][w];
 //            outImg[h][w] = second[h][w] / sqrt(tmp / (kernel_size * kernel_size));
             (*outImg)[h][w] = (*second)[h][w] / sqrt(tmp);
         }
