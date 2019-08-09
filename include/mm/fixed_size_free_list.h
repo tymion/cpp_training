@@ -20,7 +20,7 @@ class FixedSizeFreeList : NullPtrAllocator
             }
             _pool.deallocate(mem);
             if (mem.ptr == nullptr) {
-                LOG_ALLOC("Deallocating from pool failed.\n");
+                LOG_ALLOC("Deallocating from pool succed.\n");
                 return;
             }
             LOG_ALLOC("Deallocating will supply a free list.\n");
@@ -37,8 +37,10 @@ class FixedSizeFreeList : NullPtrAllocator
                 return false;
             }
             if (_pool.deallocate(ptr)) {
+                LOG_ALLOC("Deallocating from pool succed.\n");
                 return true;
             }
+            LOG_ALLOC("Deallocating will supply a free list.\n");
             auto tmp = _root;
             _root = (Node *) ptr;
             _root->next = tmp;

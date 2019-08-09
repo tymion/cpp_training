@@ -8,12 +8,14 @@
 template<size_t blk_size, size_t N>
 class StackAllocator : NullPtrAllocator
 {
-    uint8_t _stack[N*blk_size];
-    size_t _cur_blk = 0;
-
     private:
+        uint8_t _stack[N*blk_size];
+        size_t _cur_blk = 0;
+
         inline bool _deallocate(void* ptr)
         {
+            LOG_ALLOC("Stack allocator deallocates: block_nr=%lu (blk_size=0x%lx, N=%lu)\n",
+                        _cur_blk, blk_size, N);
             if (ptr == &_stack[blk_size*(_cur_blk - 1)]) {
                 _cur_blk--;
                 return true;
@@ -56,6 +58,8 @@ class StackAllocator : NullPtrAllocator
 
         void* allocate()
         {
+            LOG_ALLOC("Stack allocator allocates: block_nr=%lu (blk_size=0x%lx, N=%lu)\n",
+                        _cur_blk, blk_size, N);
             if (_cur_blk >= N) {
                 return NullPtrAllocator::allocate();
             }

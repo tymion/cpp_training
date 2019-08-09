@@ -5,6 +5,7 @@
 #include "mm/stack_allocator.h"
 #include "mm/fixed_size_free_list.h"
 #include "mm/stack_free_list.h"
+#include "config.h"
 #include "logger.h"
 
 constexpr size_t N = 10;
@@ -39,41 +40,10 @@ class ImageAllocator
         StackFreeList<4096> alloc;
 
     public:
-        ImageSharedPtr allocate(uint32_t height, uint32_t width, uint8_t frame,
-                                uint8_t component)
-        {
-            if (Conf::getImageHeight() == height && Conf::getImageFrame() == frame) {
-                if (max_width * 3 == (width + 2 * frame) * component) {
-                    return ImageSharedPtr(new (stackImageBigAlloc.allocate())
-                                            StackImageBig(), [=](Image* img)
-                            {
-                                img->~Image();
-                                stackImageBigAlloc.deallocate(img);
-                            });
-                } else if (max_width * 1 == (width + 2 * frame) * component) {
-                    return ImageSharedPtr(new (stackImageSmallAlloc.allocate())
-                                            StackImageSmall(), [=](Image* img)
-                            {
-                                img->~Image();
-                                stackImageSmallAlloc.deallocate(img);
-                            });
-                }
-            } else {
-                uint8_t **ptr = static_cast<uint8_t**>(alloc.allocate(height + 2 * frame * sizeof(uint8_t*)).ptr);
-                uint8_t *tmp = static_cast<uint8_t*>(alloc.allocate(
-                                                        (height + 2 * frame) *
-                                                        (width + 2 * frame) * component).ptr);
-                for (uint8_t i = 0; i < height + 2 * frame; i++) {
-                    ptr[i] = &tmp[i * (width + 2 * frame) * component];
-                }
-                return ImageSharedPtr(new (imageAlloc.allocate())
-                                        Image(height, width, frame, component, ptr),
-                                        [=](Image* img)
-                            {
-                                img->~Image();
-                                imageAlloc.deallocate(img);
-                            });
-            }
-            return nullptr;
+        ImageAllocator() {
+            LOG("==============================================================\n");
         }
+
+        ImageSharedPtr allocate(uint32_t height, uint32_t width, uint8_t frame,
+                                uint8_t component);
 };

@@ -25,6 +25,7 @@ add_subdirectory(libs)
 set(SOURCES
     image.cpp
     image_factory.cpp
+    image_allocator.cpp
     image_file_factory.cpp
     libpng_wrapper.cpp
     image_processor_factory.cpp
@@ -52,7 +53,7 @@ add_dependencies(algo libpng_target)
 add_library(algo_debug SHARED ${SOURCES_OUT})
 target_link_libraries(algo_debug png z)
 add_dependencies(algo_debug libpng_target)
-target_compile_definitions(algo_debug PUBLIC DEBUG=1)
+target_compile_definitions(algo_debug PUBLIC DEBUG=1 DEBUG_ALLOCATION=1)
 
 if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
     set(CMAKE_CXX_FLAGS "${CMKAE_CXX_FLAGS} -std=c++17")

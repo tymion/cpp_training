@@ -9,7 +9,10 @@
 #include "color_space.h"
 
 #ifdef DEBUG
-#define SAVE_IMG ImageFactory::createFileFromImage
+#define SAVE_IMG(file, image); \
+    if (image) { \
+        ImageFactory::createFileFromImage(file, image); \
+    }
 #else
 #define SAVE_IMG(file, image);
 #endif
@@ -24,6 +27,7 @@ int main() {
     std::string rightFile = "resources/right.png";
     try {
         start = clock();
+        _start = start;
         ImageSharedPtr lImg = ImageFactory::createImageFromFile(leftFile);
         SAVE_IMG("test_outL.png", lImg);
         ImageSharedPtr rImg = ImageFactory::createImageFromFile(rightFile);
@@ -35,6 +39,7 @@ int main() {
         ImageSharedPtr lGray = proc.changeColorSpace(lImg, ColorSpace::Grayscale);
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << "Time (changeColorSpace): "<< duration << std::endl;
+        lGray->fillFrames();
         start = clock();
         SAVE_IMG("test_grayL.png", lGray);
         ImageSharedPtr rGray = proc.changeColorSpace(rImg, ColorSpace::Grayscale);
@@ -55,9 +60,18 @@ int main() {
         duration = (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << "Time (lowPass): "<< duration << std::endl;
         start = clock();
+        ImageSharedPtr rG7 = proc.gaussian(rGray, kernel);
+        duration = (clock() - start) / (double) CLOCKS_PER_SEC;
+        std::cout << "Time (gaussian): "<< duration << std::endl;
+        start = clock();
+        ImageSharedPtr rSubG = proc.subtraction(rG, rG7);
+        duration = (clock() - start) / (double) CLOCKS_PER_SEC;
+        std::cout << "Time (subtraction): "<< duration << std::endl;
+        start = clock();
         lLow->fillFrames();
         rLow->fillFrames();
         SAVE_IMG("test_GausR.png", rG);
+        SAVE_IMG("test_GausR7.png", rG7);
         SAVE_IMG("test_LowL.png", lLow);
         SAVE_IMG("test_LowR.png", rLow);
         ImageSharedPtr lSub = proc.subtraction(lGray, lLow);

@@ -2,6 +2,7 @@
 #include <cmath>
 #include "image_processor.h"
 #include "image_factory.h"
+#include "logger.h"
 
 ImageProcessor::ImageProcessor(uint32_t height, uint32_t width, uint32_t **data) :
                                 Matrix<uint32_t>(height, width, data)
@@ -16,6 +17,7 @@ ImageProcessor::ImageProcessor(uint32_t height, uint32_t width, uint32_t **data,
 ImageSharedPtr ImageProcessor::changeColorSpace(ImageSharedPtr const img, ColorSpace color)
 {
     ImageSharedPtr gray_img = ImageFactory::createImageFromImage(img, color);
+    ASSERT_PTR(gray_img);
     uint8_t comp = img->getComponent();
     for (uint32_t i = 0; i < img->getImageHeight() + img->getFrame() * 2; i++) {
         for (uint32_t j = 0; j < img->getImageWidth() + img->getFrame() * 2; j++) {
@@ -68,6 +70,7 @@ ImageSharedPtr ImageProcessor::lowPassFilter(ImageSharedPtr const img, uint8_t k
 ImageSharedPtr ImageProcessor::lowPassFilter(ImageSharedPtr const img, uint8_t kernel_size)
 {
     ImageSharedPtr outImg = ImageFactory::createImageFromImage(img);
+    ASSERT_PTR(outImg);
     auto width = img->getImageWidth() + img->getFrame() * 2;
     auto height = img->getImageHeight() + img->getFrame() * 2;
     auto kernel = kernel_size / 2;
@@ -145,6 +148,7 @@ void ImageProcessor::boxConvolution(ImageSharedPtr const in, ImageSharedPtr out,
                                     uint32_t height, uint32_t width, uint8_t kernel_size)
 {
     ImageSharedPtr tmp = ImageFactory::createImageFromImage(in);
+    ASSERT_PTR(tmp);
     ImageProcessor::horizontalConvolution(in, tmp, height, width, kernel_size);
     ImageProcessor::verticalConvolution(tmp, out, height, width, kernel_size);
 }
@@ -154,6 +158,7 @@ void ImageProcessor::fastGaussianConvolution(ImageSharedPtr const in, ImageShare
                                                 uint8_t kernel_size)
 {
     ImageSharedPtr tmp = ImageFactory::createImageFromImage(in);
+    ASSERT_PTR(tmp);
     ImageProcessor::boxConvolution(in, out, height, width, kernel_size);
     ImageProcessor::boxConvolution(out, tmp, height, width, kernel_size);
     ImageProcessor::boxConvolution(tmp, out, height, width, kernel_size);
@@ -162,6 +167,7 @@ void ImageProcessor::fastGaussianConvolution(ImageSharedPtr const in, ImageShare
 ImageSharedPtr ImageProcessor::gaussian(ImageSharedPtr const in, uint8_t kernel_size)
 {
     ImageSharedPtr out = ImageFactory::createImageFromImage(in);
+    ASSERT_PTR(out);
     ImageProcessor::fastGaussianConvolution(in, out, in->getImageHeight(),
                                             in->getImageWidth(), kernel_size);
     return out;
@@ -173,6 +179,8 @@ ImageProcessor::standardDeviation(ImageSharedPtr const first,
                                     uint8_t kernel_size)
 {
     ImageSharedPtr outImg = ImageFactory::createImageFromImage(first);
+    if (outImg) return nullptr;
+    ASSERT_PTR(outImg);
     auto width = outImg->getImageWidth() + outImg->getFrame() * 2;
     auto height = outImg->getImageHeight() + outImg->getFrame() * 2;
     int32_t tmp = 0;
@@ -223,6 +231,7 @@ ImageSharedPtr ImageProcessor::subtraction(ImageSharedPtr const first,
                                             ImageSharedPtr const second)
 {
     ImageSharedPtr outImg = ImageFactory::createImageFromImage(first);
+    ASSERT_PTR(outImg);
     int32_t tmp = 0;
     for (uint32_t i = 0; i < first->getImageHeight() + first->getFrame() * 2; i++) {
         for (uint32_t j = 0; j < first->getImageWidth() + first->getFrame() * 2; j++) {
