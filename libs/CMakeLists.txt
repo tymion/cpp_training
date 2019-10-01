@@ -69,3 +69,16 @@ ExternalProject_Add(
     INSTALL_COMMAND make DESTDIR=${ROOTFS} install
     )
 
+ExternalProject_Get_property(
+    gtest_target
+    BINARY_DIR
+    )
+
+add_library(gtest STATIC IMPORTED GLOBAL)
+add_dependencies(gtest_target gtest)
+set_target_properties(
+    gtest
+    PROPERTIES
+    IMPORTED_LOCATION ${BINARY_DIR}/lib/libgtest.a
+    INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/gtest/googletest/include/
+    )
